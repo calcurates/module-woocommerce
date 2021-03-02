@@ -18,7 +18,7 @@ services:
             - ./wc-calcurates.php:/var/www/html/web/app/plugins/wc-calcurates.php
             - ./.env:/var/www/html/.env
     db:
-        image: mysql:5.7
+        image: mysql:8.0.23
         restart: unless-stopped
         environment:
             MYSQL_DATABASE: ${DB_DATABASE}
