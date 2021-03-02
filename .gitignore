@@ -8,7 +8,6 @@
 !commitizen.js
 !commitlint.js
 !docker-compose.yml
-!package-lock.json
 !package.json
 
 # Ignore all files named .DS_Store or ending with .log
