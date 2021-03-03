@@ -1,0 +1,20 @@
+{
+    "name": "calcurates/module-woocomerce",
+    "description": "Calcurates Integration for WooCommerce",
+    "keywords": ["shipping"],
+    "require": {
+        "php": ">=7.0"
+    },
+    "authors": [
+        {
+            "name": "Ildar Jakparov",
+            "email": "ijakparov@gmail.com"
+        },
+        {
+            "name": "Calcurates",
+            "homepage": "https://calcurates.com"
+        }
+    ],
+    "type": "wordpress-plugin",
+    "version": "0.0.1"
+}
