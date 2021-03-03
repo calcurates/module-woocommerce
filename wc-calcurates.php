@@ -8,6 +8,8 @@ if (!defined('ABSPATH')) {
     die;
 }
 
+require_once plugin_dir_path(__FILE__) . 'lib/autoload.php';
+
 class WC_Calcurates
 {
     const prefix = 'wc_calcurates';
