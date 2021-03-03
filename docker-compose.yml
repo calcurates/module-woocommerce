@@ -15,8 +15,9 @@ services:
     restart: unless-stopped
     volumes:
       - app_code:/var/www/html
-      - ./wc-calcurates.php:/var/www/html/web/app/plugins/wc-calcurates.php
+      - ./wc-calcurates.php:/var/www/html/web/app/plugins/wc-calcurates/wc-calcurates.php
       - ./.env:/var/www/html/.env
+      - ./lib:/var/www/html/web/app/plugins/wc-calcurates/lib
   db:
     image: mysql:8.0.23
     restart: unless-stopped
