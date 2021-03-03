@@ -1,44 +1,44 @@
 version: "3.7"
 services:
-    php:
-        build:
-            args:
-                uname: ${PHP_UNAME}
-                uid: ${PHP_UID}
-                gid: ${PHP_GID}
-            context: .docker/php-fpm
-            dockerfile: Dockerfile
-        environment:
-            COMPOSER_MEMORY_LIMIT: 2G
-            XDEBUG_CONFIG: remote_autostart=${XDEBUG_REMOTE_AUTOSTART} remote_handler=${XDEBUG_REMOTE_HANDLER} remote_connect_back=${XDEBUG_REMOTE_CONNECTION_BACK} idekey=${XDEBUG_IDEKEY} client_host=${XDEBUG_REMOTE_HOST} client_port=${XDEBUG_STORM_PORT} remote_enable=1
-            PHP_IDE_CONFIG: serverName=${XDEBUG_STORM_SERVER_NAME}
-        restart: unless-stopped
-        volumes:
-            - app_code:/var/www/html
-            - ./wc-calcurates.php:/var/www/html/web/app/plugins/wc-calcurates.php
-            - ./.env:/var/www/html/.env
-    db:
-        image: mysql:8.0.23
-        restart: unless-stopped
-        environment:
-            MYSQL_DATABASE: ${DB_DATABASE}
-            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-            MYSQL_PASSWORD: ${DB_PASSWORD}
-            MYSQL_USER: ${DB_USERNAME}
-            SERVICE_TAGS: dev
-            SERVICE_NAME: mysql
-        volumes:
-            - ./.docker/mysql:/docker-entrypoint-initdb.d
-    nginx:
-        image: nginx
-        volumes:
-            - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
-            - app_code:/var/www/html
-        depends_on:
-            - php
-        ports:
-            - ${NGINX_PORT}:80
-        restart: unless-stopped
+  php:
+    build:
+      args:
+        uname: ${PHP_UNAME}
+        uid: ${PHP_UID}
+        gid: ${PHP_GID}
+      context: .docker/php-fpm
+      dockerfile: Dockerfile
+    environment:
+      COMPOSER_MEMORY_LIMIT: 2G
+      XDEBUG_CONFIG: remote_autostart=${XDEBUG_REMOTE_AUTOSTART} remote_handler=${XDEBUG_REMOTE_HANDLER} remote_connect_back=${XDEBUG_REMOTE_CONNECTION_BACK} idekey=${XDEBUG_IDEKEY} client_host=${XDEBUG_REMOTE_HOST} client_port=${XDEBUG_STORM_PORT} remote_enable=1
+      PHP_IDE_CONFIG: serverName=${XDEBUG_STORM_SERVER_NAME}
+    restart: unless-stopped
+    volumes:
+      - app_code:/var/www/html
+      - ./wc-calcurates.php:/var/www/html/web/app/plugins/wc-calcurates.php
+      - ./.env:/var/www/html/.env
+  db:
+    image: mysql:8.0.23
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - ./.docker/mysql:/docker-entrypoint-initdb.d
+  nginx:
+    image: nginx
+    volumes:
+      - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - app_code:/var/www/html
+    depends_on:
+      - php
+    ports:
+      - ${NGINX_PORT}:80
+    restart: unless-stopped
 volumes:
-    app_code:
-        name: "wc_code_volume"
+  app_code:
+    name: "wc_code_volume"
