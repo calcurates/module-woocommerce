@@ -3,7 +3,8 @@
     "description": "Calcurates Integration for WooCommerce",
     "keywords": ["shipping"],
     "require": {
-        "php": ">=7.0"
+        "php": ">=7.0",
+        "inpsyde/wp-rest-starter": "^4.0"
     },
     "authors": [
         {
@@ -16,5 +17,8 @@
         }
     ],
     "type": "wordpress-plugin",
-    "version": "0.0.1"
+    "version": "0.0.1",
+    "config": {
+        "vendor-dir": "lib"
+    }
 }
