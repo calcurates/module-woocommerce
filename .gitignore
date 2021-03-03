@@ -10,6 +10,8 @@
 !docker-compose.yml
 !package.json
 !.editorconfig
+!index.php
+!uninstall.php
 
 # Ignore all files named .DS_Store or ending with .log
 **/.DS_Store
