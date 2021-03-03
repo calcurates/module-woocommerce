@@ -18,6 +18,7 @@ services:
       - ./wc-calcurates.php:/var/www/html/web/app/plugins/wc-calcurates/wc-calcurates.php
       - ./.env:/var/www/html/.env
       - ./lib:/var/www/html/web/app/plugins/wc-calcurates/lib
+      - ./RESTAPI:/var/www/html/web/app/plugins/wc-calcurates/RESTAPI
   db:
     image: mysql:8.0.23
     restart: unless-stopped

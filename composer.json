@@ -20,5 +20,10 @@
     "version": "0.0.1",
     "config": {
         "vendor-dir": "lib"
-    }
+    },
+    "autoload": {
+		"psr-4": {
+			"RESTAPI\\": "RESTAPI/"
+		}
+	}
 }
