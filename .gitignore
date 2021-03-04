@@ -15,6 +15,7 @@
 !composer.json
 !lib
 !RESTAPI
+!wordpress-bedrock
 
 # Ignore all files named .DS_Store or ending with .log
 **/.DS_Store
@@ -28,3 +29,4 @@
 .docker/*
 !.docker/nginx/
 !.docker/php-fpm/
+!.docker/wordpress-bedrock/
