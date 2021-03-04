@@ -34,6 +34,7 @@ module.exports = {
     { name: "git" },
     { name: "docker" },
     { name: "cms" },
+    { name: "rest-api" },
   ],
 
   // Возможность задать спец ОБЛАСТЬ для определенного типа коммита (пример для 'fix')
