@@ -58,11 +58,106 @@ class WooCommmerceSettingsReadEndpoint implements Endpoint\RequestHandler
         $data['currency'] = get_woocommerce_currency();
         $data['weight_unit'] = get_option('woocommerce_weight_unit');
         $data['dimension_unit'] = get_option('woocommerce_dimension_unit');
+        $data['attrs'][] = $this->get_terms();
+        $data['attrs'][] = $this->get_tags();
+        $product_attrs = $this->get_attrs();
+        $data['attrs'] = array_merge($data['attrs'], $product_attrs);
+
+        // $data['categories'] = $this->get_terms();
+        // $data['tags'] = $this->get_tags();
+        // $data['attrs'] = $this->get_attrs();
 
         return $this->response_factory->create([
             $data,
             200,
         ]);
 
+    }
+
+    private function get_terms()
+    {
+        $data = [
+            'name' => 'categories',
+            'field_type' => 'collection',
+            'can_multi' => true,
+            'values' => [],
+        ];
+
+        $terms = get_terms('product_cat', array(
+            'hide_empty' => false,
+        ));
+
+        foreach ((array) $terms as $term) {
+            # code...
+
+            $data['values'][] = [
+                'id' => $term->term_id,
+                'title' => $term->name,
+                'parent' => $term->parent,
+            ];
+        }
+
+        return $data;
+    }
+    private function get_tags()
+    {
+        $data = [
+            'name' => 'tags',
+            'field_type' => 'collection',
+            'can_multi' => true,
+            'values' => [],
+        ];
+
+        $terms = get_terms('product_tag', array(
+            'hide_empty' => false,
+        ));
+
+        foreach ((array) $terms as $term) {
+            # code...
+
+            $data['values'][] = [
+                'id' => $term->term_id,
+                'title' => $term->name,
+                'parent' => $term->parent,
+            ];
+        }
+
+        return $data;
+    }
+    private function get_attrs()
+    {
+
+        $attrs = [];
+
+        $attributes = array();
+        $attribute_taxonomies = wc_get_attribute_taxonomies();
+
+        foreach ($attribute_taxonomies as $attribute) {
+            $taxonomy = wc_attribute_taxonomy_name($attribute->attribute_name);
+
+            if (taxonomy_exists($taxonomy)) {
+                $data = [
+                    'name' => $attribute->attribute_name,
+                    'field_type' => 'collection',
+                    'can_multi' => true,
+                    'values' => [],
+                ];
+
+                $terms = get_terms($taxonomy, array(
+                    'hide_empty' => false,
+                ));
+
+                foreach ((array) $terms as $term) {
+                    $data['values'][] = [
+                        'id' => $term->term_id,
+                        'title' => $term->name,
+                    ];
+                }
+
+                $attrs[] = $data;
+            }
+        }
+
+        return $attrs;
     }
 }
