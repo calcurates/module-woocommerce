@@ -19,6 +19,7 @@ class WC_Calcurates
         register_activation_hook(__FILE__, [__CLASS__, 'activate']);
         register_deactivation_hook(__FILE__, [__CLASS__, 'deactivate']);
         self::register_rest_routes();
+        add_action('init', [__CLASS__, 'init_shipping']);
 
     }
 
@@ -51,6 +52,20 @@ class WC_Calcurates
     private static function register_rest_routes()
     {
         add_action('rest_api_init', ['RESTAPI\Routes\WooCommmerceSettingsRoutes', 'register_route']);
+    }
+
+    public static function init_shipping()
+    {
+        if (class_exists('WC_Shipping_Method')) {
+            require_once 'shipping-methods/wc-calcurates-shipping-method.php';
+            add_filter('woocommerce_shipping_methods', [__CLASS__, 'add_calcurates_shipping']);
+        }
+    }
+
+    public static function add_calcurates_shipping($methods)
+    {
+        $methods['calcurates'] = 'WC_Calcurates_Shipping_Method';
+        return $methods;
     }
 
     public static function deactivate()

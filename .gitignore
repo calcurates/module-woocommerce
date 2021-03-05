@@ -16,6 +16,7 @@
 !lib
 !RESTAPI
 !wordpress-bedrock
+!shipping-methods
 
 # Ignore all files named .DS_Store or ending with .log
 **/.DS_Store
