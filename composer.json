@@ -23,7 +23,7 @@
     },
     "autoload": {
 		"psr-4": {
-			"RESTAPI\\": "RESTAPI/"
+			"Calcurates\\RESTAPI\\": "RESTAPI/"
 		}
 	}
 }

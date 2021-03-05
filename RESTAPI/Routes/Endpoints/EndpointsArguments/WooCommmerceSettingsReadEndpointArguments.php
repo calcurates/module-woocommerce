@@ -1,5 +1,5 @@
 <?php
-namespace RESTAPI\Routes\Endpoints\EndpointsArguments;
+namespace Calcurates\RESTAPI\Routes\Endpoints\EndpointsArguments;
 
 use Inpsyde\WPRESTStarter\Common\Arguments;
 use Inpsyde\WPRESTStarter\Factory\ErrorFactory;

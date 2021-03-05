@@ -2,7 +2,7 @@
 
 declare (strict_types = 1);
 
-namespace RESTAPI\Routes\Factory;
+namespace Calcurates\RESTAPI\Routes\Factory;
 
 /**
  * Factory for diverse permission callbacks.

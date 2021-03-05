@@ -1,5 +1,5 @@
 <?php
-namespace RESTAPI\Routes\Endpoints;
+namespace Calcurates\RESTAPI\Routes\Endpoints;
 
 use Inpsyde\WPRESTStarter\Common\Endpoint;
 use Inpsyde\WPRESTStarter\Common\Request\FieldProcessor;

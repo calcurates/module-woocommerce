@@ -1,14 +1,13 @@
 <?php
-namespace RESTAPI\Routes;
+namespace Calcurates\RESTAPI\Routes;
 
+use Calcurates\RESTAPI\Routes\Endpoints\EndpointsArguments\WooCommmerceSettingsReadEndpointArguments;
+use Calcurates\RESTAPI\Routes\Endpoints\WooCommmerceSettingsReadEndpoint;
+use Calcurates\RESTAPI\Routes\Factory\PermissionCallback;
 use Inpsyde\WPRESTStarter\Core\Route\Collection;
 use Inpsyde\WPRESTStarter\Core\Route\Options;
 use Inpsyde\WPRESTStarter\Core\Route\Registry;
 use Inpsyde\WPRESTStarter\Core\Route\Route;
-use RESTAPI\Routes\Endpoints\EndpointsArguments\WooCommmerceSettingsReadEndpointArguments;
-use RESTAPI\Routes\Endpoints\WooCommmerceSettingsReadEndpoint;
-use RESTAPI\Routes\Factory;
-use RESTAPI\Routes\Factory\PermissionCallback;
 
 class WooCommmerceSettingsRoutes
 {
@@ -17,7 +16,7 @@ class WooCommmerceSettingsRoutes
     {
         $namespace = 'calcurates/v1/';
 
-        $permission = new Factory\PermissionCallback();
+        $permission = new PermissionCallback();
 
         // Create a new route collection.
         $routes = new Collection();
