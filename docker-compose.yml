@@ -15,7 +15,7 @@ services:
     restart: unless-stopped
     volumes:
       - app_code:/var/www/html
-      - ./.docker/wordpress-bedrock/config/environments:/var/www/html/config/environments
+      - ./.docker/wordpress-bedrock/development.php:/var/www/html/config/environments/development.php
       - ./wc-calcurates.php:/var/www/html/web/app/plugins/wc-calcurates/wc-calcurates.php
       - ./.env:/var/www/html/.env
       - ./lib:/var/www/html/web/app/plugins/wc-calcurates/lib
