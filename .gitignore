@@ -28,6 +28,7 @@
 !wc-calcurates.php
 !.docker/
 .docker/*
-!.docker/nginx/
+!.docker/nginx/default.conf
+!.docker/nginx/Dockerfile
 !.docker/php-fpm/
 !.docker/wordpress-bedrock/
