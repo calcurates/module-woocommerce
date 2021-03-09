@@ -52,6 +52,7 @@ class WC_Calcurates
     private static function register_rest_routes()
     {
         add_action('rest_api_init', ['Calcurates\RESTAPI\Routes\WooCommmerceSettingsRoutes', 'register_route']);
+        add_action('rest_api_init', ['Calcurates\RESTAPI\Routes\MultisiteRoutes', 'register_route']);
     }
 
     public static function init_shipping()
