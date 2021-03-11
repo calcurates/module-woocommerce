@@ -4,7 +4,8 @@
     "keywords": ["shipping"],
     "require": {
         "php": ">=7.1.3",
-        "inpsyde/wp-rest-starter": "^4.0"
+        "inpsyde/wp-rest-starter": "^4.0",
+        "katzgrau/klogger": "dev-master"
     },
     "authors": [
         {
@@ -23,7 +24,8 @@
     },
     "autoload": {
 		"psr-4": {
-			"Calcurates\\RESTAPI\\": "RESTAPI/"
+			"Calcurates\\RESTAPI\\": "RESTAPI/",
+			"Calcurates\\Controllers\\": "Controllers/"
 		}
 	}
 }
