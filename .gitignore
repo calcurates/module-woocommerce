@@ -32,3 +32,5 @@
 !.docker/nginx/Dockerfile
 !.docker/php-fpm/
 !.docker/wordpress-bedrock/
+.docker/wordpress-bedrock/*
+!.docker/wordpress-bedrock/development.php.example
