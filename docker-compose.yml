@@ -21,6 +21,8 @@ services:
       - ./lib:/var/www/html/web/app/plugins/wc-calcurates/lib
       - ./RESTAPI:/var/www/html/web/app/plugins/wc-calcurates/RESTAPI
       - ./shipping-methods:/var/www/html/web/app/plugins/wc-calcurates/shipping-methods
+      - ./Controllers:/var/www/html/web/app/plugins/wc-calcurates/Controllers
+      - ./logs:/var/www/html/web/app/plugins/wc-calcurates/logs
   db:
     image: mysql:8.0
     restart: unless-stopped
