@@ -25,7 +25,7 @@ class CalcuratesConnector
 
         $data = [
             'shipTo' => self::prepare_ship_to_data(),
-            "products" => self::prepare_products_data(),
+            "products" => self::prepare_products_data($package),
         ];
 
         $args = [
@@ -89,33 +89,34 @@ class CalcuratesConnector
         $ship_to = [
             'country' => $country_code,
             'postalCode' => "string", // FIXME it could be empty in WC but in api it requires
-            'city' => "", // FIXME it could be empty in WC but in api it requires even as empty param
+            'city' => null, // FIXME it could be empty in WC but in api it requires even as empty param
         ];
 
         return $ship_to;
     }
 
-    public static function prepare_products_data()
+    public static function prepare_products_data($package)
     {
+
         $products = [];
 
-        $products = [
-            [
-                "quoteItemId" => 1, // FIXME rename later to product_id or id
-                "sku" => "string",
-                "priceWithTax" => 2014,
-                "priceWithoutTax" => 2000,
+        foreach ($package['contents'] as $cart_product) {
+
+            $products[] = [
+                "quoteItemId" => $cart_product['product_id'], // FIXME rename later to product_id or id
+                "sku" => $cart_product['data']->get_sku() ?: null,
+                "priceWithTax" => $cart_product['line_tax'],
+                "priceWithoutTax" => $cart_product['line_total'],
                 "discountAmount" => 0,
-                "quantity" => 1,
+                "quantity" => $cart_product['quantity'],
                 "inventories" => [
                     [
-                        "source" => "string",
-                        "quantity" => 1,
+                        "source" => null,
+                        "quantity" => $cart_product['data']->get_stock_quantity(),
                     ],
                 ],
-            ],
-        ];
-
+            ];
+        }
         return $products;
     }
 
