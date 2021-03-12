@@ -88,8 +88,8 @@ class CalcuratesConnector
 
         $ship_to = [
             'country' => $country_code,
-            'postalCode' => "string",
-            'city' => "",
+            'postalCode' => "string", // FIXME it could be empty in WC but in api it requires
+            'city' => "", // FIXME it could be empty in WC but in api it requires even as empty param
         ];
 
         return $ship_to;
@@ -101,7 +101,7 @@ class CalcuratesConnector
 
         $products = [
             [
-                "quoteItemId" => 1,
+                "quoteItemId" => 1, // FIXME rename later to product_id or id
                 "sku" => "string",
                 "priceWithTax" => 2014,
                 "priceWithoutTax" => 2000,
