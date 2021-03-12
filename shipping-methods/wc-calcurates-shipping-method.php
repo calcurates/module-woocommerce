@@ -87,8 +87,9 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         $args = [
             'api_key' => $this->calcurates_api_key,
             'debug_mode' => $this->debug_mode,
+            'package' => $package,
         ];
-        return CalcuratesConnector::get_rates($args, $package);
+        return CalcuratesConnector::get_rates($args);
     }
 
 }

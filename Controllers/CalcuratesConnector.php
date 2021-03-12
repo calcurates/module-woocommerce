@@ -6,10 +6,21 @@ use Calcurates\Controllers\Logger;
 class CalcuratesConnector
 {
 
-    public static function get_rates($args, $package = [])
+    public static function get_rates($args)
     {
+
+        $defaults = [
+            'api_key' => '',
+            'debug_mode' => 'off',
+            'package' => [],
+        ];
+
+        $args = wp_parse_args($args, $defaults);
+
         $api_key = $args['api_key'];
         $debug = $args['debug_mode'];
+        $package = $args['package'];
+
         $ready_rates = [];
 
         $data = [
