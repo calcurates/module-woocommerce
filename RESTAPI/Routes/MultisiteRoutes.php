@@ -14,7 +14,7 @@ class MultisiteRoutes
 
     public static function register_route()
     {
-        $namespace = 'calcurates/v1/';
+        $namespace = 'calcurates/v1';
 
         $permission = new PermissionCallback();
 
