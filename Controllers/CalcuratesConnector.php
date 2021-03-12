@@ -64,8 +64,20 @@ class CalcuratesConnector
             ];
         }
 
+        foreach ($response->shippingOptions->freeShipping as $rate) {
+            if ($rate->success) {
+                $ready_rates[] = [
+                    'id' => $rate->id,
+                    'label' => $rate->name,
+                    'cost' => 0,
+                    'package' => $package,
+                ];
+            }
+
+        }
+
         if ($debug == 'all') {
-            Logger::log('Rates request', (array) $ready_rates);
+            Logger::log('$ready_rates', (array) $ready_rates);
         }
 
         return $ready_rates;
