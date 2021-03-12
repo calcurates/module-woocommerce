@@ -75,6 +75,8 @@ class CalcuratesConnector
     {
         $country_code = "";
         $customer_session_data = WC()->session->get('customer');
+        $coupons = WC()->cart->get_coupons();
+        $coupon = reset($coupons);
 
         if (\array_key_exists('shipping_country', (array) $customer_session_data) && $customer_session_data['shipping_country']) {
             $country_code = $customer_session_data['shipping_country'];
@@ -87,6 +89,7 @@ class CalcuratesConnector
         }
 
         $ship_to = [
+            'promoCode' => $coupon ? $coupon->get_code() : null, // FIXME coud be few coupons
             'country' => $country_code,
             'postalCode' => "string", // FIXME it could be empty in WC but in api it requires
             'city' => null, // FIXME it could be empty in WC but in api it requires even as empty param
