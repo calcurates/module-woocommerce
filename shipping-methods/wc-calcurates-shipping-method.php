@@ -57,8 +57,8 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
                 'default' => 'off',
                 'options' => [
                     'off' => 'Off',
-                    'errors' => 'Errors only',
-                    'all' => 'All data',
+                    'errors' => 'Log errors only',
+                    'all' => 'Log all data',
                 ],
             ],
         ];
