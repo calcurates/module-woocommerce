@@ -76,7 +76,7 @@ class CalcuratesConnector
         $country_code = "";
         $customer_session_data = WC()->session->get('customer');
 
-        if (\array_key_exists('shipping_country', $customer_session_data) && $customer_session_data['shipping_country']) {
+        if (\array_key_exists('shipping_country', (array) $customer_session_data) && $customer_session_data['shipping_country']) {
             $country_code = $customer_session_data['shipping_country'];
         } else {
             $default_location = wc_get_customer_default_location();
