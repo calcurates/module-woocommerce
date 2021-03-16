@@ -23,7 +23,11 @@ class CalcuratesConnector
 
         $ready_rates = [];
 
+        $coupons = WC()->cart->get_coupons();
+        $coupon = reset($coupons);
+
         $data = [
+            'promoCode' => $coupon ? $coupon->get_code() : null, // FIXME coud be few coupons
             'shipTo' => self::prepare_ship_to_data(),
             "products" => self::prepare_products_data($package),
         ];
@@ -89,8 +93,6 @@ class CalcuratesConnector
         $country_code = null;
         $customer_session_data = WC()->session->get('customer');
         $ship_to_different_address = WC()->session->get('ship_to_different_address') ?? 0;
-        $coupons = WC()->cart->get_coupons();
-        $coupon = reset($coupons);
         $postcode = $ship_to_different_address ? ($customer_session_data['shipping_postcode'] ?: "string"): ($customer_session_data['postcode'] ?: "string");
         $first_name = $ship_to_different_address ? ($customer_session_data['shipping_first_name'] ?: null): ($customer_session_data['first_name'] ?: null);
         $last_name = $ship_to_different_address ? ($customer_session_data['shipping_last_name'] ?: null): ($customer_session_data['last_name'] ?: null);
@@ -119,7 +121,6 @@ class CalcuratesConnector
         }
 
         $ship_to = [
-            'promoCode' => $coupon ? $coupon->get_code() : null, // FIXME coud be few coupons
             'country' => $country_code,
             'city' => $city, // FIXME it could be empty in WC but in api it requires even as empty param,
             'contactName' => $contact_name,
