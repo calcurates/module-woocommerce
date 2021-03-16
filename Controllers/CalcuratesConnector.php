@@ -202,9 +202,15 @@ class CalcuratesConnector
 
                 foreach ($product->get_variation_attributes(false) as $taxonomy => $terms_slug) {
 
-                    $term_obj = get_term_by('slug', $terms_slug, $taxonomy);
-                    $term_id = $term_obj->term_id;
-                    $data['attributes']['variation'][] = $term_obj->term_id;
+                    if ($terms_slug) {
+
+                        $term_obj = get_term_by('slug', $terms_slug, $taxonomy);
+
+                        if ($term_obj) {
+                            $term_id = $term_obj->term_id;
+                            $data['attributes']['variation'][] = $term_obj->term_id;
+                        }
+                    }
 
                 }
 
