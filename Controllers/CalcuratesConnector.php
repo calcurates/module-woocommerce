@@ -85,10 +85,28 @@ class CalcuratesConnector
 
     public static function prepare_ship_to_data()
     {
-        $country_code = "";
+        $contact_name = null;
+        $country_code = null;
         $customer_session_data = WC()->session->get('customer');
+        $ship_to_different_address = WC()->session->get('ship_to_different_address') ?? 0;
         $coupons = WC()->cart->get_coupons();
         $coupon = reset($coupons);
+        $postcode = $ship_to_different_address ? ($customer_session_data['shipping_postcode'] ?: "string"): ($customer_session_data['postcode'] ?: "string");
+        $first_name = $ship_to_different_address ? ($customer_session_data['shipping_first_name'] ?: null): ($customer_session_data['first_name'] ?: null);
+        $last_name = $ship_to_different_address ? ($customer_session_data['shipping_last_name'] ?: null): ($customer_session_data['last_name'] ?: null);
+        $company = $ship_to_different_address ? ($customer_session_data['shipping_company'] ?: null): ($customer_session_data['company'] ?: null);
+        $phone = $customer_session_data['phone'] ?: null;
+        $state = $ship_to_different_address ? ($customer_session_data['shipping_state'] ?: null): ($customer_session_data['state'] ?: null);
+        $city = $ship_to_different_address ? ($customer_session_data['shipping_city'] ?: null): ($customer_session_data['city'] ?: null);
+        $addr_1 = $ship_to_different_address ? ($customer_session_data['shipping_address_1'] ?: null): ($customer_session_data['address_1'] ?: null);
+        $addr_2 = $ship_to_different_address ? ($customer_session_data['shipping_address_2'] ?: null): ($customer_session_data['address_2'] ?: null);
+
+        if ($first_name) {
+            $contact_name .= $first_name;
+        }
+        if ($last_name) {
+            $contact_name .= " " . $last_name;
+        }
 
         if (\array_key_exists('shipping_country', (array) $customer_session_data) && $customer_session_data['shipping_country']) {
             $country_code = $customer_session_data['shipping_country'];
@@ -103,8 +121,15 @@ class CalcuratesConnector
         $ship_to = [
             'promoCode' => $coupon ? $coupon->get_code() : null, // FIXME coud be few coupons
             'country' => $country_code,
-            'postalCode' => "string", // FIXME it could be empty in WC but in api it requires
-            'city' => null, // FIXME it could be empty in WC but in api it requires even as empty param
+            'city' => $city, // FIXME it could be empty in WC but in api it requires even as empty param,
+            'contactName' => $contact_name,
+            'companyName' => $company,
+            'contactPhone' => $phone,
+            'regionCode' => null,
+            'regionName' => $state,
+            'postalCode' => $postcode, // FIXME it could be empty in WC but in api it requires
+            'addressLine1' => $addr_1,
+            'addressLine2' => $addr_2,
         ];
 
         return $ship_to;
