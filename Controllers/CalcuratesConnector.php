@@ -61,20 +61,26 @@ class CalcuratesConnector
 
         foreach ($response->shippingOptions->flatRates as $rate) {
             $ready_rates[] = [
-                'id' => $rate->id,
+                'id' => 'calcurates:' . $rate->id,
                 'label' => $rate->name,
                 'cost' => $rate->rate->cost,
                 'package' => $package,
+                'meta_data' => [
+                    'message' => $rate->message,
+                ],
             ];
         }
 
         foreach ($response->shippingOptions->freeShipping as $rate) {
             if ($rate->success) {
                 $ready_rates[] = [
-                    'id' => $rate->id,
+                    'id' => 'calcurates:' . $rate->id,
                     'label' => $rate->name,
                     'cost' => 0,
                     'package' => $package,
+                    'meta_data' => [
+                        'message' => $rate->message,
+                    ],
                 ];
             }
 
