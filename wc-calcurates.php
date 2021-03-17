@@ -98,9 +98,10 @@ class WC_Calcurates
 
     public static function action_after_shipping_rate($rate, $index)
     {
-        $meta = $rate->get_meta_data();
 
-        if (array_key_exists('type', $meta) && $meta['type'] == 'calcurates') {
+        if (str_contains($rate->id, 'calcurates:')) {
+
+            $meta = $rate->get_meta_data();
 
             $text = null;
 
