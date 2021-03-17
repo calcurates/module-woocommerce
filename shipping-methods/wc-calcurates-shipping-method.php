@@ -36,6 +36,8 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
 
         $this->calcurates_api_key = $this->get_option('calcurates_api_key');
         $this->debug_mode = $this->get_option('debug_mode');
+        $this->plugin_api_key = $this->get_option('plugin_api_key');
+        $this->generate_new_api_key = $this->get_option('generate_new_api_key');
 
         // Save settings in admin if you have any defined
         add_action('woocommerce_update_options_shipping_' . $this->id, array($this, 'process_admin_options'));
@@ -49,6 +51,22 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
                 'type' => 'text',
                 'description' => __('Copy your Api Key from Calcurates panel', 'woocommerce'),
                 'default' => "",
+                'desc_tip' => false,
+            ],
+            'plugin_api_key' => [
+                'title' => __('Plugin Api Key', 'woocommerce'),
+                'type' => 'text',
+                'description' => __('Copy this Api Key to Calcurates panel', 'woocommerce'),
+                'default' => get_option('wc_calcurates_key'),
+                'desc_tip' => false,
+                'custom_attributes' => [
+                    'readonly' => 'readonly',
+                ],
+            ],
+            'generate_new_api_key' => [
+                'title' => __('Generate new Plugin Api Key', 'woocommerce'),
+                'type' => 'checkbox',
+                'description' => __('Check and save changes to generate new Plugin Api Key', 'woocommerce'),
                 'desc_tip' => false,
             ],
             'debug_mode' => [
@@ -92,4 +110,18 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         return CalcuratesConnector::get_rates($args);
     }
 
+    public function process_admin_options()
+    {
+        parent::process_admin_options();
+
+        // TODO: needs refactor
+        if ($_POST['woocommerce_calcurates_generate_new_api_key'] == 1) {
+
+            $this->update_option('generate_new_api_key', 'no');
+            $key = wc_rand_hash();
+            update_option('wc_calcurates_key', $key);
+            $this->update_option('plugin_api_key', $key);
+        }
+
+    }
 }
