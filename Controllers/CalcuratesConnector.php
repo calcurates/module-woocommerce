@@ -145,6 +145,10 @@ class CalcuratesConnector
 
             $product = $cart_product['data'];
 
+            if ($product->is_virtual() || $product->is_downloadable()) {
+                continue;
+            }
+
             $data = [
                 "quoteItemId" => $cart_product['product_id'], // FIXME rename later to product_id or id
                 "sku" => $product->get_sku() ?: null,
@@ -166,7 +170,7 @@ class CalcuratesConnector
                     "date_created" => $product->get_date_created() ? $product->get_date_created()->getTimestamp() : null,
                     "date_modified" => $product->get_date_modified() ? $product->get_date_modified()->getTimestamp() : null,
                     "status" => $product->get_status(),
-                    "featured" => $product->get_featured(),
+                    "is_featured" => $product->is_featured(),
                     "catalog_visibility" => $product->get_catalog_visibility(),
                     "price" => (float) $product->get_price(),
                     "regular_price" => (float) $product->get_regular_price(),
@@ -174,14 +178,14 @@ class CalcuratesConnector
                     "date_on_sale_from" => $product->get_date_on_sale_from() ? $product->get_date_on_sale_from()->getTimestamp() : null,
                     "date_on_sale_to" => $product->get_date_on_sale_to() ? $product->get_date_on_sale_to()->getTimestamp() : null,
                     "total_sales" => $product->get_total_sales(),
-                    "manage_stock" => $product->get_manage_stock(),
-                    "stock_status" => $product->get_stock_status(),
-                    "backorders" => $product->get_backorders(),
+                    "managing_stock" => $product->managing_stock(),
+                    "is_in_stock" => $product->is_in_stock(),
+                    "backorders_allowed" => $product->backorders_allowed(),
                     "low_stock_amount" => $product->get_low_stock_amount() ?: null,
-                    "sold_individually" => $product->get_sold_individually(),
+                    "is_sold_individually" => $product->is_sold_individually(),
                     "purchase_note" => $product->get_purchase_note(),
-                    "virtual" => $product->get_virtual(),
-                    "downloadable" => $product->get_downloadable(),
+                    "virtual" => $product->is_virtual(),
+                    "downloadable" => $product->is_downloadable(),
                     "categories" => $product->get_category_ids(),
                     "tags" => $product->get_tag_ids(),
                 ],
