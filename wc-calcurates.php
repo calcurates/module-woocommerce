@@ -24,6 +24,8 @@ class WC_Calcurates
         // add feature to add to session ship_to_different_address checkbox status on checkout
         add_action('woocommerce_checkout_update_order_review', [__CLASS__, 'ship_to_different_address_set_session']);
 
+        // add text after rate on checkout
+        add_action('woocommerce_after_shipping_rate', [__CLASS__, 'action_after_shipping_rate'], 10, 2);
     }
 
     public static function ship_to_different_address_set_session($data)
@@ -92,6 +94,25 @@ class WC_Calcurates
 
     public static function deactivate()
     {
+    }
+
+    public static function action_after_shipping_rate($rate, $index)
+    {
+        $meta = $rate->get_meta_data();
+
+        if (array_key_exists('type', $meta) && $meta['type'] == 'calcurates') {
+
+            $text = null;
+
+            if (array_key_exists('message', $meta) && trim($meta['message'])) {
+                $text .= "<div class='calcurates__shipping-rate-description'>" . $meta['message'] . "</div>";
+            }
+
+            if ($text) {
+                echo $text;
+            }
+        }
+
     }
 }
 
