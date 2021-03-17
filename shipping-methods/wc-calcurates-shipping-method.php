@@ -24,8 +24,6 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         );
 
         $this->init();
-
-        add_action('woocommerce_update_options_shipping_' . $this->id, array($this, 'process_admin_options'));
     }
 
     public function init()
