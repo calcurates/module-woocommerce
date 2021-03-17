@@ -13,7 +13,6 @@ require_once plugin_dir_path(__FILE__) . 'lib/autoload.php';
 
 class WC_Calcurates
 {
-    const prefix = 'wc_calcurates_';
 
     public static function run()
     {
@@ -65,8 +64,8 @@ class WC_Calcurates
 
     public static function key_setup()
     {
-        if (!get_option(self::prefix . 'key')) {
-            update_option(self::prefix . 'key', wc_rand_hash());
+        if (!get_option('wc_calcurates_key')) {
+            update_option('wc_calcurates_key', wc_rand_hash());
         }
 
     }
