@@ -105,8 +105,45 @@ class WC_Calcurates
 
             $text = null;
 
-            if (array_key_exists('message', $meta) && trim($meta['message'])) {
+            // shipping rate description
+            if (array_key_exists('message', $meta)) {
                 $text .= "<div class='calcurates__shipping-rate-description'>" . $meta['message'] . "</div>";
+            }
+
+            // shipping rate dates
+            if (array_key_exists('delivery_date_from', $meta) && array_key_exists('delivery_date_to', $meta)) {
+
+                $estimated_delivery_date = '';
+
+                if ($meta['delivery_date_from'] === $meta['delivery_date_to']) {
+
+                    $delivery_date_from = strtotime($meta['delivery_date_from']);
+
+                    if ($delivery_date_from) {
+                        $delivery_date_from = date(get_option('date_format') . " " . get_option('time_format'), $delivery_date_from);
+
+                        $estimated_delivery_date = $delivery_date_from;
+                    }
+
+                } else {
+
+                    $delivery_date_from = strtotime($meta['delivery_date_from']);
+                    $delivery_date_to = strtotime($meta['delivery_date_to']);
+
+                    if ($delivery_date_from) {
+                        $delivery_date_from = date(get_option('date_format') . " " . get_option('time_format'), $delivery_date_from);
+                    }
+                    if ($delivery_date_to) {
+                        $delivery_date_to = date(get_option('date_format') . " " . get_option('time_format'), $delivery_date_to);
+                    }
+
+                    if ($delivery_date_from && $delivery_date_to) {
+                        $estimated_delivery_date = $delivery_date_from . ' - ' . $delivery_date_to;
+                    }
+
+                }
+
+                $text .= "<div class='calcurates__shipping-rate-dates'>Estimated delivery date: " . $estimated_delivery_date . "</div>";
             }
 
             if ($text) {

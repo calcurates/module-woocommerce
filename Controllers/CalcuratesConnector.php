@@ -80,6 +80,8 @@ class CalcuratesConnector
                     'package' => $package,
                     'meta_data' => [
                         'message' => $rate->message,
+                        'delivery_date_from' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->from : null,
+                        'delivery_date_to' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->to : null,
                     ],
                 ];
             }
