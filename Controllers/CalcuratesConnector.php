@@ -152,7 +152,7 @@ class CalcuratesConnector
             $data = [
                 "quoteItemId" => $cart_product['product_id'], // FIXME rename later to product_id or id
                 "sku" => $product->get_sku() ?: null,
-                "priceWithTax" => $cart_product['line_tax'],
+                "priceWithTax" => $cart_product['line_total'] + $cart_product['line_tax'],
                 "priceWithoutTax" => $cart_product['line_total'],
                 "discountAmount" => 0,
                 "quantity" => $cart_product['quantity'],
