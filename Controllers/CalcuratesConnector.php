@@ -118,6 +118,35 @@ class CalcuratesConnector
             }
         }
 
+        foreach ($response->shippingOptions->inStorePickups as $in_store_rate) {
+
+            if ($in_store_rate->success) {
+
+                if ($in_store_rate->stores && is_array($in_store_rate->stores)) {
+
+                    foreach ($in_store_rate->stores as $rate) {
+
+                        if ($rate->success) {
+                            $ready_rates[] = [
+                                'id' => 'calcurates:' . $rate->id,
+                                'label' => $rate->name,
+                                'cost' => $rate->rate->cost,
+                                'package' => $package,
+                                'taxes' => is_numeric($rate->rate->tax) ? [$rate->rate->tax] : '',
+                                'meta_data' => [
+                                    'message' => $in_store_rate->message,
+                                    'delivery_date_from' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->from : null,
+                                    'delivery_date_to' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->to : null,
+                                ],
+                            ];
+                        }
+
+                    }
+                }
+
+            }
+        }
+
         if ($debug == 'all') {
             Logger::log('$ready_rates', (array) $ready_rates);
         }
