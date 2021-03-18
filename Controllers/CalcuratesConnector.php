@@ -60,18 +60,20 @@ class CalcuratesConnector
         $response = json_decode(wp_remote_retrieve_body($result));
 
         foreach ($response->shippingOptions->flatRates as $rate) {
-            $ready_rates[] = [
-                'id' => 'calcurates:' . $rate->id,
-                'label' => $rate->name,
-                'cost' => $rate->rate->cost,
-                'package' => $package,
-                'taxes' => is_numeric($rate->rate->tax) ? [$rate->rate->tax] : '',
-                'meta_data' => [
-                    'message' => $rate->message,
-                    'delivery_date_from' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->from : null,
-                    'delivery_date_to' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->to : null,
-                ],
-            ];
+            if ($rate->success) {
+                $ready_rates[] = [
+                    'id' => 'calcurates:' . $rate->id,
+                    'label' => $rate->name,
+                    'cost' => $rate->rate->cost,
+                    'package' => $package,
+                    'taxes' => is_numeric($rate->rate->tax) ? [$rate->rate->tax] : '',
+                    'meta_data' => [
+                        'message' => $rate->message,
+                        'delivery_date_from' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->from : null,
+                        'delivery_date_to' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->to : null,
+                    ],
+                ];
+            }
         }
 
         foreach ($response->shippingOptions->freeShipping as $rate) {
