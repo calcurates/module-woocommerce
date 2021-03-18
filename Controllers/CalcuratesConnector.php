@@ -65,6 +65,7 @@ class CalcuratesConnector
                 'label' => $rate->name,
                 'cost' => $rate->rate->cost,
                 'package' => $package,
+                'taxes' => is_numeric($rate->rate->tax) ? [$rate->rate->tax] : '',
                 'meta_data' => [
                     'message' => $rate->message,
                 ],
@@ -78,6 +79,7 @@ class CalcuratesConnector
                     'label' => $rate->name,
                     'cost' => 0,
                     'package' => $package,
+                    'taxes' => is_numeric($rate->rate->tax) ? [$rate->rate->tax] : '',
                     'meta_data' => [
                         'message' => $rate->message,
                         'delivery_date_from' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->from : null,
@@ -85,7 +87,35 @@ class CalcuratesConnector
                     ],
                 ];
             }
+        }
 
+        foreach ($response->shippingOptions->tableRates as $table_rate) {
+
+            if ($table_rate->success) {
+
+                if ($table_rate->methods && is_array($table_rate->methods)) {
+
+                    foreach ($table_rate->methods as $rate) {
+
+                        if ($rate->success) {
+                            $ready_rates[] = [
+                                'id' => 'calcurates:' . $rate->id,
+                                'label' => $rate->name,
+                                'cost' => $rate->rate->cost,
+                                'package' => $package,
+                                'taxes' => is_numeric($rate->rate->tax) ? [$rate->rate->tax] : '',
+                                'meta_data' => [
+                                    'message' => $table_rate->message,
+                                    'delivery_date_from' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->from : null,
+                                    'delivery_date_to' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->to : null,
+                                ],
+                            ];
+                        }
+
+                    }
+                }
+
+            }
         }
 
         if ($debug == 'all') {
