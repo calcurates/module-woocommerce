@@ -35,3 +35,4 @@
 .docker/wordpress-bedrock/*
 !.docker/wordpress-bedrock/development.php.example
 !Controllers
+!assets

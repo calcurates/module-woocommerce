@@ -26,6 +26,9 @@ class WC_Calcurates
 
         // add text after rate on checkout
         add_action('woocommerce_after_shipping_rate', [__CLASS__, 'action_after_shipping_rate'], 10, 2);
+
+        add_action('wp_enqueue_scripts', [__CLASS__, 'calcurates_scripts']);
+
     }
 
     public static function ship_to_different_address_set_session($data)
@@ -107,7 +110,7 @@ class WC_Calcurates
 
             // shipping rate description
             if (array_key_exists('message', $meta)) {
-                $text .= "<div class='calcurates__shipping-rate-description'>" . $meta['message'] . "</div>";
+                $text .= "<div class='calcurates-checkout__shipping-rate-message'>" . $meta['message'] . "</div>";
             }
 
             // shipping rate dates
@@ -143,14 +146,26 @@ class WC_Calcurates
 
                 }
 
-                $text .= "<div class='calcurates__shipping-rate-dates'>Estimated delivery date: " . $estimated_delivery_date . "</div>";
+                $text .= "<div class='calcurates-checkout__shipping-rate-dates'>Estimated delivery date: " . $estimated_delivery_date . "</div>";
             }
 
             if ($text) {
-                echo $text;
+
+                echo "<div class='calcurates-checkout__shipping-rate-description'>" . $text . "</div>";
+
             }
         }
 
+    }
+
+    public static function calcurates_scripts()
+    {
+
+        wp_register_style('wc-calcurates', plugins_url('/assets/css/calcurates-checkout.css', __FILE__));
+
+        if (is_cart() || is_checkout()) {
+            wp_enqueue_style('wc-calcurates');
+        }
     }
 }
 
