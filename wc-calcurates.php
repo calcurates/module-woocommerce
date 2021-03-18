@@ -113,7 +113,11 @@ class WC_Calcurates
 
             // shipping rate description
             if (array_key_exists('message', $meta)) {
-                $text .= "<div class='calcurates-checkout__shipping-rate-message'>" . $meta['message'] . "</div>";
+
+                if ($meta['message']) {
+                    $text .= "<div class='calcurates-checkout__shipping-rate-message'>" . $meta['message'] . "</div>";
+                }
+
             }
 
             // shipping rate dates
@@ -149,7 +153,10 @@ class WC_Calcurates
 
                 }
 
-                $text .= "<div class='calcurates-checkout__shipping-rate-dates'>Estimated delivery date: " . $estimated_delivery_date . "</div>";
+                if ($estimated_delivery_date) {
+                    $text .= "<div class='calcurates-checkout__shipping-rate-dates'>Estimated delivery date: " . $estimated_delivery_date . "</div>";
+                }
+
             }
 
             if ($text) {
