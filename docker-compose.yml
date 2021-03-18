@@ -50,4 +50,4 @@ services:
     restart: unless-stopped
 volumes:
   app_code:
-    name: "wc_code_volume"
+    name: "wc_calcurates_volume"
