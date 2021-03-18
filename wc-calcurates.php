@@ -29,6 +29,9 @@ class WC_Calcurates
 
         add_action('wp_enqueue_scripts', [__CLASS__, 'calcurates_scripts']);
 
+        // add text to order email
+        add_action('woocommerce_email_after_order_table', [__CLASS__, 'add_shipping_data_after_order_table_in_email'], 10, 4);
+
     }
 
     public static function ship_to_different_address_set_session($data)
@@ -166,6 +169,65 @@ class WC_Calcurates
         if (is_cart() || is_checkout()) {
             wp_enqueue_style('wc-calcurates');
         }
+    }
+
+    public static function add_shipping_data_after_order_table_in_email($order, $sent_to_admin, $plain_text, $email)
+    {
+        $message = null;
+        $delivery_date_from = null;
+        $delivery_date_to = null;
+        $estimated_delivery_date = '';
+        $text = '';
+
+        foreach ($order->get_items('shipping') as $item_id => $item) {
+
+            if ($item->get_method_id() === 'calcurates') {
+                $message = $item->get_meta('message');
+                $delivery_date_from = $item->get_meta('delivery_date_from');
+                $delivery_date_to = $item->get_meta('delivery_date_to');
+                break;
+            }
+
+        }
+
+        if ($delivery_date_from && $delivery_date_from === $delivery_date_to) {
+
+            $delivery_date_from = strtotime($delivery_date_from);
+
+            if ($delivery_date_from) {
+                $delivery_date_from = date(get_option('date_format') . " " . get_option('time_format'), $delivery_date_from);
+                $estimated_delivery_date = $delivery_date_from;
+            }
+
+        } elseif ($delivery_date_from && $delivery_date_to) {
+
+            $delivery_date_from = strtotime($delivery_date_from);
+            $delivery_date_to = strtotime($delivery_date_to);
+
+            if ($delivery_date_from) {
+                $delivery_date_from = date(get_option('date_format') . " " . get_option('time_format'), $delivery_date_from);
+            }
+            if ($delivery_date_to) {
+                $delivery_date_to = date(get_option('date_format') . " " . get_option('time_format'), $delivery_date_to);
+            }
+
+            if ($delivery_date_from && $delivery_date_to) {
+                $estimated_delivery_date = $delivery_date_from . ' - ' . $delivery_date_to;
+            }
+
+        }
+
+        if ($message) {
+            $text .= "Shipping info: " . $message . "<br/>";
+        }
+        if ($estimated_delivery_date) {
+            $text .= "Estimated delivery date: " . $estimated_delivery_date;
+        }
+
+        if ($text) {
+            echo "<p>" . $text . "</p>";
+        }
+
     }
 }
 
