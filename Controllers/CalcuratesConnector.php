@@ -21,7 +21,10 @@ class CalcuratesConnector
         $debug = $args['debug_mode'];
         $package = $args['package'];
 
-        $ready_rates = [];
+        $ready_rates = [
+            "has_priority" => [],
+            "no_priority" => [],
+        ];
 
         $coupons = WC()->cart->get_coupons();
         $coupon = reset($coupons);
@@ -61,7 +64,7 @@ class CalcuratesConnector
 
         foreach ($response->shippingOptions->flatRates as $rate) {
             if ($rate->success) {
-                $ready_rates[] = [
+                $ready_rates[$rate->priority ? 'has_priority' : 'no_priority'][] = [
                     'id' => 'calcurates:' . $rate->id,
                     'label' => $rate->name,
                     'cost' => $rate->rate->cost,
@@ -72,13 +75,14 @@ class CalcuratesConnector
                         'delivery_date_from' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->from : null,
                         'delivery_date_to' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->to : null,
                     ],
+                    'priority' => $rate->priority,
                 ];
             }
         }
 
         foreach ($response->shippingOptions->freeShipping as $rate) {
             if ($rate->success) {
-                $ready_rates[] = [
+                $ready_rates[$rate->priority ? 'has_priority' : 'no_priority'][] = [
                     'id' => 'calcurates:' . $rate->id,
                     'label' => $rate->name,
                     'cost' => 0,
@@ -89,6 +93,7 @@ class CalcuratesConnector
                         'delivery_date_from' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->from : null,
                         'delivery_date_to' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->to : null,
                     ],
+                    'priority' => $rate->priority,
                 ];
             }
         }
@@ -102,7 +107,7 @@ class CalcuratesConnector
                     foreach ($table_rate->methods as $rate) {
 
                         if ($rate->success) {
-                            $ready_rates[] = [
+                            $ready_rates[$table_rate->priority ? 'has_priority' : 'no_priority'][] = [
                                 'id' => 'calcurates:' . $rate->id,
                                 'label' => $rate->name,
                                 'cost' => $rate->rate->cost,
@@ -113,6 +118,7 @@ class CalcuratesConnector
                                     'delivery_date_from' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->from : null,
                                     'delivery_date_to' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->to : null,
                                 ],
+                                'priority' => $table_rate->priority,
                             ];
                         }
 
@@ -131,7 +137,7 @@ class CalcuratesConnector
                     foreach ($in_store_rate->stores as $rate) {
 
                         if ($rate->success) {
-                            $ready_rates[] = [
+                            $ready_rates[$in_store_rate->priority ? 'has_priority' : 'no_priority'][] = [
                                 'id' => 'calcurates:' . $rate->id,
                                 'label' => $rate->name,
                                 'cost' => $rate->rate->cost,
@@ -142,6 +148,8 @@ class CalcuratesConnector
                                     'delivery_date_from' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->from : null,
                                     'delivery_date_to' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->to : null,
                                 ],
+                                'priority' => $in_store_rate->priority,
+
                             ];
                         }
 
@@ -150,6 +158,27 @@ class CalcuratesConnector
 
             }
         }
+
+        usort($ready_rates['has_priority'], function ($a, $b) {
+
+            if ($a['priority'] == $b['priority']) {
+                return 0;
+            }
+            return ($a['priority'] < $b['priority']) ? -1 : 1;
+
+        });
+
+        usort($ready_rates['no_priority'], function ($a, $b) {
+
+            if ($a['cost'] == $b['cost']) {
+                return 0;
+            }
+
+            return ($a['cost'] < $b['cost']) ? -1 : 1;
+
+        });
+
+        $ready_rates = array_merge($ready_rates['has_priority'], $ready_rates['no_priority']);
 
         if ($debug == 'all') {
             Logger::log('$ready_rates', (array) $ready_rates);
