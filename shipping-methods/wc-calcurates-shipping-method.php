@@ -113,7 +113,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         parent::process_admin_options();
 
         // TODO: needs refactor
-        if ($_POST['woocommerce_calcurates_generate_new_api_key'] == 1) {
+        if (array_key_exists('woocommerce_calcurates_generate_new_api_key', $_POST) && $_POST['woocommerce_calcurates_generate_new_api_key'] == 1) {
 
             $this->update_option('generate_new_api_key', 'no');
             $key = wc_rand_hash();
