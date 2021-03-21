@@ -62,6 +62,10 @@ class CalcuratesConnector
 
         $response = json_decode(wp_remote_retrieve_body($result));
 
+        if ($debug == 'all') {
+            Logger::log('Calcurates rates resnose', (array) $response);
+        }
+
         foreach ($response->shippingOptions->flatRates as $rate) {
             if ($rate->success) {
                 $ready_rates[$rate->priority ? 'has_priority' : 'no_priority'][] = [
@@ -151,6 +155,41 @@ class CalcuratesConnector
                                 'priority' => $in_store_rate->priority,
 
                             ];
+                        }
+
+                    }
+                }
+
+            }
+        }
+
+        foreach ($response->shippingOptions->rateShopping as $rate_shopping) {
+
+            if ($rate_shopping->success) {
+
+                if ($rate_shopping->carriers && is_array($rate_shopping->carriers)) {
+
+                    foreach ($rate_shopping->carriers as $carrier) {
+
+                        if ($carrier->success && is_array($carrier->rates)) {
+
+                            foreach ($carrier->rates as $carrier_rate) {
+                                $ready_rates[$rate_shopping->priority ? 'has_priority' : 'no_priority'][] = [
+                                    'id' => 'calcurates:' . $carrier->id, // FIXME nedd unique id
+                                    'label' => $carrier->name,
+                                    'cost' => $carrier_rate->rate->cost,
+                                    'package' => $package,
+                                    'taxes' => is_numeric($carrier_rate->rate->tax) ? [$carrier_rate->rate->tax] : '',
+                                    'meta_data' => [
+                                        'message' => $rate_shopping->message,
+                                        'delivery_date_from' => $carrier_rate->rate->estimatedDeliveryDate ? $carrier_rate->rate->estimatedDeliveryDate->from : null,
+                                        'delivery_date_to' => $carrier_rate->rate->estimatedDeliveryDate ? $carrier_rate->rate->estimatedDeliveryDate->to : null,
+                                    ],
+                                    'priority' => $rate_shopping->priority,
+
+                                ];
+                            }
+
                         }
 
                     }
