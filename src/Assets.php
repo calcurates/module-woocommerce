@@ -23,11 +23,20 @@ if (!class_exists(Assets::class)) {
          *
          * @return void
          */
-        public function register_style(string $file_name)
+        public function register_style(string $file_name): bool
         {
-            wp_register_style(Basic::get_plugin_text_domain(), plugins_url('/assets/css/' . $file_name, __FILE__));
+            return wp_register_style(Basic::get_plugin_text_domain(), plugins_url('/assets/css/' . $file_name, __FILE__));
+        }
 
-            if (is_cart() || is_checkout()) {
+        /**
+         * Add stylesheet
+         *
+         * @param  mixed $file_name
+         * @return void
+         */
+        public function enqueue_styles()
+        {
+            if ($this->register_style('calcurates-checkout.css') && (is_cart() || is_checkout())) {
                 wp_enqueue_style(Basic::get_plugin_text_domain());
             }
         }

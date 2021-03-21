@@ -40,7 +40,7 @@ if (!class_exists(WcCalcurates::class)) {
         {
             $this->restapi_register_routes();
             $this->woocommerce_bootstrap();
-            $this->register_styles();
+            $this->enqueue_styles();
         }
 
         /**
@@ -69,9 +69,9 @@ if (!class_exists(WcCalcurates::class)) {
          *
          * @return void
          */
-        public function register_styles()
+        public function enqueue_styles()
         {
-            $this->assets->register_style('calcurates-checkout.css');
+            add_action('wp_enqueue_scripts', [$this->assets, 'enqueue_styles']);
         }
     }
 }
