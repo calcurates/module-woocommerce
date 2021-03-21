@@ -90,7 +90,7 @@ if (!class_exists(WCBootstarp::class)) {
          * @param  int $index
          * @return void
          */
-        public function add_data_after_shipping_rate(WC_Shipping_Rate $rate, int $index)
+        public function add_data_after_shipping_rate(\WC_Shipping_Rate $rate, int $index)
         {
 
             if (str_contains($rate->id, 'calcurates:')) {
@@ -165,7 +165,7 @@ if (!class_exists(WCBootstarp::class)) {
          * @param  string $email
          * @return void
          */
-        public function add_shipping_data_after_order_table_in_email(WC_Order $order, bool $sent_to_admin, string $plain_text, string $email)
+        public function add_shipping_data_after_order_table_in_email(\WC_Order $order, bool $sent_to_admin, string $plain_text, string $email)
         {
             $message = null;
             $delivery_date_from = null;
