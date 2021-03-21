@@ -33,5 +33,15 @@ if (!class_exists(Basic::class)) {
         {
             return 'wc_calcurates_';
         }
+
+        /**
+         * Plugin text domain
+         *
+         * @return string
+         */
+        public static function get_plugin_text_domain(): string
+        {
+            return 'wc-calcurates';
+        }
     }
 }
