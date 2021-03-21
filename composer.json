@@ -24,8 +24,7 @@
     },
     "autoload": {
 		"psr-4": {
-			"Calcurates\\RESTAPI\\": "RESTAPI/",
-			"Calcurates\\Controllers\\": "Controllers/"
+			"Calcurates\\": "src/"
 		}
 	}
 }
