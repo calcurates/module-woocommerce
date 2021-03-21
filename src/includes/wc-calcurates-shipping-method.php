@@ -1,13 +1,23 @@
 <?php
 
-defined('ABSPATH') || exit;
+use Calcurates\Calcurates\Calcurates;
 
-use Calcurates\Controllers\CalcuratesConnector;
+// Stop direct HTTP access.
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
 {
 
-    public function __construct($instance_id = 0)
+    private $calcurates;
+    /**
+     * __construct
+     *
+     * @param  int $instance_id
+     * @return void
+     */
+    public function __construct(int $instance_id = 0)
     {
         $this->id = 'calcurates';
         $this->instance_id = absint($instance_id);
@@ -23,9 +33,16 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
             'settings',
         );
 
+        $this->calcurates = new Calcurates();
+
         $this->init();
     }
 
+    /**
+     * init
+     *
+     * @return void
+     */
     public function init()
     {
 
@@ -41,6 +58,11 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         add_action('woocommerce_update_options_shipping_' . $this->id, array($this, 'process_admin_options'));
     }
 
+    /**
+     * init_form_fields
+     *
+     * @return void
+     */
     public function init_form_fields()
     {
         $this->form_fields = [
@@ -80,6 +102,12 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         ];
     }
 
+    /**
+     * Calculate shipping
+     *
+     * @param  array $package
+     * @return void
+     */
     public function calculate_shipping($package = [])
     {
 
@@ -93,7 +121,13 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
 
     }
 
-    public function get_rates($package = [])
+    /**
+     * Get rates
+     *
+     * @param  mixed $package
+     * @return void
+     */
+    public function get_rates(array $package = [])
     {
 
         if (!$this->instance_id) {
@@ -105,19 +139,24 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
             'debug_mode' => $this->debug_mode,
             'package' => $package,
         ];
-        return CalcuratesConnector::get_rates($args);
+        return $this->calcurates->get_rates($args);
     }
 
+    /**
+     * process_admin_options
+     *
+     * @return void
+     */
     public function process_admin_options()
     {
         parent::process_admin_options();
 
         // TODO: needs refactor
-        if (array_key_exists('woocommerce_calcurates_generate_new_api_key', $_POST) && $_POST['woocommerce_calcurates_generate_new_api_key'] == 1) {
+        if (array_key_exists('woocommerce_' . $this->id . '_generate_new_api_key', $_POST) && $_POST['woocommerce_' . $this->id . '_generate_new_api_key'] == 1) {
 
             $this->update_option('generate_new_api_key', 'no');
             $key = wc_rand_hash();
-            update_option('wc_calcurates_key', $key);
+            update_option(Basic::get_prefix() . 'key', $key);
             $this->update_option('plugin_api_key', $key);
         }
 

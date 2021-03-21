@@ -1,12 +1,18 @@
 <?php
-namespace Calcurates\Controllers;
+namespace Calcurates\Calcurates;
 
-use Calcurates\Controllers\Logger;
+use Calcurates\Utils\Logger;
 
-class CalcuratesConnector
+class Calcurates
 {
 
-    public static function get_rates($args)
+    private $logger;
+
+    public function __construct()
+    {
+        $this->logger = new Logger();
+    }
+    public function get_rates($args)
     {
 
         $defaults = [
@@ -46,7 +52,7 @@ class CalcuratesConnector
         ];
 
         if ($debug == 'all') {
-            Logger::log('Prepared rates request', (array) $args);
+            $this->logger->log('Prepared rates request', (array) $args);
         }
 
         $result = wp_safe_remote_request('https://staging-api.calcurates.com/api/magento2/rates', $args);
@@ -54,7 +60,7 @@ class CalcuratesConnector
         if (is_wp_error($result) || wp_remote_retrieve_response_code($result) != 200) {
 
             if ($debug == 'all' || $debug == 'errors') {
-                Logger::log('Rates request', (array) $result);
+                $this->logger->log('Rates request', (array) $result);
             }
 
             return false;
@@ -63,7 +69,7 @@ class CalcuratesConnector
         $response = json_decode(wp_remote_retrieve_body($result));
 
         if ($debug == 'all') {
-            Logger::log('Calcurates rates resnose', (array) $response);
+            $this->logger->log('Calcurates rates resnose', (array) $response);
         }
 
         foreach ($response->shippingOptions->flatRates as $rate) {
@@ -220,7 +226,7 @@ class CalcuratesConnector
         $ready_rates = array_merge($ready_rates['has_priority'], $ready_rates['no_priority']);
 
         if ($debug == 'all') {
-            Logger::log('$ready_rates', (array) $ready_rates);
+            $this->logger->log('$ready_rates', (array) $ready_rates);
         }
 
         return $ready_rates;
