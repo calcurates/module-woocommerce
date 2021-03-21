@@ -4,6 +4,8 @@ declare (strict_types = 1);
 
 namespace Calcurates\RESTAPI\Routes\Factory;
 
+use Calcurates\Basic;
+
 /**
  * Factory for diverse permission callbacks.
  *
@@ -36,7 +38,7 @@ class PermissionCallback
         return function (): bool {
 
             if (isset($_SERVER['HTTP_X_API_KEY'])) {
-                if ($_SERVER['HTTP_X_API_KEY'] == get_option('wc_calcurates_key')) {
+                if ($_SERVER['HTTP_X_API_KEY'] == get_option(Basic::get_prefix() . 'key')) {
                     return true;
                 }
             }
