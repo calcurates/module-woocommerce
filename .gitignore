@@ -36,3 +36,4 @@
 !.docker/wordpress-bedrock/development.php.example
 !Controllers
 !assets
+!src
