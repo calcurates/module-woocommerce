@@ -1,6 +1,7 @@
 <?php
 namespace Calcurates\Utils;
 
+use Calcurates\Basic;
 use Katzgrau\KLogger\Logger as KLogger;
 
 class Logger
@@ -9,7 +10,7 @@ class Logger
 
     public function __construct()
     {
-        $this->logger = new KLogger(plugin_dir_path(__DIR__) . 'logs');
+        $this->logger = new KLogger(Basic::get_plugin_dir_path() . 'logs');
     }
 
     /**

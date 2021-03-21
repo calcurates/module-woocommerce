@@ -43,5 +43,15 @@ if (!class_exists(Basic::class)) {
         {
             return 'wc-calcurates';
         }
+
+        /**
+         * Get plugin dir path
+         *
+         * @return string
+         */
+        public static function get_plugin_dir_path(): string
+        {
+            return trailingslashit(realpath(__DIR__ . DIRECTORY_SEPARATOR . '..'));
+        }
     }
 }
