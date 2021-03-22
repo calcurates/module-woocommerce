@@ -108,7 +108,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
                 ],
             ],
             'tax_mode' => [
-                'title' => __('Taxes', 'woocommerce'),
+                'title' => __('Display rates with tax & duties', 'woocommerce'),
                 'type' => 'select',
                 'default' => 'tax_included',
                 'options' => [
