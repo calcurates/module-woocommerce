@@ -21,4 +21,4 @@ require_once plugin_dir_path(__FILE__) . 'lib/autoload.php';
  */
 register_activation_hook(__FILE__, [__NAMESPACE__ . '\Activator', 'activate']);
 
-(new WcCalcurates())->run();
+(new WCCalcurates())->run();

@@ -12,11 +12,11 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-if (!class_exists(WcCalcurates::class)) {
+if (!class_exists(WCCalcurates::class)) {
     /**
      * Base plugin class
      */
-    class WcCalcurates
+    class WCCalcurates
     {
 
         protected $wc_bootsrap;
