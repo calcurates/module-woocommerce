@@ -53,5 +53,15 @@ if (!class_exists(Basic::class)) {
         {
             return trailingslashit(realpath(__DIR__ . DIRECTORY_SEPARATOR . '..'));
         }
+
+        /**
+         * Get API URL
+         *
+         * @return string
+         */
+        public static function get_api_url(): string
+        {
+            return 'https://staging-api.calcurates.com';
+        }
     }
 }
