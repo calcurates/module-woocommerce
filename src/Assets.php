@@ -25,7 +25,11 @@ if (!class_exists(Assets::class)) {
          */
         public function register_style(string $file_name): bool
         {
-            return wp_register_style(Basic::get_plugin_text_domain(), plugins_url('/assets/css/' . $file_name, __FILE__));
+            $styles_url = plugins_url('/assets/css/' . $file_name, __FILE__);
+
+            $styles_url = apply_filters('wc_calcurates_load_style', $styles_url);
+
+            return wp_register_style(Basic::get_plugin_text_domain(), $styles_url);
         }
 
         /**
