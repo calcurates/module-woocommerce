@@ -65,6 +65,12 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
     public function init_form_fields()
     {
         $this->form_fields = [
+            'calcurates_api_url' => [
+                'title' => __('Calcurates Api URL', 'woocommerce'),
+                'type' => 'text',
+                'default' => "",
+                'desc_tip' => false,
+            ],
             'calcurates_api_key' => [
                 'title' => __('Calcurates Api Key', 'woocommerce'),
                 'type' => 'text',
@@ -132,12 +138,6 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         if (!$this->instance_id) {
             return false;
         }
-
-        $args = [
-            'api_key' => $this->calcurates_api_key,
-            'debug_mode' => $this->debug_mode,
-            'package' => $package,
-        ];
 
         return (new Calcurates($this->calcurates_api_key, 'https://staging-api.calcurates.com', $package, $this->debug_mode))->get_rates();
     }
