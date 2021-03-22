@@ -44,7 +44,7 @@ class RateShoppingRatesExtractor
                                     }
 
                                     $services_messages = implode('. ', $services_messages);
-                                    $services_ids = implode('_ ', $services_ids);
+                                    $services_ids = implode('_', $services_ids);
 
                                     $ready_rates[] = [
                                         'id' => $rate_shopping->id . '_' . $carrier->id . '_' . $services_ids,
