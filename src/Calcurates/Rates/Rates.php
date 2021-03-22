@@ -1,6 +1,7 @@
 <?php
 namespace Calcurates\Calcurates\Rates;
 
+use Calcurates\Calcurates\Rates\CarrierRatesExtractor;
 use Calcurates\Calcurates\Rates\FlatRatesExtractor;
 use Calcurates\Calcurates\Rates\FreeShippingRatesExtractor;
 use Calcurates\Calcurates\Rates\RateShoppingRatesExtractor;
@@ -16,7 +17,9 @@ class Rates
         $this->flat_rates_extractor = new FlatRatesExtractor();
         $this->free_shipping_rates_extractor = new FreeShippingRatesExtractor();
         $this->table_rates_extractor = new TableRatesExtractor();
-        $this->in_store_pickups_rates_extractor = new RateShoppingRatesExtractor();
+        $this->in_store_pickups_rates_extractor = new InStorePickupsRatesExtractor();
+        $this->rate_shopping_rates_extractor = new RateShoppingRatesExtractor();
+        $this->carriers_rates_extractor = new CarrierRatesExtractor();
         $this->rates = [];
     }
 
@@ -42,7 +45,10 @@ class Rates
             $this->append_rates($this->in_store_pickups_rates_extractor->extract($response->shippingOptions->inStorePickups));
         }
         if ($this->has_shipping_option('rateShopping', $response)) {
-            $this->append_rates($this->in_store_pickups_rates_extractor->extract($response->shippingOptions->rateShopping));
+            $this->append_rates($this->rate_shopping_rates_extractor->extract($response->shippingOptions->rateShopping));
+        }
+        if ($this->has_shipping_option('carriers', $response)) {
+            $this->append_rates($this->carriers_rates_extractor->extract($response->shippingOptions->carriers));
         }
 
         $this->rates_sort();
