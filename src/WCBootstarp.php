@@ -28,8 +28,6 @@ if (!class_exists(WCBootstarp::class)) {
             // add text after rate on checkout
             add_action('woocommerce_after_shipping_rate', [$this, 'add_data_after_shipping_rate'], 10, 2);
 
-            // add_action('wp_enqueue_scripts', [$this, 'calcurates_scripts']);
-
             // add text to order email
             add_action('woocommerce_email_after_order_table', [$this, 'add_shipping_data_after_order_table_in_email'], 10, 4);
         }
@@ -162,11 +160,12 @@ if (!class_exists(WCBootstarp::class)) {
          * @param  WC_Order $order
          * @param  bool $sent_to_admin
          * @param  string $plain_text
-         * @param  string $email
+         * @param  WC_Email $email
          * @return void
          */
-        public function add_shipping_data_after_order_table_in_email(\WC_Order $order, bool $sent_to_admin, string $plain_text, string $email)
+        public function add_shipping_data_after_order_table_in_email(\WC_Order $order, bool $sent_to_admin, string $plain_text, \WC_Email $email)
         {
+
             $message = null;
             $delivery_date_from = null;
             $delivery_date_to = null;
