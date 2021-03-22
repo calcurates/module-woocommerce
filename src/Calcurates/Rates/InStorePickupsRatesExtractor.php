@@ -27,7 +27,7 @@ class InStorePickupsRatesExtractor
                                 'id' => $in_store_rate->id . '_' . $rate->id,
                                 'label' => $rate->name,
                                 'cost' => $rate->rate->cost,
-                                'taxes' => is_numeric($rate->rate->tax) ? [$rate->rate->tax] : '',
+                                'tax' => is_numeric($rate->rate->tax) ? $rate->rate->tax : 0,
                                 'message' => $in_store_rate->message,
                                 'delivery_date_from' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->from : null,
                                 'delivery_date_to' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->to : null,
