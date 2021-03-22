@@ -24,6 +24,8 @@ class CarrierRatesExtractor
 
                         if (property_exists($rate, 'services') && is_array($rate->services)) {
 
+                            $services_names = [];
+
                             $services_messages = [];
                             $services_ids = [];
 
@@ -35,15 +37,19 @@ class CarrierRatesExtractor
                                 if (property_exists($services, 'id') && $services->id) {
                                     $services_ids[] = $services->id;
                                 }
+                                if (property_exists($services, 'name') && $services->name) {
+                                    $services_names[] = $services->name;
+                                }
                             }
                         }
 
                         $services_messages = implode('. ', $services_messages);
                         $services_ids = implode('_', $services_ids);
+                        $services_names = implode(', ', $services_names);
 
                         $ready_rates[] = [
                             'id' => $carrier->id . '_' . $services_ids,
-                            'label' => $carrier->name,
+                            'label' => $carrier->name . '. ' . $services_names,
                             'cost' => $rate->rate->cost,
                             'taxes' => is_numeric($rate->rate->tax) ? [$rate->rate->tax] : '',
                             'message' => $carrier->message . ' ' . $services_messages,
