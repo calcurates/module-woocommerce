@@ -1,13 +1,25 @@
 <?php
 
-defined('ABSPATH') || exit;
+use Calcurates\Basic;
+use Calcurates\Calcurates\Calcurates;
 
-use Calcurates\Controllers\CalcuratesConnector;
+// Stop direct HTTP access.
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
 {
 
-    public function __construct($instance_id = 0)
+    private $calcurates;
+
+    /**
+     * __construct
+     *
+     * @param  int $instance_id
+     * @return void
+     */
+    public function __construct(int $instance_id = 0)
     {
         $this->id = 'calcurates';
         $this->instance_id = absint($instance_id);
@@ -26,6 +38,11 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         $this->init();
     }
 
+    /**
+     * init
+     *
+     * @return void
+     */
     public function init()
     {
 
@@ -36,14 +53,27 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         $this->debug_mode = $this->get_option('debug_mode');
         $this->plugin_api_key = $this->get_option('plugin_api_key');
         $this->generate_new_api_key = $this->get_option('generate_new_api_key');
+        $this->calcurates_api_url = $this->get_option('calcurates_api_url');
+        $this->tax_mode = $this->get_option('tax_mode');
 
         // Save settings in admin if you have any defined
         add_action('woocommerce_update_options_shipping_' . $this->id, array($this, 'process_admin_options'));
     }
 
+    /**
+     * init_form_fields
+     *
+     * @return void
+     */
     public function init_form_fields()
     {
         $this->form_fields = [
+            'calcurates_api_url' => [
+                'title' => __('Calcurates Api URL', 'woocommerce'),
+                'type' => 'text',
+                'default' => Basic::get_api_url(),
+                'desc_tip' => false,
+            ],
             'calcurates_api_key' => [
                 'title' => __('Calcurates Api Key', 'woocommerce'),
                 'type' => 'text',
@@ -77,9 +107,25 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
                     'all' => 'Log all data',
                 ],
             ],
+            'tax_mode' => [
+                'title' => __('Display rates with tax & duties', 'woocommerce'),
+                'type' => 'select',
+                'default' => 'tax_included',
+                'options' => [
+                    'tax_included' => 'Duties & tax included',
+                    'without_tax' => 'Without duties & tax',
+                    'both' => 'Both',
+                ],
+            ],
         ];
     }
 
+    /**
+     * Calculate shipping
+     *
+     * @param  array $package
+     * @return void
+     */
     public function calculate_shipping($package = [])
     {
 
@@ -93,31 +139,37 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
 
     }
 
-    public function get_rates($package = [])
+    /**
+     * Get rates
+     *
+     * @param  mixed $package
+     * @return void
+     */
+    public function get_rates(array $package = [])
     {
 
         if (!$this->instance_id) {
             return false;
         }
 
-        $args = [
-            'api_key' => $this->calcurates_api_key,
-            'debug_mode' => $this->debug_mode,
-            'package' => $package,
-        ];
-        return CalcuratesConnector::get_rates($args);
+        return (new Calcurates($this->calcurates_api_key, $this->calcurates_api_url ?: Basic::get_api_url(), $package, $this->debug_mode, $this->tax_mode))->get_rates();
     }
 
+    /**
+     * process_admin_options
+     *
+     * @return void
+     */
     public function process_admin_options()
     {
         parent::process_admin_options();
 
         // TODO: needs refactor
-        if (array_key_exists('woocommerce_calcurates_generate_new_api_key', $_POST) && $_POST['woocommerce_calcurates_generate_new_api_key'] == 1) {
+        if (array_key_exists('woocommerce_' . $this->id . '_generate_new_api_key', $_POST) && $_POST['woocommerce_' . $this->id . '_generate_new_api_key'] == 1) {
 
             $this->update_option('generate_new_api_key', 'no');
             $key = wc_rand_hash();
-            update_option('wc_calcurates_key', $key);
+            update_option(Basic::get_prefix() . 'key', $key);
             $this->update_option('plugin_api_key', $key);
         }
 

@@ -14,9 +14,7 @@
 !uninstall.php
 !composer.json
 !lib
-!RESTAPI
 !wordpress-bedrock
-!shipping-methods
 
 # Ignore all files named .DS_Store or ending with .log
 **/.DS_Store
@@ -34,5 +32,4 @@
 !.docker/wordpress-bedrock/
 .docker/wordpress-bedrock/*
 !.docker/wordpress-bedrock/development.php.example
-!Controllers
-!assets
+!src

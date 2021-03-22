@@ -31,8 +31,7 @@ class ComposerStaticInitd1586ec25e49b2f24406696684c44569
         ),
         'C' => 
         array (
-            'Calcurates\\RESTAPI\\' => 19,
-            'Calcurates\\Controllers\\' => 23,
+            'Calcurates\\' => 11,
         ),
     );
 
@@ -57,13 +56,9 @@ class ComposerStaticInitd1586ec25e49b2f24406696684c44569
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
         ),
-        'Calcurates\\RESTAPI\\' => 
+        'Calcurates\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/RESTAPI',
-        ),
-        'Calcurates\\Controllers\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/Controllers',
+            0 => __DIR__ . '/../..' . '/src',
         ),
     );
 

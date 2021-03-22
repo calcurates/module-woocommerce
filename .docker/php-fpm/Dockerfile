@@ -46,7 +46,8 @@ RUN groupadd --gid $gid $uname && \
   chown -R $uname:$uname /home/$uname && \
   composer create-project roots/bedrock . && \
   composer require wpackagist-plugin/woocommerce && \
-  composer require wpackagist-plugin/wp-mail-logging
+  composer require wpackagist-plugin/wp-mail-logging && \
+  chmod 777 /var/www/html/web/app/uploads
 
 # Set working directory
 WORKDIR /var/www/html

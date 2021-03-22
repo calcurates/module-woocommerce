@@ -1,6 +1,7 @@
 <?php
 namespace Calcurates\RESTAPI\Routes;
 
+use Calcurates\Contracts\RESTAPI\Routes\RestRouteInterface;
 use Calcurates\RESTAPI\Routes\Endpoints\EndpointsArguments\WooCommmerceSettingsReadEndpointArguments;
 use Calcurates\RESTAPI\Routes\Endpoints\WooCommmerceSettingsReadEndpoint;
 use Calcurates\RESTAPI\Routes\Factory\PermissionCallback;
@@ -9,10 +10,10 @@ use Inpsyde\WPRESTStarter\Core\Route\Options;
 use Inpsyde\WPRESTStarter\Core\Route\Registry;
 use Inpsyde\WPRESTStarter\Core\Route\Route;
 
-class WooCommmerceSettingsRoutes
+class WooCommmerceSettingsRoutes implements RestRouteInterface
 {
 
-    public static function register_route()
+    public function register_route()
     {
         $namespace = 'calcurates/v1';
 
