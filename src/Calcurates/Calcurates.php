@@ -34,7 +34,7 @@ class Calcurates
      *
      * @return array
      */
-    public function get_rates(): array
+    public function get_rates()
     {
         // build body for request
         $rates_request_body = $this->rates_request_body_builder->build();
