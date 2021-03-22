@@ -54,7 +54,7 @@ class RateShoppingRatesExtractor
 
                                     $ready_rates[] = [
                                         'id' => $rate_shopping->id . '_' . $carrier->id . '_' . $services_ids,
-                                        'label' => $carrier->name . '. ' . $services_names,
+                                        'label' => $carrier->name . ': ' . $services_names,
                                         'cost' => $rate->rate->cost,
                                         'taxes' => is_numeric($rate->rate->tax) ? [$rate->rate->tax] : '',
                                         'message' => $rate_shopping->message . ' ' . $services_messages,

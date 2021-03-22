@@ -49,7 +49,7 @@ class CarrierRatesExtractor
 
                         $ready_rates[] = [
                             'id' => $carrier->id . '_' . $services_ids,
-                            'label' => $carrier->name . '. ' . $services_names,
+                            'label' => $carrier->name . ': ' . $services_names,
                             'cost' => $rate->rate->cost,
                             'taxes' => is_numeric($rate->rate->tax) ? [$rate->rate->tax] : '',
                             'message' => $carrier->message . ' ' . $services_messages,
