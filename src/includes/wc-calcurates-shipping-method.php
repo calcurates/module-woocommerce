@@ -11,6 +11,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
 {
 
     private $calcurates;
+
     /**
      * __construct
      *
@@ -32,8 +33,6 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
             // 'instance-settings',
             'settings',
         );
-
-        $this->calcurates = new Calcurates();
 
         $this->init();
     }
@@ -139,7 +138,8 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
             'debug_mode' => $this->debug_mode,
             'package' => $package,
         ];
-        return $this->calcurates->get_rates($args);
+
+        return (new Calcurates($this->calcurates_api_key, 'https://staging-api.calcurates.com', $package, $this->debug_mode))->get_rates();
     }
 
     /**
