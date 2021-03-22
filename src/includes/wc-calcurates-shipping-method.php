@@ -141,7 +141,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
             return false;
         }
 
-        return (new Calcurates($this->calcurates_api_key, $this->calcurates_api_url, $package, $this->debug_mode))->get_rates();
+        return (new Calcurates($this->calcurates_api_key, $this->calcurates_api_url ?: Basic::get_api_url(), $package, $this->debug_mode))->get_rates();
     }
 
     /**
