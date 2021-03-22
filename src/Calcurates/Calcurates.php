@@ -17,12 +17,13 @@ class Calcurates
     private $calcurates_client;
     private $rates_extractor;
 
-    public function __construct(string $api_key, string $api_url, $package = [], string $debug_mode)
+    public function __construct(string $api_key, string $api_url, $package = [], string $debug_mode, string $tax_mode)
     {
         $this->logger = new Logger();
         $this->api_key = $api_key;
         $this->package = $package;
         $this->debug_mode = $debug_mode;
+        $this->tax_mode = $tax_mode;
         $this->rates_request_body_builder = new RatesRequestBodyBuilder($package);
         $this->calcurates_client = new CalcuratesClient($api_key, $api_url, $debug_mode);
         $this->rates_tools = new Rates();
@@ -48,7 +49,9 @@ class Calcurates
 
         // extract rates from response
         $this->rates_tools->extract($response);
+        $this->rates_tools->apply_tax_mode($this->tax_mode);
         $rates = $this->rates_tools->convert_rates_to_wc_rates($this->package);
+        
 
         return $rates;
 

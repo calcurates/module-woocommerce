@@ -54,6 +54,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         $this->plugin_api_key = $this->get_option('plugin_api_key');
         $this->generate_new_api_key = $this->get_option('generate_new_api_key');
         $this->calcurates_api_url = $this->get_option('calcurates_api_url');
+        $this->tax_mode = $this->get_option('tax_mode');
 
         // Save settings in admin if you have any defined
         add_action('woocommerce_update_options_shipping_' . $this->id, array($this, 'process_admin_options'));
@@ -106,6 +107,16 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
                     'all' => 'Log all data',
                 ],
             ],
+            'tax_mode' => [
+                'title' => __('Taxes', 'woocommerce'),
+                'type' => 'select',
+                'default' => 'tax_included',
+                'options' => [
+                    'tax_included' => 'Duties & tax included',
+                    'without_tax' => 'Without duties & tax',
+                    'both' => 'Both',
+                ],
+            ],
         ];
     }
 
@@ -141,7 +152,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
             return false;
         }
 
-        return (new Calcurates($this->calcurates_api_key, $this->calcurates_api_url ?: Basic::get_api_url(), $package, $this->debug_mode))->get_rates();
+        return (new Calcurates($this->calcurates_api_key, $this->calcurates_api_url ?: Basic::get_api_url(), $package, $this->debug_mode, $this->tax_mode))->get_rates();
     }
 
     /**

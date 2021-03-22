@@ -110,12 +110,12 @@ class Rates
                 'id' => 'calcurates:' . $rate['id'],
                 'label' => $rate['label'],
                 'cost' => $rate['cost'],
-                'taxes' => $rate['taxes'],
                 'package' => $package,
                 'meta_data' => [
                     'message' => $rate['message'],
                     'delivery_date_from' => $rate['delivery_date_from'],
                     'delivery_date_to' => $rate['delivery_date_to'],
+                    'tax' => $rate['tax'],
                 ],
                 'priority' => $rate['priority'],
             ];
@@ -153,5 +153,54 @@ class Rates
         if (is_array($rates) && !empty($rates)) {
             $this->rates = array_merge($this->rates, $rates);
         }
+    }
+
+    /**
+     * Apply tax mode
+     *
+     * @param  mixed $rates
+     * @return void
+     */
+    public function apply_tax_mode($tax_mode)
+    {
+        $rates = [];
+
+        foreach ($this->rates as $rate) {
+
+            if ($rate['tax']) {
+
+                if ($tax_mode === 'tax_included') {
+
+                    $rate['label'] .= ' - duties & tax included';
+                    $rate['cost'] += $rate['tax'];
+                    $rates[] = $rate;
+
+                } elseif ($tax_mode === 'without_tax') {
+
+                    $rates[] = $rate;
+
+                } elseif ($tax_mode === 'both') {
+
+                    $label = $rate['label'];
+                    $id = $rate['id'];
+                    $cost = $rate['cost'];
+
+                    $rate['label'] = $label . ' - duties & tax included';
+                    $rate['id'] = $id . 'tax_included';
+                    $rate['cost'] += $rate['tax'];
+                    $rates[] = $rate;
+
+                    $rate['label'] = $label . ' - without duties & tax';
+                    $rate['id'] = $id . 'without_tax';
+                    $rate['cost'] = $cost;
+                    $rates[] = $rate;
+
+                }
+            } else {
+                $rates[] = $rate;
+            }
+        }
+
+        $this->rates = $rates;
     }
 }
