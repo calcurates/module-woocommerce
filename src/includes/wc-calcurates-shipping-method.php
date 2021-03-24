@@ -2,6 +2,9 @@
 
 use Calcurates\Basic;
 use Calcurates\Calcurates\Calcurates;
+use Calcurates\Calcurates\CalcuratesClient;
+use Calcurates\Calcurates\Rates\Rates;
+use Calcurates\Calcurates\RequestsBodyBuilders\RatesRequestBodyBuilder;
 
 // Stop direct HTTP access.
 if (!defined('ABSPATH')) {
@@ -152,7 +155,13 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
             return false;
         }
 
-        return (new Calcurates($this->calcurates_api_key, $this->calcurates_api_url ?: Basic::get_api_url(), $package, $this->debug_mode, $this->tax_mode))->get_rates();
+        $calcurates_client = new CalcuratesClient($this->calcurates_api_key, $this->calcurates_api_url ?: Basic::get_api_url(), $this->debug_mode);
+
+        $rates_request_body_builder = new RatesRequestBodyBuilder($package);
+
+        $rates_tools = new Rates($this->tax_mode, $package);
+
+        return (new Calcurates($calcurates_client, $rates_request_body_builder, $rates_tools))->get_rates();
     }
 
     /**

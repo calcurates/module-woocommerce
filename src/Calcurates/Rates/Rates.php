@@ -11,9 +11,13 @@ class Rates
 {
     private $flat_rates_extractor;
     private $rates;
+    private $tax_mode;
+    private $package;
 
-    public function __construct()
+    public function __construct($tax_mode, $package)
     {
+        $this->tax_mode = $tax_mode;
+        $this->package = $package;
         $this->flat_rates_extractor = new FlatRatesExtractor();
         $this->free_shipping_rates_extractor = new FreeShippingRatesExtractor();
         $this->table_rates_extractor = new TableRatesExtractor();
@@ -98,10 +102,9 @@ class Rates
     /**
      * Convert rates to WooCommerce compatible data structure
      *
-     * @param  mixed $package
      * @return array
      */
-    public function convert_rates_to_wc_rates($package): array
+    public function convert_rates_to_wc_rates(): array
     {
         $rates = [];
 
@@ -110,7 +113,7 @@ class Rates
                 'id' => 'calcurates:' . $rate['id'],
                 'label' => $rate['label'],
                 'cost' => $rate['cost'],
-                'package' => $package,
+                'package' => $this->package,
                 'meta_data' => [
                     'message' => $rate['message'],
                     'delivery_date_from' => $rate['delivery_date_from'],
@@ -161,7 +164,7 @@ class Rates
      * @param  mixed $rates
      * @return void
      */
-    public function apply_tax_mode($tax_mode)
+    public function apply_tax_mode()
     {
         $rates = [];
 
@@ -169,17 +172,17 @@ class Rates
 
             if ($rate['tax']) {
 
-                if ($tax_mode === 'tax_included') {
+                if ($this->tax_mode === 'tax_included') {
 
                     $rate['label'] .= ' - duties & tax included';
                     $rate['cost'] += $rate['tax'];
                     $rates[] = $rate;
 
-                } elseif ($tax_mode === 'without_tax') {
+                } elseif ($this->tax_mode === 'without_tax') {
 
                     $rates[] = $rate;
 
-                } elseif ($tax_mode === 'both') {
+                } elseif ($this->tax_mode === 'both') {
 
                     $label = $rate['label'];
                     $id = $rate['id'];
