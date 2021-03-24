@@ -33,18 +33,21 @@ class CalcuratesClient
             'timeout' => 10,
             'method' => 'POST',
             'headers' => [
-                'X-API-KEY' => $this->api_key,
+                'X-API-KEY' => '[KEY]',
                 'Content-Type' => 'application/json',
             ],
             'body' => wp_json_encode($rates_request_body),
         ];
 
         if ($this->debug_mode == 'all') {
-            $this->logger->log('Rates request', (array) $args);
+            $this->logger->debug('Rates request', (array) $args);
         }
 
+        $args['headers']['X-API-KEY'] = $this->api_key;
+
         if (filter_var($this->api_url, FILTER_VALIDATE_URL) === false) {
-            $this->logger->log('Rates request error. Wrong URL');
+            $this->logger->critical('Rates request error. Wrong URL');
+
             return false;
         }
 
@@ -53,7 +56,8 @@ class CalcuratesClient
         if (is_wp_error($result) || wp_remote_retrieve_response_code($result) != 200) {
 
             if ($this->debug_mode == 'all' || $this->debug_mode == 'errors') {
-                $this->logger->log('Rates request error', (array) $result);
+                $this->logger->critical('Rates request error', (array) $result);
+
             }
 
             return false;
@@ -62,7 +66,8 @@ class CalcuratesClient
         $response = json_decode(wp_remote_retrieve_body($result));
 
         if ($this->debug_mode == 'all') {
-            $this->logger->log('Calcurates rates resnose', (array) $response);
+            $this->logger->debug('Calcurates rates resnose', (array) $response);
+
         }
 
         return $response;

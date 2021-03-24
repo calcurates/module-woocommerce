@@ -4,12 +4,10 @@ namespace Calcurates\Calcurates;
 use Calcurates\Calcurates\CalcuratesClient;
 use Calcurates\Calcurates\Rates\Rates;
 use Calcurates\Calcurates\RequestsBodyBuilders\RatesRequestBodyBuilder;
-use Calcurates\Utils\Logger;
 
 class Calcurates
 {
 
-    private $logger;
     private $api_key;
     private $package;
     private $debug_mode;
@@ -19,7 +17,6 @@ class Calcurates
 
     public function __construct(string $api_key, string $api_url, $package = [], string $debug_mode, string $tax_mode)
     {
-        $this->logger = new Logger();
         $this->api_key = $api_key;
         $this->package = $package;
         $this->debug_mode = $debug_mode;
@@ -51,7 +48,6 @@ class Calcurates
         $this->rates_tools->extract($response);
         $this->rates_tools->apply_tax_mode($this->tax_mode);
         $rates = $this->rates_tools->convert_rates_to_wc_rates($this->package);
-        
 
         return $rates;
 

@@ -14,12 +14,7 @@ class ComposerStaticInitd1586ec25e49b2f24406696684c44569
     public static $prefixLengthsPsr4 = array (
         'P' => 
         array (
-            'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
-        ),
-        'K' => 
-        array (
-            'Katzgrau\\KLogger\\' => 17,
         ),
         'I' => 
         array (
@@ -36,17 +31,9 @@ class ComposerStaticInitd1586ec25e49b2f24406696684c44569
     );
 
     public static $prefixDirsPsr4 = array (
-        'Psr\\Log\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
-        ),
         'Psr\\Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-message/src',
-        ),
-        'Katzgrau\\KLogger\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/katzgrau/klogger/src',
         ),
         'Inpsyde\\WPRESTStarter\\' => 
         array (
@@ -62,16 +49,11 @@ class ComposerStaticInitd1586ec25e49b2f24406696684c44569
         ),
     );
 
-    public static $classMap = array (
-        'Katzgrau\\KLogger\\Logger' => __DIR__ . '/..' . '/katzgrau/klogger/src/Logger.php',
-    );
-
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInitd1586ec25e49b2f24406696684c44569::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInitd1586ec25e49b2f24406696684c44569::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitd1586ec25e49b2f24406696684c44569::$classMap;
 
         }, null, ClassLoader::class);
     }
