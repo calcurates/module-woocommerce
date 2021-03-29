@@ -15,6 +15,7 @@ class Rates
         $this->tax_mode = $tax_mode;
         $this->package = $package;
         $this->rates = [];
+        $this->rates_extractor_factory = new RatesExtractorFactory();
     }
 
     /**
@@ -28,10 +29,8 @@ class Rates
 
         foreach ($response->shippingOptions as $shipping_option_name => $shipping_option_data) {
 
-            $rates_extractor_factory = new RatesExtractorFactory();
-
             try {
-                $rate = $rates_extractor_factory->create($shipping_option_name);
+                $rate = $this->rates_extractor_factory->create($shipping_option_name);
             } catch (\Exception $e) {
                 continue;
             }
