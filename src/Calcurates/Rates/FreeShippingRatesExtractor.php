@@ -1,7 +1,9 @@
 <?php
 namespace Calcurates\Calcurates\Rates;
 
-class FreeShippingRatesExtractor
+use Calcurates\Contracts\Rates\RatesExtractorInterface;
+
+class FreeShippingRatesExtractor implements RatesExtractorInterface
 {
 
     /**

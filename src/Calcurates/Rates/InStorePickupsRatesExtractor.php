@@ -1,7 +1,9 @@
 <?php
 namespace Calcurates\Calcurates\Rates;
 
-class InStorePickupsRatesExtractor
+use Calcurates\Contracts\Rates\RatesExtractorInterface;
+
+class InStorePickupsRatesExtractor implements RatesExtractorInterface
 {
 
     /**
