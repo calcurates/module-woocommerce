@@ -1,7 +1,9 @@
 <?php
 namespace Calcurates\Calcurates\Rates;
 
-class TableRatesExtractor
+use Calcurates\Contracts\Rates\RatesExtractorInterface;
+
+class TableRatesRatesExtractor implements RatesExtractorInterface
 {
 
     /**
