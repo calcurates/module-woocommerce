@@ -74,7 +74,7 @@ class RatesRequestBodyBuilder
             'contactName' => $contact_name,
             'companyName' => $company,
             'contactPhone' => $phone,
-            'regionCode' => null,
+            'regionCode' => null, //
             'regionName' => $state,
             'postalCode' => $postcode, // FIXME it could be empty in WC but in api it requires
             'addressLine1' => $addr_1,
@@ -98,22 +98,17 @@ class RatesRequestBodyBuilder
             }
 
             $data = [
-                "quoteItemId" => $cart_product['product_id'], // FIXME rename later to product_id or id
+                "quoteItemId" => $cart_product['product_id'], // FIXME
                 "sku" => $product->get_sku() ?: null,
-                "priceWithTax" => $cart_product['line_total'] + $cart_product['line_tax'],
+                "priceWithTax" => $cart_product['line_total'] + $cart_product['line_tax'], // FIXME is it for all items or per item?
                 "priceWithoutTax" => $cart_product['line_total'],
-                "discountAmount" => 0,
+                "discountAmount" => null, // FIXME what is that
                 "quantity" => $cart_product['quantity'],
                 "weight" => (float) $product->get_weight(),
                 "length" => (float) $product->get_length(),
                 "width" => (float) $product->get_width(),
                 "height" => (float) $product->get_height(),
-                "inventories" => [
-                    [
-                        "source" => null,
-                        "quantity" => $product->get_stock_quantity(),
-                    ],
-                ],
+                "inventories" => null,
                 "attributes" => [
                     "date_created" => $product->get_date_created() ? $product->get_date_created()->getTimestamp() : null,
                     "date_modified" => $product->get_date_modified() ? $product->get_date_modified()->getTimestamp() : null,
