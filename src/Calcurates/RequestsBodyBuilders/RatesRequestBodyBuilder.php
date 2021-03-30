@@ -105,11 +105,11 @@ class RatesRequestBodyBuilder
                 "discountAmount" => null, // FIXME what is that
                 "quantity" => $cart_product['quantity'],
                 "weight" => (float) $product->get_weight(),
-                "length" => (float) $product->get_length(),
-                "width" => (float) $product->get_width(),
-                "height" => (float) $product->get_height(),
                 "inventories" => null,
                 "attributes" => [
+                    "length" => (float) $product->get_length(),
+                    "width" => (float) $product->get_width(),
+                    "height" => (float) $product->get_height(),
                     "date_created" => $product->get_date_created() ? $product->get_date_created()->getTimestamp() : null,
                     "date_modified" => $product->get_date_modified() ? $product->get_date_modified()->getTimestamp() : null,
                     "status" => $product->get_status(),
