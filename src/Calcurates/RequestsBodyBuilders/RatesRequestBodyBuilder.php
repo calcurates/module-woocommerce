@@ -30,6 +30,7 @@ class RatesRequestBodyBuilder
             'promoCode' => $coupon ? $coupon->get_code() : null, // FIXME coud be few coupons
             'shipTo' => $this->prepare_ship_to_data(),
             "products" => $this->prepare_products_data($this->package),
+            "customerGroup" => is_user_logged_in() ? 'customer' : 'guest',
         ];
 
         return $request_body;

@@ -63,6 +63,7 @@ class WooCommmerceSettingsReadEndpoint implements Endpoint\RequestHandler
         $data['currency'] = get_woocommerce_currency();
         $data['weight_unit'] = get_option('woocommerce_weight_unit');
         $data['dimension_unit'] = get_option('woocommerce_dimension_unit');
+        $data['customer_roles'] = $this->get_customer_roles();
         $data['attrs'][] = $this->get_terms();
         $data['attrs'][] = $this->get_tags();
         $product_attrs = $this->get_attrs();
@@ -259,5 +260,27 @@ class WooCommmerceSettingsReadEndpoint implements Endpoint\RequestHandler
         }
 
         return $attrs;
+    }
+
+    private function get_customer_roles()
+    {
+        $data = [
+            'title' => 'Customer roles',
+            'name' => 'customer_roles',
+            'field_type' => 'collection',
+            'can_multi' => false,
+            'values' => [
+                [
+                    "value" => "customer",
+                    "title" => "Customer",
+                ],
+                [
+                    "value" => "guest",
+                    "title" => "Guest",
+                ],
+            ],
+        ];
+
+        return $data;
     }
 }
