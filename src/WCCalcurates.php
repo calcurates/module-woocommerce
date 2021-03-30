@@ -3,7 +3,6 @@
 namespace Calcurates;
 
 use Calcurates\Assets;
-use Calcurates\RESTAPI\Routes\MultisiteRoutes;
 use Calcurates\RESTAPI\Routes\WooCommmerceSettingsRoutes;
 use Calcurates\WCBootstarp;
 
@@ -22,13 +21,11 @@ if (!class_exists(WCCalcurates::class)) {
         protected $wc_bootsrap;
         protected $assets;
         protected $wc_settings_routes;
-        protected $multisite_routes;
 
         public function __construct()
         {
             $this->wc_bootsrap = new WCBootstarp();
             $this->wc_settings_routes = new WooCommmerceSettingsRoutes();
-            $this->multisite_routes = new MultisiteRoutes();
             $this->assets = new Assets();
         }
         /**
@@ -50,7 +47,6 @@ if (!class_exists(WCCalcurates::class)) {
          */
         public function restapi_register_routes()
         {
-            add_action('rest_api_init', [$this->multisite_routes, 'register_route']);
             add_action('rest_api_init', [$this->wc_settings_routes, 'register_route']);
         }
 
