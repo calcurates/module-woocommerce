@@ -56,7 +56,7 @@ class CalcuratesClient
             return false;
         }
 
-        $result = wp_safe_remote_request($this->api_url . '/api/magento2/rates', $args);
+        $result = wp_safe_remote_request($this->api_url . '/api/woocommerce/rates', $args); // FIXME is it gzip?
 
         if (is_wp_error($result) || wp_remote_retrieve_response_code($result) != 200) {
 
