@@ -7,6 +7,11 @@ use Inpsyde\WPRESTStarter\Core;
 use Inpsyde\WPRESTStarter\Core\Field\Field;
 use Inpsyde\WPRESTStarter\Factory\ResponseFactory;
 
+// Stop direct HTTP access.
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 class MultisiteRoutesReadEndpoint implements Endpoint\RequestHandler
 {
 

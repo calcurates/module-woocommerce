@@ -3,6 +3,11 @@ namespace Calcurates\Utils;
 
 use Calcurates\Basic;
 
+// Stop direct HTTP access.
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 /**
  * WC_Logger Wrapper
  */

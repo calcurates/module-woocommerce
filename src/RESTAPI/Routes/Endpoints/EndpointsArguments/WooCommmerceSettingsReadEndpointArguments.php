@@ -4,6 +4,11 @@ namespace Calcurates\RESTAPI\Routes\Endpoints\EndpointsArguments;
 use Inpsyde\WPRESTStarter\Common\Arguments;
 use Inpsyde\WPRESTStarter\Factory\ErrorFactory;
 
+// Stop direct HTTP access.
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 class WooCommmerceSettingsReadEndpointArguments implements Arguments
 {
 

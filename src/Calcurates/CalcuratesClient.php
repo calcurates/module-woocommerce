@@ -3,6 +3,11 @@ namespace Calcurates\Calcurates;
 
 use Calcurates\Utils\Logger;
 
+// Stop direct HTTP access.
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 class CalcuratesClient
 {
 

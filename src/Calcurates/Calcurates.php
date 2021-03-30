@@ -5,6 +5,11 @@ use Calcurates\Calcurates\CalcuratesClient;
 use Calcurates\Calcurates\Rates\Rates;
 use Calcurates\Calcurates\RequestsBodyBuilders\RatesRequestBodyBuilder;
 
+// Stop direct HTTP access.
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 class Calcurates
 {
 

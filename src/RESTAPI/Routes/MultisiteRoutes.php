@@ -10,6 +10,10 @@ use Inpsyde\WPRESTStarter\Core\Route\Options;
 use Inpsyde\WPRESTStarter\Core\Route\Registry;
 use Inpsyde\WPRESTStarter\Core\Route\Route;
 
+// Stop direct HTTP access.
+if (!defined('ABSPATH')) {
+    exit;
+}
 class MultisiteRoutes implements RestRouteInterface
 {
 

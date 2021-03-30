@@ -3,6 +3,11 @@ namespace Calcurates\Calcurates\Rates;
 
 use Calcurates\Contracts\Rates\RatesExtractorInterface;
 
+// Stop direct HTTP access.
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 class FreeShippingRatesExtractor implements RatesExtractorInterface
 {
 

@@ -3,6 +3,11 @@ namespace Calcurates\Calcurates\Rates;
 
 use Calcurates\Calcurates\Rates\RatesExtractorFactory;
 
+// Stop direct HTTP access.
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 class Rates
 {
     private $flat_rates_extractor;

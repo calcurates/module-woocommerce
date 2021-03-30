@@ -1,6 +1,10 @@
 <?php
 namespace Calcurates\Calcurates\RequestsBodyBuilders;
 
+// Stop direct HTTP access.
+if (!defined('ABSPATH')) {
+    exit;
+}
 class RatesRequestBodyBuilder
 {
 

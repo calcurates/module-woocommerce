@@ -1,8 +1,11 @@
 <?php
 
-declare (strict_types = 1);
-
 namespace Calcurates\RESTAPI\Routes\Factory;
+
+// Stop direct HTTP access.
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 use Calcurates\Basic;
 
