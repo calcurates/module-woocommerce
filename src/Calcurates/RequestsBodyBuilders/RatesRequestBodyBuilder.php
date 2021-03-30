@@ -75,8 +75,8 @@ class RatesRequestBodyBuilder
             'contactName' => $contact_name,
             'companyName' => $company,
             'contactPhone' => $phone,
-            'regionCode' => null, //
-            'regionName' => $state,
+            'regionCode' => $state,
+            'regionName' => $this->get_state_name_by_code($country_code, $state),
             'postalCode' => $postcode, // FIXME it could be empty in WC but in api it requires
             'addressLine1' => $addr_1,
             'addressLine2' => $addr_2,
@@ -174,6 +174,21 @@ class RatesRequestBodyBuilder
             $products[] = $data;
         }
         return $products;
+    }
+
+    private function get_state_name_by_code($country_code, $state_code)
+    {
+
+        if ($country_code) {
+            $states = WC()->countries->get_states($country_code);
+
+            if (\array_key_exists($state_code, $states)) {
+                return $states[$state_code];
+            }
+
+        }
+
+        return null;
     }
 
 }
