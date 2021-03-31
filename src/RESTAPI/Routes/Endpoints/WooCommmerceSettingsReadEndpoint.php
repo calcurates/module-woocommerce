@@ -58,6 +58,7 @@ class WooCommmerceSettingsReadEndpoint implements Endpoint\RequestHandler
      */
     public function handle_request(\WP_REST_Request $request): \WP_REST_Response
     {
+        // TODO: refactor array building in oop manner
         $data['time_zone'] = get_option('timezone_string');
         $data['gmt_offset'] = get_option('gmt_offset');
         $data['currency'] = get_woocommerce_currency();
@@ -174,6 +175,34 @@ class WooCommmerceSettingsReadEndpoint implements Endpoint\RequestHandler
             'title' => 'Sold individually',
             'name' => 'is_sold_individually',
             'field_type' => 'bool',
+        ];
+
+        // weight
+        $data['attrs'][] = [
+            'title' => 'Weight',
+            'name' => 'weight',
+            'field_type' => 'number',
+        ];
+
+        // length
+        $data['attrs'][] = [
+            'title' => 'Length',
+            'name' => 'length',
+            'field_type' => 'number',
+        ];
+
+        // width
+        $data['attrs'][] = [
+            'title' => 'Width',
+            'name' => 'width',
+            'field_type' => 'number',
+        ];
+
+        // height
+        $data['attrs'][] = [
+            'title' => 'Height',
+            'name' => 'height',
+            'field_type' => 'number',
         ];
 
         return $this->response_factory->create([
