@@ -28,16 +28,11 @@ class CarriersRatesExtractor implements RatesExtractorInterface
                 foreach ($carrier->rates as $rate) {
 
                     if (property_exists($rate, 'success') && $rate->success) {
-
+                        $services_names = [];
+                        $services_messages = [];
+                        $services_ids = [];
                         if (property_exists($rate, 'services') && is_array($rate->services)) {
-
-                            $services_names = [];
-
-                            $services_messages = [];
-                            $services_ids = [];
-
                             foreach ($rate->services as $services) {
-
                                 if (property_exists($services, 'message') && $services->message) {
                                     $services_messages[] = $services->message;
                                 }

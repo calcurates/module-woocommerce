@@ -18,7 +18,8 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
   libzip-dev \
   zip \
   unzip \
-  cron
+  cron \
+  mc
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd \
@@ -47,7 +48,8 @@ RUN groupadd --gid $gid $uname && \
   composer create-project roots/bedrock . && \
   composer require wpackagist-plugin/woocommerce && \
   composer require wpackagist-plugin/wp-mail-logging && \
-  chmod 777 /var/www/html/web/app/uploads
+  chmod 777 /var/www/html/web/app/uploads && \
+  touch /var/www/xdebug.log && chown $uname:$uname /var/www/xdebug.log
 
 # Set working directory
 WORKDIR /var/www/html

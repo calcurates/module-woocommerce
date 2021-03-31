@@ -1,4 +1,9 @@
 version: "3.8"
+
+volumes:
+  app_code:
+    name: "wc_calcurates_volume"
+
 services:
   php:
     build:
@@ -6,7 +11,7 @@ services:
         uname: ${PHP_UNAME}
         uid: ${PHP_UID}
         gid: ${PHP_GID}
-      context: .docker/php-fpm
+      context: .docker/php
       dockerfile: Dockerfile
     environment:
       COMPOSER_MEMORY_LIMIT: -1
@@ -15,12 +20,12 @@ services:
     restart: unless-stopped
     volumes:
       - app_code:/var/www/html
-      - ./.docker/wordpress-bedrock/development.php:/var/www/html/config/environments/development.php
+      - ./.docker/php/wordpress-bedrock/development.php:/var/www/html/config/environments/development.php
       - ./wc-calcurates.php:/var/www/html/web/app/plugins/wc-calcurates/wc-calcurates.php
       - ./.env:/var/www/html/.env
       - ./lib:/var/www/html/web/app/plugins/wc-calcurates/lib
-      - ./logs:/var/www/html/web/app/uploads/wc-logs
       - ./src:/var/www/html/web/app/plugins/wc-calcurates/src
+      - ./logs:/var/www/html/web/app/uploads/wc-logs
 
   db:
     image: mysql:8.0
@@ -36,6 +41,7 @@ services:
       - ./.docker/mysql:/docker-entrypoint-initdb.d
     ports:
       - ${DB_PORT}:3306
+
   nginx:
     image: nginx
     volumes:
@@ -47,6 +53,3 @@ services:
     ports:
       - ${NGINX_PORT}:80
     restart: unless-stopped
-volumes:
-  app_code:
-    name: "wc_calcurates_volume"

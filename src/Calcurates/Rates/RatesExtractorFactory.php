@@ -14,6 +14,8 @@ if (!defined('ABSPATH')) {
  */
 class RatesExtractorFactory
 {
+    private $logger;
+
     public function __construct()
     {
         $this->logger = new Logger();
@@ -34,6 +36,5 @@ class RatesExtractorFactory
         $this->logger->critical($error);
 
         throw new \Exception($error);
-
     }
 }

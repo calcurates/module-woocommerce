@@ -22,14 +22,7 @@ class Logger
         $this->source = Basic::get_plugin_text_domain();
     }
 
-    /**
-     * log
-     *
-     * @param  text $title
-     * @param  array $data
-     * @return void
-     */
-    private function log(string $type, string $title = '', array $data = [])
+    private function log(string $type, string $title = '', array $data = []): void
     {
 
         if (is_array($data) && !empty($data)) {

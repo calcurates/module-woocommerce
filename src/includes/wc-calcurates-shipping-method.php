@@ -22,21 +22,22 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
      * @param  int $instance_id
      * @return void
      */
-    public function __construct(int $instance_id = 0)
+    public function __construct($instance_id = 0)
     {
+        parent::__construct($instance_id);
+
         $this->id = 'calcurates';
-        $this->instance_id = absint($instance_id);
         $this->method_title = __('Calcurates Shipping Method');
         $this->method_description = __('Calcurates Shipping Method');
 
-        $this->enabled = "yes";
-        $this->title = "Calcurates Shipping Method";
+        $this->enabled = 'yes';
+        $this->title = 'Calcurates Shipping Method';
 
-        $this->supports = array(
+        $this->supports = [
             'shipping-zones',
             // 'instance-settings',
             'settings',
-        );
+        ];
 
         $this->init();
     }
@@ -146,7 +147,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
      * Get rates
      *
      * @param  mixed $package
-     * @return void
+     * @return array|false
      */
     public function get_rates(array $package = [])
     {

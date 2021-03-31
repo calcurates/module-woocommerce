@@ -14,7 +14,6 @@
 !uninstall.php
 !composer.json
 !lib
-!wordpress-bedrock
 
 # Ignore all files named .DS_Store or ending with .log
 **/.DS_Store
@@ -26,10 +25,10 @@
 !wc-calcurates.php
 !.docker/
 .docker/*
+!.docker/mysql/
 !.docker/nginx/default.conf
 !.docker/nginx/Dockerfile
-!.docker/php-fpm/
-!.docker/wordpress-bedrock/
-.docker/wordpress-bedrock/*
-!.docker/wordpress-bedrock/development.php.example
+!.docker/php/
+.docker/php/wordpress-bedrock/*
+!.docker/php/wordpress-bedrock/development.php.example
 !src

@@ -29,7 +29,7 @@ class CalcuratesClient
      * Get rates from Calcurates server
      *
      * @param  mixed $rates_request_body
-     * @return void
+     * @return object|false
      */
     public function get_rates(array $rates_request_body)
     {
@@ -44,7 +44,7 @@ class CalcuratesClient
             'body' => wp_json_encode($rates_request_body),
         ];
 
-        if ($this->debug_mode == 'all') {
+        if ($this->debug_mode === 'all') {
             $this->logger->debug('Rates request', (array) $args);
         }
 
@@ -60,7 +60,7 @@ class CalcuratesClient
 
         if (is_wp_error($result) || wp_remote_retrieve_response_code($result) != 200) {
 
-            if ($this->debug_mode == 'all' || $this->debug_mode == 'errors') {
+            if ($this->debug_mode === 'all' || $this->debug_mode === 'errors') {
                 $this->logger->critical('Rates request error', (array) $result);
 
             }
@@ -70,7 +70,7 @@ class CalcuratesClient
 
         $response = json_decode(wp_remote_retrieve_body($result));
 
-        if ($this->debug_mode == 'all') {
+        if ($this->debug_mode === 'all') {
             $this->logger->debug('Calcurates rates resnose', (array) $response);
 
         }

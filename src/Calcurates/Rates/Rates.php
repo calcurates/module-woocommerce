@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) {
 
 class Rates
 {
-    private $flat_rates_extractor;
+    private $rates_extractor_factory;
     private $rates;
     private $tax_mode;
     private $package;
@@ -29,7 +29,7 @@ class Rates
      * @param  mixed $response
      * @return array
      */
-    public function extract(object $response): array
+    public function extract($response): array
     {
 
         foreach ($response->shippingOptions as $shipping_option_name => $shipping_option_data) {
@@ -123,7 +123,7 @@ class Rates
      * @param  mixed $response
      * @return bool
      */
-    private function has_shipping_option(string $shipping_option, object $response): bool
+    private function has_shipping_option(string $shipping_option, $response): bool
     {
         if (is_object($response) && property_exists($response, 'shippingOptions')) {
             if (property_exists($response->shippingOptions, $shipping_option) && !empty($response->shippingOptions->$shipping_option)) {

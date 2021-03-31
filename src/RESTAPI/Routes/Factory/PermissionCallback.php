@@ -39,14 +39,8 @@ class PermissionCallback
          * @return bool Whether or not the current user has specific capabilities.
          */
         return function (): bool {
-
-            if (isset($_SERVER['HTTP_X_API_KEY'])) {
-                if ($_SERVER['HTTP_X_API_KEY'] == get_option(Basic::get_prefix() . 'key')) {
-                    return true;
-                }
-            }
-
-            return false;
+            return isset($_SERVER['HTTP_X_API_KEY']) &&
+                $_SERVER['HTTP_X_API_KEY'] === get_option(Basic::get_prefix() . 'key');
         };
     }
 
