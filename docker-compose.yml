@@ -11,6 +11,8 @@ services:
         uname: ${PHP_UNAME}
         uid: ${PHP_UID}
         gid: ${PHP_GID}
+        wp_version: ${WP_VERSION}
+        wc_version: ${WC_VERSION}
       context: .docker/php
       dockerfile: Dockerfile
     environment:
@@ -19,7 +21,6 @@ services:
       PHP_IDE_CONFIG: serverName=${XDEBUG_STORM_SERVER_NAME}
     restart: unless-stopped
     volumes:
-      - app_code:/var/www/html
       - ./.docker/php/wordpress-bedrock/development.php:/var/www/html/config/environments/development.php
       - ./wc-calcurates.php:/var/www/html/web/app/plugins/wc-calcurates/wc-calcurates.php
       - ./.env:/var/www/html/.env

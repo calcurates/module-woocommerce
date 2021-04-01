@@ -40,13 +40,17 @@ ADD opcache.ini "$PHP_INI_DIR/conf.d/opcache.ini"
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+ARG wp_version
+ARG wc_version
+
 # Create system user to run Composer
 RUN groupadd --gid $gid $uname && \
   useradd -G www-data,root -s /bin/bash --uid $uid --gid $gid $uname && \
   mkdir -p /home/$uname/.composer && \
   chown -R $uname:$uname /home/$uname && \
   composer create-project roots/bedrock . && \
-  composer require wpackagist-plugin/woocommerce && \
+  composer require wpackagist-plugin/woocommerce:$wc_version && \
+  composer require roots/wordpress:$wp_version && \
   composer require wpackagist-plugin/wp-mail-logging && \
   chmod 777 /var/www/html/web/app/uploads && \
   touch /var/www/xdebug.log && chown $uname:$uname /var/www/xdebug.log
