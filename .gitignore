@@ -5,8 +5,6 @@
 !.gitignore
 !README.md
 !.env.example
-!commitizen.js
-!commitlint.js
 !docker-compose.yml
 !package.json
 !.editorconfig
