@@ -3,7 +3,7 @@ namespace Calcurates\RESTAPI;
 
 use Calcurates\Basic;
 
-class Woocommerce_Settings_REST_Controller extends \WP_REST_Controller
+class WoocommerceSettingsRESTController extends \WP_REST_Controller
 {
     public function __construct()
     {

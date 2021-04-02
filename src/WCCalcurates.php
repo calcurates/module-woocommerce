@@ -4,7 +4,7 @@ namespace Calcurates;
 
 use Calcurates\Assets;
 use Calcurates\WCBootstarp;
-use Calcurates\RESTAPI\Woocommerce_Settings_REST_Controller;
+use Calcurates\RESTAPI\WoocommerceSettingsRESTController;
 
 // Stop direct HTTP access.
 if (!defined('ABSPATH')) {
@@ -45,7 +45,7 @@ if (!class_exists(WCCalcurates::class)) {
          */
         public function restapi_register_routes()
         {
-            add_action('rest_api_init', [new Woocommerce_Settings_REST_Controller(), 'register_routes']);
+            add_action('rest_api_init', [new WoocommerceSettingsRESTController(), 'register_routes']);
         }
 
         /**
