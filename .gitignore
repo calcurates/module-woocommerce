@@ -6,7 +6,6 @@
 !README.md
 !.env.example
 !docker-compose.yml
-!package.json
 !.editorconfig
 !index.php
 !uninstall.php
