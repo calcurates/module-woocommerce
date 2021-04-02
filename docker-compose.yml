@@ -27,6 +27,7 @@ services:
       - ./lib:/var/www/html/web/app/plugins/wc-calcurates/lib
       - ./src:/var/www/html/web/app/plugins/wc-calcurates/src
       - ./logs:/var/www/html/web/app/uploads/wc-logs
+      - ./includes:/var/www/html/web/app/plugins/wc-calcurates/includes
 
   db:
     image: mysql:8.0

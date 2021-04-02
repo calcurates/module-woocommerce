@@ -1,6 +1,8 @@
 <?php
 namespace Calcurates;
 
+use Calcurates\Basic;
+
 // Stop direct HTTP access.
 if (!defined('ABSPATH')) {
     exit;
@@ -40,7 +42,7 @@ if (!class_exists(WCBootstarp::class)) {
         public function init_shipping()
         {
             if (class_exists('WC_Shipping_Method')) {
-                require_once 'includes/wc-calcurates-shipping-method.php';
+                require_once Basic::get_plugin_dir_path().'includes/wc-calcurates-shipping-method.php';
                 add_filter('woocommerce_shipping_methods', [$this, 'add_calcurates_shipping']);
             }
         }
@@ -68,7 +70,6 @@ if (!class_exists(WCBootstarp::class)) {
             $data_array = [];
 
             if ($data) {
-
                 parse_str($data, $data_array);
 
                 if (array_key_exists('ship_to_different_address', $data_array) && $data_array['ship_to_different_address']) {
@@ -100,20 +101,16 @@ if (!class_exists(WCBootstarp::class)) {
 
             // shipping rate description
             if (array_key_exists('message', $meta)) {
-
                 if ($meta['message']) {
                     $text .= "<div class='calcurates-checkout__shipping-rate-message'>" . $meta['message'] . "</div>";
                 }
-
             }
 
             // shipping rate dates
             if (array_key_exists('delivery_date_from', $meta) && array_key_exists('delivery_date_to', $meta)) {
-
                 $estimated_delivery_date = '';
 
                 if ($meta['delivery_date_from'] === $meta['delivery_date_to']) {
-
                     $delivery_date_from = strtotime($meta['delivery_date_from']);
 
                     if ($delivery_date_from) {
@@ -121,9 +118,7 @@ if (!class_exists(WCBootstarp::class)) {
 
                         $estimated_delivery_date = $delivery_date_from;
                     }
-
                 } else {
-
                     $delivery_date_from = strtotime($meta['delivery_date_from']);
                     $delivery_date_to = strtotime($meta['delivery_date_to']);
 
@@ -137,13 +132,11 @@ if (!class_exists(WCBootstarp::class)) {
                     if ($delivery_date_from && $delivery_date_to) {
                         $estimated_delivery_date = $delivery_date_from . ' - ' . $delivery_date_to;
                     }
-
                 }
 
                 if ($estimated_delivery_date) {
                     $text .= "<div class='calcurates-checkout__shipping-rate-dates'>Estimated delivery date: " . $estimated_delivery_date . "</div>";
                 }
-
             }
 
             if ($text) {
@@ -162,7 +155,6 @@ if (!class_exists(WCBootstarp::class)) {
          */
         public function add_shipping_data_after_order_table_in_email(\WC_Order $order, bool $sent_to_admin, string $plain_text, \WC_Email $email)
         {
-
             $message = null;
             $delivery_date_from = null;
             $delivery_date_to = null;
@@ -170,27 +162,22 @@ if (!class_exists(WCBootstarp::class)) {
             $text = '';
 
             foreach ($order->get_items('shipping') as $item_id => $item) {
-
                 if ($item->get_method_id() === 'calcurates') {
                     $message = $item->get_meta('message');
                     $delivery_date_from = $item->get_meta('delivery_date_from');
                     $delivery_date_to = $item->get_meta('delivery_date_to');
                     break;
                 }
-
             }
 
             if ($delivery_date_from && $delivery_date_from === $delivery_date_to) {
-
                 $delivery_date_from = strtotime($delivery_date_from);
 
                 if ($delivery_date_from) {
                     $delivery_date_from = date(get_option('date_format') . " " . get_option('time_format'), $delivery_date_from);
                     $estimated_delivery_date = $delivery_date_from;
                 }
-
             } elseif ($delivery_date_from && $delivery_date_to) {
-
                 $delivery_date_from = strtotime($delivery_date_from);
                 $delivery_date_to = strtotime($delivery_date_to);
 
@@ -204,7 +191,6 @@ if (!class_exists(WCBootstarp::class)) {
                 if ($delivery_date_from && $delivery_date_to) {
                     $estimated_delivery_date = $delivery_date_from . ' - ' . $delivery_date_to;
                 }
-
             }
 
             if ($message) {
@@ -217,7 +203,6 @@ if (!class_exists(WCBootstarp::class)) {
             if ($text) {
                 echo "<p>" . $text . "</p>";
             }
-
         }
     }
 }
