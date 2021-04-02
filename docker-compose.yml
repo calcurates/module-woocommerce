@@ -48,7 +48,7 @@ services:
     volumes:
       - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
       - app_code:/var/www/html
-      - ./src/assets:/var/www/html/web/app/plugins/wc-calcurates/src/assets
+      - ./assets:/var/www/html/web/app/plugins/wc-calcurates/assets
     depends_on:
       - php
     ports:
