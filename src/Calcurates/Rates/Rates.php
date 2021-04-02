@@ -4,7 +4,7 @@ namespace Calcurates\Calcurates\Rates;
 use Calcurates\Calcurates\Rates\RatesExtractorFactory;
 
 // Stop direct HTTP access.
-if (!defined('ABSPATH')) {
+if (!\defined('ABSPATH')) {
     exit;
 }
 
@@ -125,8 +125,8 @@ class Rates
      */
     private function has_shipping_option(string $shipping_option, $response): bool
     {
-        if (is_object($response) && property_exists($response, 'shippingOptions')) {
-            if (property_exists($response->shippingOptions, $shipping_option) && !empty($response->shippingOptions->$shipping_option)) {
+        if (is_object($response) && \property_exists($response, 'shippingOptions')) {
+            if (\property_exists($response->shippingOptions, $shipping_option) && !empty($response->shippingOptions->$shipping_option)) {
                 return true;
             }
         }
@@ -142,7 +142,7 @@ class Rates
      */
     private function append_rates($rates)
     {
-        if (is_array($rates) && !empty($rates)) {
+        if (\is_array($rates) && !empty($rates)) {
             $this->rates = array_merge($this->rates, $rates);
         }
     }

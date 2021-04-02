@@ -5,11 +5,11 @@ namespace Calcurates;
 use Calcurates\Basic;
 
 // Stop direct HTTP access.
-if (!defined('ABSPATH')) {
+if (!\defined('ABSPATH')) {
     exit;
 }
 
-if (!class_exists(Activator::class)) {
+if (!\class_exists(Activator::class)) {
     /**
      * Defines methods run on plugin activation
      */
@@ -37,8 +37,8 @@ if (!class_exists(Activator::class)) {
             /**
              * Check if WooCommerce is activated
              */
-            if (!defined('WC_VERSION')) {
-                wp_die(sprintf(
+            if (!\defined('WC_VERSION')) {
+                \wp_die(sprintf(
                     __('WooCommerce Calcurates requires WooCommerce 3.9 or later.', 'WC_Calcurates')
                 ));
             }
@@ -51,8 +51,8 @@ if (!class_exists(Activator::class)) {
          */
         public static function key_setup()
         {
-            if (!get_option('wc_calcurates_key')) {
-                update_option(Basic::get_prefix() . '_key', wc_rand_hash());
+            if (!\get_option('wc_calcurates_key')) {
+                \update_option(Basic::get_prefix() . '_key', \wc_rand_hash());
             }
         }
     }

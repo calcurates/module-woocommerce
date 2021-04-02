@@ -7,11 +7,11 @@ use Calcurates\WCBootstarp;
 use Calcurates\RESTAPI\WoocommerceSettingsRESTController;
 
 // Stop direct HTTP access.
-if (!defined('ABSPATH')) {
+if (!\defined('ABSPATH')) {
     exit;
 }
 
-if (!class_exists(WCCalcurates::class)) {
+if (!\class_exists(WCCalcurates::class)) {
     /**
      * Base plugin class
      */
@@ -45,7 +45,7 @@ if (!class_exists(WCCalcurates::class)) {
          */
         public function restapi_register_routes()
         {
-            add_action('rest_api_init', [new WoocommerceSettingsRESTController(), 'register_routes']);
+            \add_action('rest_api_init', [new WoocommerceSettingsRESTController(), 'register_routes']);
         }
 
         /**
@@ -65,7 +65,7 @@ if (!class_exists(WCCalcurates::class)) {
          */
         public function enqueue_styles()
         {
-            add_action('wp_enqueue_scripts', [$this->assets, 'enqueue_styles']);
+            \add_action('wp_enqueue_scripts', [$this->assets, 'enqueue_styles']);
         }
     }
 }

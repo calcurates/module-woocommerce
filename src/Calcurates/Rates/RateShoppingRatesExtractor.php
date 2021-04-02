@@ -4,7 +4,7 @@ namespace Calcurates\Calcurates\Rates;
 use Calcurates\Contracts\Rates\RatesExtractorInterface;
 
 // Stop direct HTTP access.
-if (!defined('ABSPATH')) {
+if (!\defined('ABSPATH')) {
     exit;
 }
 class RateShoppingRatesExtractor implements RatesExtractorInterface
@@ -22,45 +22,45 @@ class RateShoppingRatesExtractor implements RatesExtractorInterface
 
         foreach ($rate_shopping_rates as $rate_shopping) {
 
-            if (property_exists($rate_shopping, 'success') && $rate_shopping->success) {
+            if (\property_exists($rate_shopping, 'success') && $rate_shopping->success) {
 
-                if (property_exists($rate_shopping, 'carriers') && $rate_shopping->carriers && is_array($rate_shopping->carriers)) {
+                if (\property_exists($rate_shopping, 'carriers') && $rate_shopping->carriers && \is_array($rate_shopping->carriers)) {
 
                     foreach ($rate_shopping->carriers as $carrier) {
 
-                        if (property_exists($carrier, 'success') && $carrier->success && is_array($carrier->rates)) {
+                        if (\property_exists($carrier, 'success') && $carrier->success && \is_array($carrier->rates)) {
 
                             foreach ($carrier->rates as $rate) {
 
-                                if (property_exists($rate, 'success') && $rate->success) {
+                                if (\property_exists($rate, 'success') && $rate->success) {
 
                                     $services_names = [];
                                     $services_messages = [];
                                     $services_ids = [];
-                                    if (property_exists($rate, 'services') && is_array($rate->services)) {
+                                    if (\property_exists($rate, 'services') && \is_array($rate->services)) {
                                         foreach ($rate->services as $services) {
 
-                                            if (property_exists($services, 'message') && $services->message) {
+                                            if (\property_exists($services, 'message') && $services->message) {
                                                 $services_messages[] = $services->message;
                                             }
-                                            if (property_exists($services, 'id') && $services->id) {
+                                            if (\property_exists($services, 'id') && $services->id) {
                                                 $services_ids[] = $services->id;
                                             }
-                                            if (property_exists($services, 'name') && $services->name) {
+                                            if (\property_exists($services, 'name') && $services->name) {
                                                 $services_names[] = $services->name;
                                             }
                                         }
                                     }
 
-                                    $services_messages = implode('. ', $services_messages);
-                                    $services_ids = implode('_', $services_ids);
-                                    $services_names = implode(', ', $services_names);
+                                    $services_messages = \implode('. ', $services_messages);
+                                    $services_ids = \implode('_', $services_ids);
+                                    $services_names = \implode(', ', $services_names);
 
                                     $ready_rates[] = [
                                         'id' => $rate_shopping->id . '_' . $carrier->id . '_' . $services_ids,
                                         'label' => $carrier->name . '. ' . $services_names,
                                         'cost' => $rate->rate->cost,
-                                        'tax' => is_numeric($rate->rate->tax) ? $rate->rate->tax : 0,
+                                        'tax' => \is_numeric($rate->rate->tax) ? $rate->rate->tax : 0,
                                         'message' => $rate_shopping->message . ' ' . $services_messages,
                                         'delivery_date_from' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->from : null,
                                         'delivery_date_to' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->to : null,

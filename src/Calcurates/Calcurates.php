@@ -6,13 +6,12 @@ use Calcurates\Calcurates\Rates\Rates;
 use Calcurates\Calcurates\RequestsBodyBuilders\RatesRequestBodyBuilder;
 
 // Stop direct HTTP access.
-if (!defined('ABSPATH')) {
+if (!\defined('ABSPATH')) {
     exit;
 }
 
 class Calcurates
 {
-
     private $rates_request_body_builder;
     private $calcurates_client;
     private $rates_tools;
@@ -22,7 +21,6 @@ class Calcurates
         $this->rates_request_body_builder = $rates_request_body_builder;
         $this->calcurates_client = $calcurates_client;
         $this->rates_tools = $rates_tools;
-
     }
 
     /**
@@ -48,7 +46,5 @@ class Calcurates
         $rates = $this->rates_tools->convert_rates_to_wc_rates();
 
         return $rates;
-
     }
-
 }

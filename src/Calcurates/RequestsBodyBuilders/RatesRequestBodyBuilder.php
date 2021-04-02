@@ -2,12 +2,11 @@
 namespace Calcurates\Calcurates\RequestsBodyBuilders;
 
 // Stop direct HTTP access.
-if (!defined('ABSPATH')) {
+if (!\defined('ABSPATH')) {
     exit;
 }
 class RatesRequestBodyBuilder
 {
-
     private $package;
 
     public function __construct($package = [])
@@ -22,15 +21,14 @@ class RatesRequestBodyBuilder
      */
     public function build(): array
     {
-
-        $coupons = WC()->cart->get_coupons();
-        $coupon = reset($coupons);
+        $coupons = \WC()->cart->get_coupons();
+        $coupon = \reset($coupons);
 
         $request_body = [
             'promoCode' => $coupon ? $coupon->get_code() : null, // FIXME coud be few coupons
             'shipTo' => $this->prepare_ship_to_data(),
             "products" => $this->prepare_products_data($this->package),
-            "customerGroup" => is_user_logged_in() ? 'customer' : 'guest',
+            "customerGroup" => \is_user_logged_in() ? 'customer' : 'guest',
         ];
 
         return $request_body;
@@ -40,8 +38,8 @@ class RatesRequestBodyBuilder
     {
         $contact_name = null;
         $country_code = null;
-        $customer_session_data = WC()->session->get('customer');
-        $ship_to_different_address = WC()->session->get('ship_to_different_address') ?? 0;
+        $customer_session_data = \WC()->session->get('customer');
+        $ship_to_different_address = \WC()->session->get('ship_to_different_address') ?? 0;
         $postcode = $ship_to_different_address ? ($customer_session_data['shipping_postcode'] ?: "string"): ($customer_session_data['postcode'] ?: "string");
         $first_name = $ship_to_different_address ? ($customer_session_data['shipping_first_name'] ?: null): ($customer_session_data['first_name'] ?: null);
         $last_name = $ship_to_different_address ? ($customer_session_data['shipping_last_name'] ?: null): ($customer_session_data['last_name'] ?: null);
@@ -62,7 +60,7 @@ class RatesRequestBodyBuilder
         if (\array_key_exists('shipping_country', (array) $customer_session_data) && $customer_session_data['shipping_country']) {
             $country_code = $customer_session_data['shipping_country'];
         } else {
-            $default_location = wc_get_customer_default_location();
+            $default_location = \wc_get_customer_default_location();
 
             if ($default_location['country']) {
                 $country_code = $default_location['country'];
@@ -91,7 +89,6 @@ class RatesRequestBodyBuilder
         $products = [];
 
         foreach ($package['contents'] as $cart_product) {
-
             $product = $cart_product['data'];
 
             if ($product->is_virtual() || $product->is_downloadable()) {
@@ -136,7 +133,7 @@ class RatesRequestBodyBuilder
 
             if ($cart_product['variation_id'] && $product->get_parent_id()) { // variation
 
-                $parent_product = wc_get_product($product->get_parent_id());
+                $parent_product = \wc_get_product($product->get_parent_id());
                 $wc_product_attrs = $parent_product->get_attributes();
 
                 if (empty($data['attributes']['categories'])) {
@@ -148,19 +145,15 @@ class RatesRequestBodyBuilder
                 }
 
                 foreach ($product->get_variation_attributes(false) as $taxonomy => $terms_slug) {
-
                     if ($terms_slug) {
-
-                        $term_obj = get_term_by('slug', $terms_slug, $taxonomy);
+                        $term_obj = \get_term_by('slug', $terms_slug, $taxonomy);
 
                         if ($term_obj) {
                             $term_id = $term_obj->term_id;
                             $data['attributes']['variation'][] = $term_obj->term_id;
                         }
                     }
-
                 }
-
             } else {
                 $wc_product_attrs = $product->get_attributes();
             }
@@ -178,17 +171,14 @@ class RatesRequestBodyBuilder
 
     private function get_state_name_by_code($country_code, $state_code)
     {
-
         if ($country_code) {
-            $states = WC()->countries->get_states($country_code);
+            $states = \WC()->countries->get_states($country_code);
 
             if (\array_key_exists($state_code, $states)) {
                 return $states[$state_code];
             }
-
         }
 
         return null;
     }
-
 }

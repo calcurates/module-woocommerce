@@ -4,7 +4,7 @@ namespace Calcurates\Utils;
 use Calcurates\Basic;
 
 // Stop direct HTTP access.
-if (!defined('ABSPATH')) {
+if (!\defined('ABSPATH')) {
     exit;
 }
 
@@ -24,14 +24,12 @@ class Logger
 
     private function log(string $type, string $title = '', array $data = []): void
     {
-
-        if (is_array($data) && !empty($data)) {
-            $log = "\n" . "==== " . $title . " ====" . "\n" . print_r($data, true) . "====END LOG====" . "\n\n";
+        if (\is_array($data) && !empty($data)) {
+            $log = "\n" . "==== " . $title . " ====" . "\n" . \print_r($data, true) . "====END LOG====" . "\n\n";
             $this->logger->$type($log, ['source' => $this->source]);
         } else {
             $this->logger->$type($title, ['source' => $this->source]);
         }
-
     }
 
     public function debug(string $title = '', array $data = [])
@@ -43,5 +41,4 @@ class Logger
     {
         $this->log('critical', $title, $data);
     }
-
 }

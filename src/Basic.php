@@ -3,11 +3,11 @@
 namespace Calcurates;
 
 // Stop direct HTTP access.
-if (!defined('ABSPATH')) {
+if (!\defined('ABSPATH')) {
     exit;
 }
 
-if (!class_exists(Basic::class)) {
+if (!\class_exists(Basic::class)) {
     /**
      * Storage of basic information
      */
@@ -51,7 +51,7 @@ if (!class_exists(Basic::class)) {
          */
         public static function get_plugin_dir_path(): string
         {
-            return trailingslashit(realpath(__DIR__ . DIRECTORY_SEPARATOR . '..'));
+            return \trailingslashit(\realpath(__DIR__ . DIRECTORY_SEPARATOR . '..'));
         }
 
         /**

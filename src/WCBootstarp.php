@@ -4,11 +4,11 @@ namespace Calcurates;
 use Calcurates\Basic;
 
 // Stop direct HTTP access.
-if (!defined('ABSPATH')) {
+if (!\defined('ABSPATH')) {
     exit;
 }
 
-if (!class_exists(WCBootstarp::class)) {
+if (!\class_exists(WCBootstarp::class)) {
     /**
      * Changes WC by adding some new features through hooks
      */
@@ -22,16 +22,16 @@ if (!class_exists(WCBootstarp::class)) {
         public function run()
         {
             // Create Calcurates shipping method
-            add_action('init', [$this, 'init_shipping']);
+            \add_action('init', [$this, 'init_shipping']);
 
             // Add feature to add to session ship_to_different_address checkbox status on checkout
-            add_action('woocommerce_checkout_update_order_review', [$this, 'ship_to_different_address_set_session']);
+            \add_action('woocommerce_checkout_update_order_review', [$this, 'ship_to_different_address_set_session']);
 
             // add text after rate on checkout
-            add_action('woocommerce_after_shipping_rate', [$this, 'add_data_after_shipping_rate'], 10, 2);
+            \add_action('woocommerce_after_shipping_rate', [$this, 'add_data_after_shipping_rate'], 10, 2);
 
             // add text to order email
-            add_action('woocommerce_email_after_order_table', [$this, 'add_shipping_data_after_order_table_in_email'], 10, 4);
+            \add_action('woocommerce_email_after_order_table', [$this, 'add_shipping_data_after_order_table_in_email'], 10, 4);
         }
 
         /**
@@ -41,9 +41,9 @@ if (!class_exists(WCBootstarp::class)) {
          */
         public function init_shipping()
         {
-            if (class_exists('WC_Shipping_Method')) {
+            if (\class_exists('WC_Shipping_Method')) {
                 require_once Basic::get_plugin_dir_path().'includes/wc-calcurates-shipping-method.php';
-                add_filter('woocommerce_shipping_methods', [$this, 'add_calcurates_shipping']);
+                \add_filter('woocommerce_shipping_methods', [$this, 'add_calcurates_shipping']);
             }
         }
 
@@ -70,12 +70,12 @@ if (!class_exists(WCBootstarp::class)) {
             $data_array = [];
 
             if ($data) {
-                parse_str($data, $data_array);
+                \parse_str($data, $data_array);
 
-                if (array_key_exists('ship_to_different_address', $data_array) && $data_array['ship_to_different_address']) {
-                    WC()->session->set('ship_to_different_address', 1);
+                if (\array_key_exists('ship_to_different_address', $data_array) && $data_array['ship_to_different_address']) {
+                    \WC()->session->set('ship_to_different_address', 1);
                 } else {
-                    WC()->session->set('ship_to_different_address', 0);
+                    \WC()->session->set('ship_to_different_address', 0);
                 }
             }
 
@@ -100,33 +100,33 @@ if (!class_exists(WCBootstarp::class)) {
             $text = null;
 
             // shipping rate description
-            if (array_key_exists('message', $meta)) {
+            if (\array_key_exists('message', $meta)) {
                 if ($meta['message']) {
                     $text .= "<div class='calcurates-checkout__shipping-rate-message'>" . $meta['message'] . "</div>";
                 }
             }
 
             // shipping rate dates
-            if (array_key_exists('delivery_date_from', $meta) && array_key_exists('delivery_date_to', $meta)) {
+            if (\array_key_exists('delivery_date_from', $meta) && \array_key_exists('delivery_date_to', $meta)) {
                 $estimated_delivery_date = '';
 
                 if ($meta['delivery_date_from'] === $meta['delivery_date_to']) {
-                    $delivery_date_from = strtotime($meta['delivery_date_from']);
+                    $delivery_date_from = \strtotime($meta['delivery_date_from']);
 
                     if ($delivery_date_from) {
-                        $delivery_date_from = date(get_option('date_format') . " " . get_option('time_format'), $delivery_date_from);
+                        $delivery_date_from = \date(\get_option('date_format') . " " . \get_option('time_format'), $delivery_date_from);
 
                         $estimated_delivery_date = $delivery_date_from;
                     }
                 } else {
-                    $delivery_date_from = strtotime($meta['delivery_date_from']);
-                    $delivery_date_to = strtotime($meta['delivery_date_to']);
+                    $delivery_date_from = \strtotime($meta['delivery_date_from']);
+                    $delivery_date_to = \strtotime($meta['delivery_date_to']);
 
                     if ($delivery_date_from) {
-                        $delivery_date_from = date(get_option('date_format') . " " . get_option('time_format'), $delivery_date_from);
+                        $delivery_date_from = \date(\get_option('date_format') . " " . \get_option('time_format'), $delivery_date_from);
                     }
                     if ($delivery_date_to) {
-                        $delivery_date_to = date(get_option('date_format') . " " . get_option('time_format'), $delivery_date_to);
+                        $delivery_date_to = \date(\get_option('date_format') . " " . \get_option('time_format'), $delivery_date_to);
                     }
 
                     if ($delivery_date_from && $delivery_date_to) {
@@ -171,21 +171,21 @@ if (!class_exists(WCBootstarp::class)) {
             }
 
             if ($delivery_date_from && $delivery_date_from === $delivery_date_to) {
-                $delivery_date_from = strtotime($delivery_date_from);
+                $delivery_date_from = \strtotime($delivery_date_from);
 
                 if ($delivery_date_from) {
-                    $delivery_date_from = date(get_option('date_format') . " " . get_option('time_format'), $delivery_date_from);
+                    $delivery_date_from = \date(\get_option('date_format') . " " . \get_option('time_format'), $delivery_date_from);
                     $estimated_delivery_date = $delivery_date_from;
                 }
             } elseif ($delivery_date_from && $delivery_date_to) {
-                $delivery_date_from = strtotime($delivery_date_from);
-                $delivery_date_to = strtotime($delivery_date_to);
+                $delivery_date_from = \strtotime($delivery_date_from);
+                $delivery_date_to = \strtotime($delivery_date_to);
 
                 if ($delivery_date_from) {
-                    $delivery_date_from = date(get_option('date_format') . " " . get_option('time_format'), $delivery_date_from);
+                    $delivery_date_from = \date(\get_option('date_format') . " " . \get_option('time_format'), $delivery_date_from);
                 }
                 if ($delivery_date_to) {
-                    $delivery_date_to = date(get_option('date_format') . " " . get_option('time_format'), $delivery_date_to);
+                    $delivery_date_to = \date(\get_option('date_format') . " " . \get_option('time_format'), $delivery_date_to);
                 }
 
                 if ($delivery_date_from && $delivery_date_to) {
