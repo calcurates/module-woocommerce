@@ -6,24 +6,7 @@ namespace Composer\Autoload;
 
 class ComposerStaticInitd1586ec25e49b2f24406696684c44569
 {
-    public static $files = array (
-        '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
-        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
-    );
-
     public static $prefixLengthsPsr4 = array (
-        'P' => 
-        array (
-            'Psr\\Http\\Message\\' => 17,
-        ),
-        'I' => 
-        array (
-            'Inpsyde\\WPRESTStarter\\' => 22,
-        ),
-        'G' => 
-        array (
-            'GuzzleHttp\\Psr7\\' => 16,
-        ),
         'C' => 
         array (
             'Calcurates\\' => 11,
@@ -31,18 +14,6 @@ class ComposerStaticInitd1586ec25e49b2f24406696684c44569
     );
 
     public static $prefixDirsPsr4 = array (
-        'Psr\\Http\\Message\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-        ),
-        'Inpsyde\\WPRESTStarter\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/inpsyde/wp-rest-starter/src',
-        ),
-        'GuzzleHttp\\Psr7\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
-        ),
         'Calcurates\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',

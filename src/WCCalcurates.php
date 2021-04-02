@@ -3,8 +3,8 @@
 namespace Calcurates;
 
 use Calcurates\Assets;
-use Calcurates\RESTAPI\Routes\WooCommmerceSettingsRoutes;
 use Calcurates\WCBootstarp;
+use Calcurates\RESTAPI\Woocommerce_Settings_REST_Controller;
 
 // Stop direct HTTP access.
 if (!defined('ABSPATH')) {
@@ -17,7 +17,6 @@ if (!class_exists(WCCalcurates::class)) {
      */
     class WCCalcurates
     {
-
         protected $wc_bootsrap;
         protected $assets;
         protected $wc_settings_routes;
@@ -25,7 +24,6 @@ if (!class_exists(WCCalcurates::class)) {
         public function __construct()
         {
             $this->wc_bootsrap = new WCBootstarp();
-            $this->wc_settings_routes = new WooCommmerceSettingsRoutes();
             $this->assets = new Assets();
         }
         /**
@@ -47,7 +45,7 @@ if (!class_exists(WCCalcurates::class)) {
          */
         public function restapi_register_routes()
         {
-            add_action('rest_api_init', [$this->wc_settings_routes, 'register_route']);
+            add_action('rest_api_init', [new Woocommerce_Settings_REST_Controller(), 'register_routes']);
         }
 
         /**

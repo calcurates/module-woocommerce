@@ -6,8 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src'),
-    'Inpsyde\\WPRESTStarter\\' => array($vendorDir . '/inpsyde/wp-rest-starter/src'),
-    'GuzzleHttp\\Psr7\\' => array($vendorDir . '/guzzlehttp/psr7/src'),
     'Calcurates\\' => array($baseDir . '/src'),
 );
