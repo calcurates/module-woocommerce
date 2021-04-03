@@ -30,3 +30,4 @@
 !.docker/php/wordpress-bedrock/development.php.example
 !src
 !assets
+!includes
