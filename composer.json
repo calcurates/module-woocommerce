@@ -19,7 +19,11 @@
     "type": "wordpress-plugin",
     "version": "0.0.1",
     "config": {
-        "vendor-dir": "lib"
+        "vendor-dir": "lib",
+        "optimize-autoloader": true,
+        "platform": {
+            "php": "7.1.3"
+        }
     },
     "autoload": {
 		"psr-4": {
