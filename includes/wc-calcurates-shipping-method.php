@@ -186,7 +186,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
             return false;
         }
 
-        $calcurates_client = new CalcuratesClient($this->calcurates_api_key, $this->calcurates_api_url ?: Basic::get_api_url(), $this->debug_mode);
+        $calcurates_client = new CalcuratesClient($this->calcurates_api_key, $this->calcurates_api_url, $this->debug_mode);
 
         $rates_request_body_builder = new RatesRequestBodyBuilder($package);
 
