@@ -3,7 +3,8 @@
     "description": "Calcurates Integration for WooCommerce",
     "keywords": ["shipping"],
     "require": {
-        "php": ">=7.1.3"
+        "php": ">=7.1.3",
+        "spatie/data-transfer-object": "1.13.3"
     },
     "authors": [
         {

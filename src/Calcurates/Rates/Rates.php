@@ -31,9 +31,7 @@ class Rates
      */
     public function extract($response): array
     {
-
-        foreach ($response->shippingOptions as $shipping_option_name => $shipping_option_data) {
-
+        foreach ($response['shippingOptions'] as $shipping_option_name => $shipping_option_data) {
             try {
                 $rate = $this->rates_extractor_factory->create($shipping_option_name);
             } catch (\Exception $e) {
@@ -66,26 +64,21 @@ class Rates
         }
 
         usort($rates['has_priority'], function ($a, $b) {
-
             if ($a['priority'] == $b['priority']) {
                 return 0;
             }
             return ($a['priority'] < $b['priority']) ? -1 : 1;
-
         });
 
         usort($rates['no_priority'], function ($a, $b) {
-
             if ($a['cost'] == $b['cost']) {
                 return 0;
             }
 
             return ($a['cost'] < $b['cost']) ? -1 : 1;
-
         });
 
         $this->rates = array_merge($rates['has_priority'], $rates['no_priority']);
-
     }
 
     /**
@@ -158,21 +151,14 @@ class Rates
         $rates = [];
 
         foreach ($this->rates as $rate) {
-
             if ($rate['tax']) {
-
                 if ($this->tax_mode === 'tax_included') {
-
                     $rate['label'] .= ' - duties & tax included';
                     $rate['cost'] += $rate['tax'];
                     $rates[] = $rate;
-
                 } elseif ($this->tax_mode === 'without_tax') {
-
                     $rates[] = $rate;
-
                 } elseif ($this->tax_mode === 'both') {
-
                     $label = $rate['label'];
                     $id = $rate['id'];
                     $cost = $rate['cost'];
@@ -186,7 +172,6 @@ class Rates
                     $rate['id'] = $id . 'without_tax';
                     $rate['cost'] = $cost;
                     $rates[] = $rate;
-
                 }
             } else {
                 $rates[] = $rate;

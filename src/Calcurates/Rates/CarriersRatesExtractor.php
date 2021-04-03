@@ -1,6 +1,7 @@
 <?php
 namespace Calcurates\Calcurates\Rates;
 
+use Calcurates\Calcurates\Rates\DTO\Carrier;
 use Calcurates\Contracts\Rates\RatesExtractorInterface;
 
 // Stop direct HTTP access.
@@ -10,6 +11,38 @@ if (!\defined('ABSPATH')) {
 
 class CarriersRatesExtractor implements RatesExtractorInterface
 {
+    /**
+     * rates dtos
+     *
+     * @var array
+     */
+    private $dtos;
+    
+    /**
+     * prepared rates array
+     *
+     * @var array
+     */
+    private $ready_rates;
+
+    /**
+     * Logger
+     *
+     * @var \Calcurates\Utils\Logger
+     */
+    private $logger;
+
+    /**
+     * Constructor
+     *
+     * @param \Calcurates\Utils\Logger $logger
+     */
+    public function __construct($logger)
+    {
+        $this->dtos = [];
+        $this->ready_rates = [];
+        $this->logger = $logger;
+    }
 
     /**
      * extract rates
@@ -19,48 +52,42 @@ class CarriersRatesExtractor implements RatesExtractorInterface
      */
     public function extract($carriers): array
     {
-        $ready_rates = [];
-
         foreach ($carriers as $carrier) {
-            if (\property_exists($carrier, 'success') && $carrier->success && \is_array($carrier->rates)) {
-                foreach ($carrier->rates as $rate) {
-                    if (\property_exists($rate, 'success') && $rate->success) {
-                        $services_names = [];
-                        $services_messages = [];
-                        $services_ids = [];
-                        if (\property_exists($rate, 'services') && \is_array($rate->services)) {
-                            foreach ($rate->services as $services) {
-                                if (\property_exists($services, 'message') && $services->message) {
-                                    $services_messages[] = $services->message;
-                                }
-                                if (\property_exists($services, 'id') && $services->id) {
-                                    $services_ids[] = $services->id;
-                                }
-                                if (\property_exists($services, 'name') && $services->name) {
-                                    $services_names[] = $services->name;
-                                }
-                            }
-                        }
-
-                        $services_messages = \implode('. ', $services_messages);
-                        $services_ids = \implode('_', $services_ids);
-                        $services_names = \implode(', ', $services_names);
-
-                        $ready_rates[] = [
-                            'id' => $carrier->id . '_' . $services_ids,
-                            'label' => $carrier->name . '. ' . $services_names,
-                            'cost' => $rate->rate->cost,
-                            'tax' => \is_numeric($rate->rate->tax) ? $rate->rate->tax : 0,
-                            'message' => $carrier->message . ' ' . $services_messages,
-                            'delivery_date_from' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->from : null,
-                            'delivery_date_to' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->to : null,
-                            'priority' => $carrier->priority,
-                        ];
-                    }
-                }
+            try {
+                $this->dtos[] = (new Carrier($carrier));
+            } catch (\TypeError $e) {
+                $this->logger->debug($e->getMessage());
             }
         }
 
-        return $ready_rates;
+        foreach ($this->dtos as $carrier) {
+            foreach ($carrier->rates as $rate) {
+                $services_names = [];
+                $services_messages = [];
+                $services_ids = [];
+                foreach ($rate->services as $services) {
+                    $services_messages[] = $services->message;
+                    $services_ids[] = $services->id;
+                    $services_names[] = $services->name;
+                }
+                        
+                $services_messages = \implode('. ', $services_messages);
+                $services_ids = \implode('_', $services_ids);
+                $services_names = \implode(', ', $services_names);
+
+                $this->ready_rates[] = [
+                    'id' => $carrier->id . '_' . $services_ids,
+                    'label' => $carrier->name . '. ' . $services_names,
+                    'cost' => $rate->rate->cost,
+                    'tax' => $rate->rate->tax,
+                    'message' => $carrier->message . ' ' . $services_messages,
+                    'delivery_date_from' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->from : null,
+                    'delivery_date_to' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->to : null,
+                    'priority' => $carrier->priority,
+                ];
+            }
+        }
+
+        return $this->ready_rates;
     }
 }

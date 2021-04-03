@@ -63,7 +63,7 @@ class CalcuratesClient
             return false;
         }
 
-        $response = \json_decode(\wp_remote_retrieve_body($result));
+        $response = \json_decode(\wp_remote_retrieve_body($result), true);
 
         if ($this->debug_mode === 'all') {
             $this->logger->debug('Calcurates rates resnose', (array) $response);

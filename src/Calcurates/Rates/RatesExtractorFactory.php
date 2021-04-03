@@ -25,7 +25,7 @@ class RatesExtractorFactory
     {
         $extractor = __NAMESPACE__ . '\\' . ucfirst($rate_name) . 'RatesExtractor';
         if (class_exists($extractor)) {
-            $extractor_instance = new $extractor();
+            $extractor_instance = new $extractor($this->logger);
             if ($extractor_instance instanceof RatesExtractorInterface) {
                 return $extractor_instance;
             }
