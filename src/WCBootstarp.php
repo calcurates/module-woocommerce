@@ -22,16 +22,16 @@ if (!\class_exists(WCBootstarp::class)) {
         public function run(): void
         {
             // Create Calcurates shipping method
-            \add_action('init', [$this, 'init_shipping']);
+            \add_action('init', array($this, 'init_shipping'));
 
             // Add feature to add to session ship_to_different_address checkbox status on checkout
-            \add_action('woocommerce_checkout_update_order_review', [$this, 'ship_to_different_address_set_session']);
+            \add_action('woocommerce_checkout_update_order_review', array($this, 'ship_to_different_address_set_session'));
 
             // add text after rate on checkout
-            \add_action('woocommerce_after_shipping_rate', [$this, 'add_data_after_shipping_rate'], 10, 2);
+            \add_action('woocommerce_after_shipping_rate', array($this, 'add_data_after_shipping_rate'), 10, 2);
 
             // add text to order email
-            \add_action('woocommerce_email_after_order_table', [$this, 'add_shipping_data_after_order_table_in_email'], 10, 4);
+            \add_action('woocommerce_email_after_order_table', array($this, 'add_shipping_data_after_order_table_in_email'), 10, 4);
         }
 
         /**
@@ -43,7 +43,7 @@ if (!\class_exists(WCBootstarp::class)) {
         {
             if (\class_exists('WC_Shipping_Method')) {
                 require_once Basic::get_plugin_dir_path().'includes/wc-calcurates-shipping-method.php';
-                \add_filter('woocommerce_shipping_methods', [$this, 'add_calcurates_shipping']);
+                \add_filter('woocommerce_shipping_methods', array($this, 'add_calcurates_shipping'));
             }
         }
 
@@ -67,7 +67,7 @@ if (!\class_exists(WCBootstarp::class)) {
          */
         public function ship_to_different_address_set_session(string $data): string
         {
-            $data_array = [];
+            $data_array = array();
 
             if ($data) {
                 \parse_str($data, $data_array);

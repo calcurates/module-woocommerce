@@ -3,6 +3,7 @@ namespace Calcurates\Calcurates\Rates;
 
 use Calcurates\Calcurates\Rates\DTO\Carrier;
 use Calcurates\Contracts\Rates\RatesExtractorInterface;
+use Calcurates\Utils\Logger;
 
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
@@ -17,40 +18,21 @@ class CarriersRatesExtractor implements RatesExtractorInterface
      * @var array
      */
     private $dtos;
-    
-    /**
-     * prepared rates array
-     *
-     * @var array
-     */
-    private $ready_rates;
 
     /**
      * Logger
      *
-     * @var \Calcurates\Utils\Logger
+     * @var Logger
      */
     private $logger;
 
-    /**
-     * Constructor
-     *
-     * @param \Calcurates\Utils\Logger $logger
-     */
-    public function __construct($logger)
+    public function __construct(Logger $logger)
     {
-        $this->dtos = [];
-        $this->ready_rates = [];
+        $this->dtos = array();
         $this->logger = $logger;
     }
 
-    /**
-     * extract rates
-     *
-     * @param  object $rates
-     * @return array
-     */
-    public function extract($carriers): array
+    public function extract(array $carriers): array
     {
         foreach ($carriers as $carrier) {
             try {
@@ -60,22 +42,23 @@ class CarriersRatesExtractor implements RatesExtractorInterface
             }
         }
 
+        $ready_rates = array();
         foreach ($this->dtos as $carrier) {
             foreach ($carrier->rates as $rate) {
-                $services_names = [];
-                $services_messages = [];
-                $services_ids = [];
+                $services_names = array();
+                $services_messages = array();
+                $services_ids = array();
                 foreach ($rate->services as $services) {
                     $services_messages[] = $services->message;
                     $services_ids[] = $services->id;
                     $services_names[] = $services->name;
                 }
-                        
+
                 $services_messages = \implode('. ', $services_messages);
                 $services_ids = \implode('_', $services_ids);
                 $services_names = \implode(', ', $services_names);
 
-                $this->ready_rates[] = [
+                $ready_rates[] = array(
                     'id' => $carrier->id . '_' . $services_ids,
                     'label' => $carrier->name . '. ' . $services_names,
                     'cost' => $rate->rate->cost,
@@ -84,10 +67,10 @@ class CarriersRatesExtractor implements RatesExtractorInterface
                     'delivery_date_from' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->from : null,
                     'delivery_date_to' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->to : null,
                     'priority' => $carrier->priority,
-                ];
+                );
             }
         }
 
-        return $this->ready_rates;
+        return $ready_rates;
     }
 }

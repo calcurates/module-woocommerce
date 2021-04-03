@@ -41,13 +41,13 @@ class Logger
      * @param array $data
      * @return void
      */
-    private function log(string $type, string $title = '', array $data = []): void
+    private function log(string $type, string $title = '', array $data = array()): void
     {
         if (\is_array($data) && !empty($data)) {
             $log = "\n" . "==== " . $title . " ====" . "\n" . \print_r($data, true) . "====END LOG====" . "\n\n";
-            $this->logger->$type($log, ['source' => $this->source]);
+            $this->logger->$type($log, array('source' => $this->source));
         } else {
-            $this->logger->$type($title, ['source' => $this->source]);
+            $this->logger->$type($title, array('source' => $this->source));
         }
     }
 
@@ -58,7 +58,7 @@ class Logger
      * @param array $data
      * @return void
      */
-    public function debug(string $title = '', array $data = []): void
+    public function debug(string $title = '', array $data = array()): void
     {
         $this->log('debug', $title, $data);
     }
@@ -70,7 +70,7 @@ class Logger
      * @param array $data
      * @return void
      */
-    public function critical(string $title = '', array $data = []): void
+    public function critical(string $title = '', array $data = array()): void
     {
         $this->log('critical', $title, $data);
     }

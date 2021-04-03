@@ -11,6 +11,8 @@
 !uninstall.php
 !composer.json
 !composer.lock
+!.php_cs.dist
+!phpstan.neon.dist
 
 # Ignore all files named .DS_Store or ending with .log
 **/.DS_Store

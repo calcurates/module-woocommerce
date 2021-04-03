@@ -3,6 +3,7 @@ namespace Calcurates\Calcurates\Rates;
 
 use Calcurates\Calcurates\Rates\DTO\InStorePickup;
 use Calcurates\Contracts\Rates\RatesExtractorInterface;
+use Calcurates\Utils\Logger;
 
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
@@ -17,40 +18,26 @@ class InStorePickupsRatesExtractor implements RatesExtractorInterface
      * @var array
      */
     private $dtos;
-    
-    /**
-     * prepared rates array
-     *
-     * @var array
-     */
-    private $ready_rates;
 
     /**
      * Logger
      *
-     * @var \Calcurates\Utils\Logger
+     * @var Logger
      */
     private $logger;
 
     /**
      * Constructor
      *
-     * @param \Calcurates\Utils\Logger $logger
+     * @param Logger $logger
      */
-    public function __construct($logger)
+    public function __construct(Logger $logger)
     {
-        $this->dtos = [];
-        $this->ready_rates = [];
+        $this->dtos = array();
         $this->logger = $logger;
     }
 
-    /**
-     * extract rates
-     *
-     * @param  object $rates
-     * @return array
-     */
-    public function extract($in_store_rates): array
+    public function extract(array $in_store_rates): array
     {
         foreach ($in_store_rates as $in_store_rate) {
             try {
@@ -60,9 +47,10 @@ class InStorePickupsRatesExtractor implements RatesExtractorInterface
             }
         }
 
+        $ready_rates = array();
         foreach ($in_store_rates as $in_store_rate) {
             foreach ($in_store_rate->stores as $rate) {
-                $this->ready_rates[] = [
+                $ready_rates[] = array(
                     'id' => $in_store_rate->id . '_' . $rate->id,
                     'label' => $rate->name,
                     'cost' => $rate->rate->cost,
@@ -71,10 +59,10 @@ class InStorePickupsRatesExtractor implements RatesExtractorInterface
                     'delivery_date_from' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->from : null,
                     'delivery_date_to' => $rate->rate->estimatedDeliveryDate ? $rate->rate->estimatedDeliveryDate->to : null,
                     'priority' => $in_store_rate->priority,
-                ];
+                );
             }
         }
 
-        return $this->ready_rates;
+        return $ready_rates;
     }
 }

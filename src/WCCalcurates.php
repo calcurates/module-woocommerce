@@ -3,8 +3,8 @@
 namespace Calcurates;
 
 use Calcurates\Assets;
-use Calcurates\WCBootstarp;
 use Calcurates\RESTAPI\WoocommerceSettingsRESTController;
+use Calcurates\WCBootstarp;
 
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
@@ -45,7 +45,7 @@ if (!\class_exists(WCCalcurates::class)) {
          */
         public function restapi_register_routes(): void
         {
-            \add_action('rest_api_init', [new WoocommerceSettingsRESTController(), 'register_routes']);
+            \add_action('rest_api_init', array(new WoocommerceSettingsRESTController(), 'register_routes'));
         }
 
         /**
@@ -65,7 +65,7 @@ if (!\class_exists(WCCalcurates::class)) {
          */
         public function enqueue_styles(): void
         {
-            \add_action('wp_enqueue_scripts', [$this->assets, 'enqueue_styles']);
+            \add_action('wp_enqueue_scripts', array($this->assets, 'enqueue_styles'));
         }
     }
 }
