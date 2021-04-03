@@ -19,7 +19,7 @@ if (!\class_exists(WCBootstarp::class)) {
          *
          * @return void
          */
-        public function run()
+        public function run(): void
         {
             // Create Calcurates shipping method
             \add_action('init', [$this, 'init_shipping']);
@@ -39,7 +39,7 @@ if (!\class_exists(WCBootstarp::class)) {
          *
          * @return void
          */
-        public function init_shipping()
+        public function init_shipping(): void
         {
             if (\class_exists('WC_Shipping_Method')) {
                 require_once Basic::get_plugin_dir_path().'includes/wc-calcurates-shipping-method.php';
@@ -48,9 +48,9 @@ if (!\class_exists(WCBootstarp::class)) {
         }
 
         /**
-         * add_calcurates_shipping
+         * Shipping methods register themselves by returning their main class name through the woocommerce_shipping_methods filter.
          *
-         * @param  mixed $methods
+         * @param  array $methods
          * @return array
          */
         public function add_calcurates_shipping(array $methods): array
@@ -89,7 +89,7 @@ if (!\class_exists(WCBootstarp::class)) {
          * @param  int $index
          * @return void
          */
-        public function add_data_after_shipping_rate(\WC_Shipping_Rate $rate, int $index)
+        public function add_data_after_shipping_rate(\WC_Shipping_Rate $rate, int $index): void
         {
             if (false === \strpos($rate->get_id(), 'calcurates:')) {
                 return;
@@ -153,7 +153,7 @@ if (!\class_exists(WCBootstarp::class)) {
          * @param  \WC_Email $email
          * @return void
          */
-        public function add_shipping_data_after_order_table_in_email(\WC_Order $order, bool $sent_to_admin, string $plain_text, \WC_Email $email)
+        public function add_shipping_data_after_order_table_in_email(\WC_Order $order, bool $sent_to_admin, string $plain_text, \WC_Email $email): void
         {
             $message = null;
             $delivery_date_from = null;

@@ -31,7 +31,7 @@ if (!\class_exists(WCCalcurates::class)) {
          *
          * @return void
          */
-        public function run()
+        public function run(): void
         {
             $this->restapi_register_routes();
             $this->woocommerce_bootstrap();
@@ -43,7 +43,7 @@ if (!\class_exists(WCCalcurates::class)) {
          *
          * @return void
          */
-        public function restapi_register_routes()
+        public function restapi_register_routes(): void
         {
             \add_action('rest_api_init', [new WoocommerceSettingsRESTController(), 'register_routes']);
         }
@@ -53,7 +53,7 @@ if (!\class_exists(WCCalcurates::class)) {
          *
          * @return void
          */
-        public function woocommerce_bootstrap()
+        public function woocommerce_bootstrap(): void
         {
             $this->wc_bootsrap->run();
         }
@@ -63,7 +63,7 @@ if (!\class_exists(WCCalcurates::class)) {
          *
          * @return void
          */
-        public function enqueue_styles()
+        public function enqueue_styles(): void
         {
             \add_action('wp_enqueue_scripts', [$this->assets, 'enqueue_styles']);
         }

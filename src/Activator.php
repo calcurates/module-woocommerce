@@ -21,7 +21,7 @@ if (!\class_exists(Activator::class)) {
          *
          * @return void
          */
-        public static function activate()
+        public static function activate(): void
         {
             self::deps_check();
             self::key_setup();
@@ -32,7 +32,7 @@ if (!\class_exists(Activator::class)) {
          *
          * @return void
          */
-        public static function deps_check()
+        public static function deps_check(): void
         {
             /**
              * Check if WooCommerce is activated
@@ -49,7 +49,7 @@ if (!\class_exists(Activator::class)) {
          *
          * @return void
          */
-        public static function key_setup()
+        public static function key_setup(): void
         {
             if (!\get_option('wc_calcurates_key')) {
                 \update_option(Basic::get_prefix() . '_key', \wc_rand_hash());

@@ -9,11 +9,22 @@ if (!\defined('ABSPATH')) {
 }
 
 /**
- * WC_Logger Wrapper
+ * WC_Logger wrapper
  */
 class Logger
 {
+    /**
+     * Defult WooCommerce logger
+     *
+     * @var \WC_Logger
+     */
     private $logger;
+
+    /**
+     * Log source file
+     *
+     * @var string
+     */
     private $source;
 
     public function __construct()
@@ -22,6 +33,14 @@ class Logger
         $this->source = Basic::get_plugin_text_domain();
     }
 
+    /**
+     * Add to logs
+     *
+     * @param string $type
+     * @param string $title
+     * @param array $data
+     * @return void
+     */
     private function log(string $type, string $title = '', array $data = []): void
     {
         if (\is_array($data) && !empty($data)) {
@@ -32,12 +51,26 @@ class Logger
         }
     }
 
-    public function debug(string $title = '', array $data = [])
+    /**
+     * Add to logs as debug info
+     *
+     * @param string $title
+     * @param array $data
+     * @return void
+     */
+    public function debug(string $title = '', array $data = []): void
     {
         $this->log('debug', $title, $data);
     }
 
-    public function critical(string $title = '', array $data = [])
+    /**
+     * Add to logs as critical info
+     *
+     * @param string $title
+     * @param array $data
+     * @return void
+     */
+    public function critical(string $title = '', array $data = []): void
     {
         $this->log('critical', $title, $data);
     }

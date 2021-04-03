@@ -7,9 +7,14 @@ if (!\defined('ABSPATH')) {
 }
 class RatesRequestBodyBuilder
 {
+    /**
+     * Package from basket
+     *
+     * @param array $package Package array.
+     */
     private $package;
 
-    public function __construct($package = [])
+    public function __construct(array $package = [])
     {
         $this->package = $package;
     }
@@ -27,14 +32,19 @@ class RatesRequestBodyBuilder
         $request_body = [
             'promoCode' => $coupon ? $coupon->get_code() : null, // FIXME coud be few coupons
             'shipTo' => $this->prepare_ship_to_data(),
-            "products" => $this->prepare_products_data($this->package),
+            "products" => $this->prepare_products_data(),
             "customerGroup" => \is_user_logged_in() ? 'customer' : 'guest',
         ];
 
         return $request_body;
     }
 
-    public function prepare_ship_to_data()
+    /**
+     * Prepare shipping data
+     *
+     * @return array
+     */
+    public function prepare_ship_to_data(): array
     {
         $contact_name = null;
         $country_code = null;
@@ -83,7 +93,12 @@ class RatesRequestBodyBuilder
         return $ship_to;
     }
 
-    public function prepare_products_data()
+    /**
+     * Prepare products data
+     *
+     * @return array
+     */
+    public function prepare_products_data(): array
     {
         $package = $this->package;
         $products = [];
@@ -169,7 +184,14 @@ class RatesRequestBodyBuilder
         return $products;
     }
 
-    private function get_state_name_by_code($country_code, $state_code)
+    /**
+     * Get state name by code
+     *
+     * @param string|null $country_code
+     * @param string|null $state_code
+     * @return string|null
+     */
+    private function get_state_name_by_code(?string $country_code, ?string $state_code): ?string
     {
         if ($country_code) {
             $states = \WC()->countries->get_states($country_code);

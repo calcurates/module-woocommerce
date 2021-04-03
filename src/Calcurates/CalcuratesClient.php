@@ -8,13 +8,46 @@ if (!\defined('ABSPATH')) {
     exit;
 }
 
+/**
+ * Http client for Calcurates API
+ */
 class CalcuratesClient
 {
+    /**
+     * Logger
+     *
+     * @var \Calcurates\Utils\Logger
+     */
     private $logger;
+
+    /**
+     * Calcurates API key for auth
+     *
+     * @var string
+     */
     private $api_key;
+
+    /**
+     * Calcurates API URL
+     *
+     * @var string
+     */
     private $api_url;
+
+    /**
+     * Debug level mode
+     *
+     * @var string
+     */
     private $debug_mode;
 
+    /**
+     * CalcuratesClient Constructor
+     *
+     * @param string $api_key
+     * @param string $api_url
+     * @param string $debug_mode
+     */
     public function __construct(string $api_key, string $api_url, string $debug_mode)
     {
         $this->logger = new Logger();
@@ -26,10 +59,10 @@ class CalcuratesClient
     /**
      * Get rates from Calcurates server
      *
-     * @param  mixed $rates_request_body
-     * @return object|false
+     * @param  array $rates_request_body
+     * @return array|null
      */
-    public function get_rates(array $rates_request_body)
+    public function get_rates(array $rates_request_body): ?array
     {
         $args = [
             'timeout' => 10,
@@ -50,7 +83,7 @@ class CalcuratesClient
         if (\filter_var($this->api_url, FILTER_VALIDATE_URL) === false) {
             $this->logger->critical('Rates request error. Wrong URL');
 
-            return false;
+            return null;
         }
 
         $result = \wp_safe_remote_request($this->api_url . '/api/woocommerce/rates', $args); // FIXME is it gzip?

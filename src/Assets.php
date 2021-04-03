@@ -21,7 +21,7 @@ if (!\class_exists(Assets::class)) {
          *
          * @param string $file_name
          *
-         * @return void
+         * @return bool
          */
         public function register_style(string $file_name): bool
         {
@@ -38,7 +38,7 @@ if (!\class_exists(Assets::class)) {
          * @param  mixed $file_name
          * @return void
          */
-        public function enqueue_styles()
+        public function enqueue_styles(): void
         {
             if ($this->register_style('calcurates-checkout.css') && (\is_cart() || \is_checkout())) {
                 \wp_enqueue_style(Basic::get_plugin_text_domain());

@@ -12,8 +12,25 @@ if (!\defined('ABSPATH')) {
 
 class Calcurates
 {
+    /**
+     * Rates request body builder
+     *
+     * @var Calcurates\Calcurates\RequestsBodyBuilders\RatesRequestBodyBuilder
+     */
     private $rates_request_body_builder;
+
+    /**
+     * CalcuratesClient
+     *
+     * @var Calcurates\Calcurates\CalcuratesClient
+     */
     private $calcurates_client;
+
+    /**
+     * Tools for rates processing
+     *
+     * @var Calcurates\Calcurates\Rates\Rates
+     */
     private $rates_tools;
 
     public function __construct(CalcuratesClient $calcurates_client, RatesRequestBodyBuilder $rates_request_body_builder, Rates $rates_tools)
@@ -28,7 +45,7 @@ class Calcurates
      *
      * @return array
      */
-    public function get_rates()
+    public function get_rates(): array
     {
         // build body for request
         $rates_request_body = $this->rates_request_body_builder->build();
@@ -37,7 +54,7 @@ class Calcurates
         $response = $this->calcurates_client->get_rates($rates_request_body);
 
         if (!$response) {
-            return false;
+            return [];
         }
 
         // extract rates from response

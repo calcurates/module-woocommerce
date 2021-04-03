@@ -55,7 +55,6 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
      * __construct
      *
      * @param  int $instance_id
-     * @return void
      */
     public function __construct($instance_id = 0)
     {
@@ -158,16 +157,16 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
     }
 
     /**
-     * Calculate shipping
+     * Called to calculate shipping rates for this method.
      *
-     * @param  array $package
+     * @param array $package Package array.
      * @return void
      */
-    public function calculate_shipping($package = [])
+    public function calculate_shipping($package = []): void
     {
         $rates = $this->get_rates($package);
 
-        if ($rates !== false) {
+        if (!empty($rates)) {
             foreach ($rates as $rate) {
                 $this->add_rate($rate);
             }
@@ -177,13 +176,13 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
     /**
      * Get rates
      *
-     * @param  mixed $package
-     * @return array|false
+     * @param array $package Package array.
+     * @return array
      */
-    public function get_rates(array $package = [])
+    private function get_rates(array $package = []): array
     {
         if (!$this->instance_id) {
-            return false;
+            return [];
         }
 
         $calcurates_client = new CalcuratesClient($this->calcurates_api_key, $this->calcurates_api_url, $this->debug_mode);
@@ -200,7 +199,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
      *
      * @return void
      */
-    public function process_admin_options()
+    public function process_admin_options(): void
     {
         parent::process_admin_options();
 

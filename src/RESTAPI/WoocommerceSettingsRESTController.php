@@ -9,6 +9,9 @@ if (!\defined('ABSPATH')) {
 }
 
 if (!\class_exists(WoocommerceSettingsRESTController::class)) {
+    /**
+     * Calcurates sync settings REST API controller
+     */
     class WoocommerceSettingsRESTController extends \WP_REST_Controller
     {
         public function __construct()
