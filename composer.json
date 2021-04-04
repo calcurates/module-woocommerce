@@ -1,33 +1,34 @@
 {
-    "name": "calcurates/module-woocomerce",
-    "description": "Calcurates Integration for WooCommerce",
-    "keywords": ["shipping"],
-    "require": {
-        "php": ">=7.1.3",
-        "spatie/data-transfer-object": "1.13.3"
+  "name": "calcurates/module-woocomerce",
+  "description": "Calcurates Integration for WooCommerce",
+  "keywords": [
+    "shipping"
+  ],
+  "require": {
+    "php": ">=7.1.3"
+  },
+  "authors": [
+    {
+      "name": "Ildar Jakparov",
+      "email": "ijakparov@gmail.com"
     },
-    "authors": [
-        {
-            "name": "Ildar Jakparov",
-            "email": "ijakparov@gmail.com"
-        },
-        {
-            "name": "Calcurates",
-            "homepage": "https://calcurates.com"
-        }
-    ],
-    "type": "wordpress-plugin",
-    "version": "0.0.1",
-    "config": {
-        "vendor-dir": "lib"
-    },
-    "autoload": {
-		"psr-4": {
-			"Calcurates\\": "src/"
-		}
-	},
-    "require-dev": {
-        "phpstan/phpstan": "^0.12.82",
-        "friendsofphp/php-cs-fixer": "^2.18"
+    {
+      "name": "Calcurates",
+      "homepage": "https://calcurates.com"
     }
+  ],
+  "type": "wordpress-plugin",
+  "version": "0.0.1",
+  "config": {
+    "vendor-dir": "lib"
+  },
+  "autoload": {
+    "psr-4": {
+      "Calcurates\\": "src/"
+    }
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^0.12.82",
+    "friendsofphp/php-cs-fixer": "^2.18"
+  }
 }
