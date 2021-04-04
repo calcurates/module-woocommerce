@@ -93,7 +93,7 @@ class CalcuratesClient
                 $this->logger->critical('Rates request error', (array) $result);
             }
 
-            return false;
+            return null;
         }
 
         $response = \json_decode(\wp_remote_retrieve_body($result), true);
