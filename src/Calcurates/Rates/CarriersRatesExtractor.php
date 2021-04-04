@@ -20,7 +20,7 @@ class CarriersRatesExtractor implements RatesExtractorInterface
      */
     public function extract($carriers): array
     {
-        $ready_rates = [];
+        $ready_rates = array();
 
         foreach ($carriers as $carrier) {
             if ($carrier['success'] !== true) {
@@ -32,9 +32,9 @@ class CarriersRatesExtractor implements RatesExtractorInterface
                     continue;
                 }
 
-                $services_names = [];
-                $services_messages = [];
-                $services_ids = [];
+                $services_names = array();
+                $services_messages = array();
+                $services_ids = array();
 
                 foreach ($rate['services'] as $services) {
                     if ($services['message']) {
@@ -50,7 +50,7 @@ class CarriersRatesExtractor implements RatesExtractorInterface
                 $services_ids = \implode('_', $services_ids);
                 $services_names = \implode(', ', $services_names);
 
-                $ready_rates[] = [
+                $ready_rates[] = array(
                             'id' => $carrier['id'] . '_' . $services_ids,
                             'label' => $carrier['name'] . '. ' . $services_names,
                             'cost' => $rate['rate']['cost'],
@@ -59,7 +59,7 @@ class CarriersRatesExtractor implements RatesExtractorInterface
                             'delivery_date_from' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['from'] : null,
                             'delivery_date_to' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['to'] : null,
                             'priority' => $carrier['priority'],
-                        ];
+                        );
             }
         }
 

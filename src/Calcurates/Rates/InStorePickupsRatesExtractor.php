@@ -20,7 +20,7 @@ class InStorePickupsRatesExtractor implements RatesExtractorInterface
      */
     public function extract($in_store_rates): array
     {
-        $ready_rates = [];
+        $ready_rates = array();
 
         foreach ($in_store_rates as $in_store_rate) {
             if ($in_store_rate['success'] !== true) {
@@ -32,7 +32,7 @@ class InStorePickupsRatesExtractor implements RatesExtractorInterface
                     continue;
                 }
 
-                $ready_rates[] = [
+                $ready_rates[] = array(
                     'id' => $in_store_rate['id'] . '_' . $rate['id'],
                     'label' => $rate['name'],
                     'cost' => $rate['rate']['cost'],
@@ -41,7 +41,7 @@ class InStorePickupsRatesExtractor implements RatesExtractorInterface
                     'delivery_date_from' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['from'] : null,
                     'delivery_date_to' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['to'] : null,
                     'priority' => $in_store_rate['priority'],
-                ];
+                );
             }
         }
 
