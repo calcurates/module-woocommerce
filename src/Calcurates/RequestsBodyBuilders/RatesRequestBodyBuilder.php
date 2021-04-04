@@ -14,7 +14,7 @@ class RatesRequestBodyBuilder
      */
     private $package;
 
-    public function __construct(array $package = [])
+    public function __construct(array $package = array())
     {
         $this->package = $package;
     }
@@ -29,12 +29,12 @@ class RatesRequestBodyBuilder
         $coupons = \WC()->cart->get_coupons();
         $coupon = \reset($coupons);
 
-        $request_body = [
+        $request_body = array(
             'promoCode' => $coupon ? $coupon->get_code() : null, // FIXME coud be few coupons
             'shipTo' => $this->prepare_ship_to_data(),
             "products" => $this->prepare_products_data(),
             "customerGroup" => \is_user_logged_in() ? 'customer' : 'guest',
-        ];
+        );
 
         return $request_body;
     }
@@ -77,7 +77,7 @@ class RatesRequestBodyBuilder
             }
         }
 
-        $ship_to = [
+        $ship_to = array(
             'country' => $country_code,
             'city' => $city, // FIXME it could be empty in WC but in api it requires even as empty param,
             'contactName' => $contact_name,
@@ -88,7 +88,7 @@ class RatesRequestBodyBuilder
             'postalCode' => $postcode, // FIXME it could be empty in WC but in api it requires
             'addressLine1' => $addr_1,
             'addressLine2' => $addr_2,
-        ];
+        );
 
         return $ship_to;
     }
@@ -101,7 +101,7 @@ class RatesRequestBodyBuilder
     public function prepare_products_data(): array
     {
         $package = $this->package;
-        $products = [];
+        $products = array();
 
         foreach ($package['contents'] as $cart_product) {
             $product = $cart_product['data'];
@@ -110,7 +110,7 @@ class RatesRequestBodyBuilder
                 continue;
             }
 
-            $data = [
+            $data = array(
                 "quoteItemId" => $cart_product['product_id'], // FIXME
                 "sku" => $product->get_sku() ?: null,
                 "priceWithoutTax" => ($cart_product['line_total']) / $cart_product['quantity'],
@@ -118,7 +118,7 @@ class RatesRequestBodyBuilder
                 "quantity" => $cart_product['quantity'],
                 "weight" => (float) $product->get_weight(),
                 "inventories" => null,
-                "attributes" => [
+                "attributes" => array(
                     "length" => (float) $product->get_length(),
                     "width" => (float) $product->get_width(),
                     "height" => (float) $product->get_height(),
@@ -143,8 +143,8 @@ class RatesRequestBodyBuilder
                     "downloadable" => $product->is_downloadable(),
                     "categories" => $product->get_category_ids(),
                     "tags" => $product->get_tag_ids(),
-                ],
-            ];
+                ),
+            );
 
             if ($cart_product['variation_id'] && $product->get_parent_id()) { // variation
 

@@ -27,14 +27,14 @@ if (!\class_exists(WoocommerceSettingsRESTController::class)) {
          */
         public function register_routes(): void
         {
-            register_rest_route($this->namespace, "/".$this->rest_base, [
-            [
+            register_rest_route($this->namespace, "/".$this->rest_base, array(
+            array(
                 'methods'             => 'GET',
-                'callback'            => [ $this, 'get_data' ],
-                'permission_callback' => [ $this, 'permissions_check' ],
-            ],
+                'callback'            => array( $this, 'get_data' ),
+                'permission_callback' => array( $this, 'permissions_check' ),
+            ),
             // TODO: need schema
-        ]);
+        ));
         }
 
         /**
@@ -63,146 +63,146 @@ if (!\class_exists(WoocommerceSettingsRESTController::class)) {
             $data['currency'] = \get_woocommerce_currency();
             $data['weight_unit'] = \get_option('woocommerce_weight_unit');
             $data['dimension_unit'] = \get_option('woocommerce_dimension_unit');
-            $data['customer_roles'] = [
-             [
+            $data['customer_roles'] = array(
+             array(
                  "value" => "customer",
                  "title" => "Customer",
-             ],
-             [
+             ),
+             array(
                  "value" => "guest",
                  "title" => "Guest",
-             ],
-         ];
+             ),
+         );
             $data['attrs'][] = $this->get_terms();
             $data['attrs'][] = $this->get_tags();
             $product_attrs = $this->get_attrs();
             $data['attrs'] = \array_merge($data['attrs'], $product_attrs);
  
             // date_created
-            $data['attrs'][] = [
+            $data['attrs'][] = array(
              'title' => 'Date created',
              'name' => 'date_created',
              'field_type' => 'number',
-         ];
+         );
  
             // date_modified
-            $data['attrs'][] = [
+            $data['attrs'][] = array(
              'title' => 'Date modified',
              'name' => 'date_modified',
              'field_type' => 'number',
-         ];
+         );
  
             // featured
-            $data['attrs'][] = [
+            $data['attrs'][] = array(
              'title' => 'Featured',
              'name' => 'is_featured',
              'field_type' => 'bool',
-         ];
+         );
  
             // price
-            $data['attrs'][] = [
+            $data['attrs'][] = array(
              'title' => 'Price',
              'name' => 'price',
              'field_type' => 'number',
-         ];
+         );
  
             // regular_price
-            $data['attrs'][] = [
+            $data['attrs'][] = array(
              'title' => 'Regular price',
              'name' => 'regular_price',
              'field_type' => 'number',
-         ];
+         );
  
             // sale_price
-            $data['attrs'][] = [
+            $data['attrs'][] = array(
              'title' => 'Sale price',
              'name' => 'sale_price',
              'field_type' => 'number',
-         ];
+         );
  
             // date_on_sale_from
-            $data['attrs'][] = [
+            $data['attrs'][] = array(
              'title' => 'Date on sale from',
              'name' => 'date_on_sale_from',
              'field_type' => 'number',
-         ];
+         );
  
             // date_on_sale_to
-            $data['attrs'][] = [
+            $data['attrs'][] = array(
              'title' => 'Date on sale to',
              'name' => 'date_on_sale_to',
              'field_type' => 'number',
-         ];
+         );
  
             // total_sales
-            $data['attrs'][] = [
+            $data['attrs'][] = array(
              'title' => 'Total sales',
              'name' => 'total_sales',
              'field_type' => 'number',
-         ];
+         );
  
             // manage_stock
-            $data['attrs'][] = [
+            $data['attrs'][] = array(
              'title' => 'Managing stock',
              'name' => 'managing_stock',
              'field_type' => 'bool',
-         ];
+         );
  
             // is_in_stock
-            $data['attrs'][] = [
+            $data['attrs'][] = array(
              'title' => 'In stock',
              'name' => 'is_in_stock',
              'field_type' => 'bool',
-         ];
+         );
  
             // backorders
-            $data['attrs'][] = [
+            $data['attrs'][] = array(
              'title' => 'Backorders',
              'name' => 'backorders_allowed',
              'field_type' => 'bool',
-         ];
+         );
  
             // low_stock_amount
-            $data['attrs'][] = [
+            $data['attrs'][] = array(
              'title' => 'Low stock amount',
              'name' => 'low_stock_amount',
              'field_type' => 'number',
-         ];
+         );
  
             // is_sold_individually
-            $data['attrs'][] = [
+            $data['attrs'][] = array(
              'title' => 'Sold individually',
              'name' => 'is_sold_individually',
              'field_type' => 'bool',
-         ];
+         );
  
             // weight
-            $data['attrs'][] = [
+            $data['attrs'][] = array(
              'title' => 'Weight',
              'name' => 'weight',
              'field_type' => 'number',
-         ];
+         );
  
             // length
-            $data['attrs'][] = [
+            $data['attrs'][] = array(
              'title' => 'Length',
              'name' => 'length',
              'field_type' => 'number',
-         ];
+         );
  
             // width
-            $data['attrs'][] = [
+            $data['attrs'][] = array(
              'title' => 'Width',
              'name' => 'width',
              'field_type' => 'number',
-         ];
+         );
  
             // height
-            $data['attrs'][] = [
+            $data['attrs'][] = array(
              'title' => 'Height',
              'name' => 'height',
              'field_type' => 'number',
-         ];
+         );
 
             return $data;
         }
@@ -214,25 +214,25 @@ if (!\class_exists(WoocommerceSettingsRESTController::class)) {
          */
         private function get_terms(): array
         {
-            $data = [
+            $data = array(
             'title' => 'Categories',
             'name' => 'categories',
             'field_type' => 'collection',
             'can_multi' => true,
-            'values' => [],
-        ];
+            'values' => array(),
+        );
 
-            $terms = \get_terms('product_cat', [
+            $terms = \get_terms('product_cat', array(
             'hide_empty' => false,
-        ]);
+        ));
 
             foreach ((array) $terms as $term) {
                 # code...
 
-                $data['values'][] = [
+                $data['values'][] = array(
                 'value' => $term->term_id,
                 'title' => $term->name,
-            ];
+            );
             }
 
             return $data;
@@ -245,25 +245,25 @@ if (!\class_exists(WoocommerceSettingsRESTController::class)) {
          */
         private function get_tags(): array
         {
-            $data = [
+            $data = array(
             'title' => 'Tags',
             'name' => 'tags',
             'field_type' => 'collection',
             'can_multi' => true,
-            'values' => [],
-        ];
+            'values' => array(),
+        );
 
-            $terms = \get_terms('product_tag', [
+            $terms = \get_terms('product_tag', array(
             'hide_empty' => false,
-        ]);
+        ));
 
             foreach ((array) $terms as $term) {
                 # code...
 
-                $data['values'][] = [
+                $data['values'][] = array(
                 'value' => $term->term_id,
                 'title' => $term->name,
-            ];
+            );
             }
 
             return $data;
@@ -276,7 +276,7 @@ if (!\class_exists(WoocommerceSettingsRESTController::class)) {
          */
         private function get_attrs(): array
         {
-            $attrs = [];
+            $attrs = array();
 
             $attribute_taxonomies = \wc_get_attribute_taxonomies();
 
@@ -284,23 +284,23 @@ if (!\class_exists(WoocommerceSettingsRESTController::class)) {
                 $taxonomy = \wc_attribute_taxonomy_name($attribute->attribute_name);
 
                 if (\taxonomy_exists($taxonomy)) {
-                    $data = [
+                    $data = array(
                     'title' => $attribute->attribute_label,
                     'name' => $attribute->attribute_name,
                     'field_type' => 'collection',
                     'can_multi' => true,
-                    'values' => [],
-                ];
+                    'values' => array(),
+                );
 
-                    $terms = \get_terms($taxonomy, [
+                    $terms = \get_terms($taxonomy, array(
                     'hide_empty' => false,
-                ]);
+                ));
 
                     foreach ((array) $terms as $term) {
-                        $data['values'][] = [
+                        $data['values'][] = array(
                         'value' => $term->term_id,
                         'title' => $term->name,
-                    ];
+                    );
                     }
 
                     $attrs[] = $data;

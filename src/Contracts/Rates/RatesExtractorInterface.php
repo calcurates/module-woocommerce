@@ -3,5 +3,5 @@ namespace Calcurates\Contracts\Rates;
 
 interface RatesExtractorInterface
 {
-    public function extract($rates);
+    public function extract(array $rates);
 }

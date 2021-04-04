@@ -19,7 +19,7 @@ class Rates
     {
         $this->tax_mode = $tax_mode;
         $this->package = $package;
-        $this->rates = [];
+        $this->rates = array();
         $this->rates_extractor_factory = new RatesExtractorFactory();
     }
 
@@ -54,31 +54,31 @@ class Rates
      */
     private function rates_sort()
     {
-        $rates = [
-            'has_priority' => [],
-            'no_priority' => [],
-        ];
+        $rates = array(
+            'has_priority' => array(),
+            'no_priority' => array(),
+        );
 
         foreach ($this->rates as $rate) {
             $rates[$rate['priority'] ? 'has_priority' : 'no_priority'][] = $rate;
         }
 
-        usort($rates['has_priority'], function ($a, $b) {
-            if ($a['priority'] == $b['priority']) {
+        \usort($rates['has_priority'], function ($a, $b) {
+            if ($a['priority'] === $b['priority']) {
                 return 0;
             }
             return ($a['priority'] < $b['priority']) ? -1 : 1;
         });
 
-        usort($rates['no_priority'], function ($a, $b) {
-            if ($a['cost'] == $b['cost']) {
+        \usort($rates['no_priority'], function ($a, $b) {
+            if ($a['cost'] === $b['cost']) {
                 return 0;
             }
 
             return ($a['cost'] < $b['cost']) ? -1 : 1;
         });
 
-        $this->rates = array_merge($rates['has_priority'], $rates['no_priority']);
+        $this->rates = \array_merge($rates['has_priority'], $rates['no_priority']);
     }
 
     /**
@@ -88,22 +88,22 @@ class Rates
      */
     public function convert_rates_to_wc_rates(): array
     {
-        $rates = [];
+        $rates = array();
 
         foreach ($this->rates as $rate) {
-            $rates[] = [
+            $rates[] = array(
                 'id' => 'calcurates:' . $rate['id'],
                 'label' => $rate['label'],
                 'cost' => $rate['cost'],
                 'package' => $this->package,
-                'meta_data' => [
+                'meta_data' => array(
                     'message' => $rate['message'],
                     'delivery_date_from' => $rate['delivery_date_from'],
                     'delivery_date_to' => $rate['delivery_date_to'],
                     'tax' => $rate['tax'],
-                ],
+                ),
                 'priority' => $rate['priority'],
-            ];
+            );
         }
 
         return $rates;
@@ -118,7 +118,7 @@ class Rates
      */
     private function has_shipping_option(string $shipping_option, $response): bool
     {
-        if (is_object($response) && \property_exists($response, 'shippingOptions')) {
+        if (\is_object($response) && \property_exists($response, 'shippingOptions')) {
             if (\property_exists($response->shippingOptions, $shipping_option) && !empty($response->shippingOptions->$shipping_option)) {
                 return true;
             }
@@ -136,7 +136,7 @@ class Rates
     private function append_rates($rates)
     {
         if (\is_array($rates) && !empty($rates)) {
-            $this->rates = array_merge($this->rates, $rates);
+            $this->rates = \array_merge($this->rates, $rates);
         }
     }
 
@@ -148,7 +148,7 @@ class Rates
      */
     public function apply_tax_mode()
     {
-        $rates = [];
+        $rates = array();
 
         foreach ($this->rates as $rate) {
             if ($rate['tax']) {

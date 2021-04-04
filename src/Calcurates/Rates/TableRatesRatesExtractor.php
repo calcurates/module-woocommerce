@@ -2,6 +2,7 @@
 namespace Calcurates\Calcurates\Rates;
 
 use Calcurates\Contracts\Rates\RatesExtractorInterface;
+use Calcurates\Utils\Logger;
 
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {

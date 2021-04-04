@@ -54,7 +54,7 @@ class Calcurates
         $response = $this->calcurates_client->get_rates($rates_request_body);
 
         if (!$response) {
-            return [];
+            return array();
         }
 
         // extract rates from response
