@@ -42,8 +42,8 @@ if (!\class_exists(Activator::class)) {
          */
         public static function key_setup(): void
         {
-            if (!\get_option('wc_calcurates_key')) {
-                \update_option(Basic::get_prefix() . '_key', \wc_rand_hash());
+            if (!\get_option(Basic::get_prefix() . 'key')) {
+                \update_option(Basic::get_prefix() . 'key', \wc_rand_hash());
             }
         }
     }

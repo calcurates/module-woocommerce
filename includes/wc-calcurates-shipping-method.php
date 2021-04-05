@@ -111,7 +111,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
                 'title' => __('Plugin Api Key', 'woocommerce'),
                 'type' => 'text',
                 'description' => __('Copy this Api Key to Calcurates panel', 'woocommerce'),
-                'default' => \get_option('wc_calcurates_key'),
+                'default' => \get_option(Basic::get_prefix() . 'key'),
                 'desc_tip' => false,
                 'custom_attributes' => array(
                     'readonly' => 'readonly',
