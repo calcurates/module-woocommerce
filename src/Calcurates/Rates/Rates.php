@@ -2,6 +2,8 @@
 
 namespace Calcurates\Calcurates\Rates;
 
+use Calcurates\Calcurates\Rates\Extractors\RatesExtractorFactory;
+
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
     exit;

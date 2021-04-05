@@ -1,5 +1,5 @@
 <?php
-namespace Calcurates\Calcurates\Rates;
+namespace Calcurates\Calcurates\Rates\Extractors;
 
 use Calcurates\Contracts\Rates\RatesExtractorInterface;
 use Calcurates\Utils\Logger;
