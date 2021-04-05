@@ -15,11 +15,8 @@ if (!\class_exists(Activator::class)) {
      */
     class Activator
     {
-
         /**
          * Run on plugin activation
-         *
-         * @return void
          */
         public static function activate(): void
         {
@@ -28,15 +25,11 @@ if (!\class_exists(Activator::class)) {
         }
 
         /**
-         * Check plugin dependensies
-         *
-         * @return void
+         * Check plugin dependencies
          */
         public static function deps_check(): void
         {
-            /**
-             * Check if WooCommerce is activated
-             */
+            // Check if WooCommerce is has been activated
             if (!\defined('WC_VERSION')) {
                 \wp_die(\sprintf(
                     __('WooCommerce Calcurates requires WooCommerce 3.9 or later.', 'WC_Calcurates')
@@ -46,8 +39,6 @@ if (!\class_exists(Activator::class)) {
 
         /**
          * Generate plugins key
-         *
-         * @return void
          */
         public static function key_setup(): void
         {

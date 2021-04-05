@@ -21,7 +21,7 @@ class RatesExtractorFactory
         $this->logger = new Logger();
     }
 
-    public function create(string $rate_name = null)
+    public function create(string $rate_name)
     {
         $extractor = __NAMESPACE__ . '\\' . \ucfirst($rate_name) . 'RatesExtractor';
         if (\class_exists($extractor)) {
@@ -35,6 +35,6 @@ class RatesExtractorFactory
 
         $this->logger->critical($error);
 
-        throw new \Exception($error);
+        throw new \RuntimeException($error);
     }
 }

@@ -1,7 +1,6 @@
 <?php
-namespace Calcurates\Calcurates\Rates;
 
-use Calcurates\Calcurates\Rates\RatesExtractorFactory;
+namespace Calcurates\Calcurates\Rates;
 
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
@@ -10,12 +9,25 @@ if (!\defined('ABSPATH')) {
 
 class Rates
 {
+    /**
+     * @var RatesExtractorFactory
+     */
     private $rates_extractor_factory;
+    /**
+     * @var array
+     */
     private $rates;
+    /**
+     * @var string
+     */
     private $tax_mode;
+
+    /**
+     * @var array
+     */
     private $package;
 
-    public function __construct($tax_mode, $package)
+    public function __construct(string $tax_mode, array $package)
     {
         $this->tax_mode = $tax_mode;
         $this->package = $package;
@@ -24,12 +36,9 @@ class Rates
     }
 
     /**
-     * Extract rates from Clacurates response
-     *
-     * @param  mixed $response
-     * @return array
+     * Extract rates from Calcurates response
      */
-    public function extract($response): array
+    public function extract(array $response): array
     {
         foreach ($response['shippingOptions'] as $shipping_option_name => $shipping_option_data) {
             try {
@@ -39,7 +48,9 @@ class Rates
             }
 
             $extracted_rates = $rate->extract($shipping_option_data);
-            $this->append_rates($extracted_rates);
+            if ($extracted_rates) {
+                $this->rates = \array_merge($this->rates, $extracted_rates);
+            }
         }
 
         $this->rates_sort();
@@ -49,10 +60,8 @@ class Rates
 
     /**
      * Sort rates by priority or cost
-     *
-     * @return void
      */
-    private function rates_sort()
+    private function rates_sort(): void
     {
         $rates = array(
             'has_priority' => array(),
@@ -63,14 +72,14 @@ class Rates
             $rates[$rate['priority'] ? 'has_priority' : 'no_priority'][] = $rate;
         }
 
-        \usort($rates['has_priority'], function ($a, $b) {
+        \usort($rates['has_priority'], static function ($a, $b): int {
             if ($a['priority'] === $b['priority']) {
                 return 0;
             }
             return ($a['priority'] < $b['priority']) ? -1 : 1;
         });
 
-        \usort($rates['no_priority'], function ($a, $b) {
+        \usort($rates['no_priority'], static function ($a, $b): int {
             if ($a['cost'] === $b['cost']) {
                 return 0;
             }
@@ -83,8 +92,6 @@ class Rates
 
     /**
      * Convert rates to WooCommerce compatible data structure
-     *
-     * @return array
      */
     public function convert_rates_to_wc_rates(): array
     {
@@ -110,43 +117,9 @@ class Rates
     }
 
     /**
-     * Check shipping option existance
-     *
-     * @param  mixed $shipping_option
-     * @param  mixed $response
-     * @return bool
-     */
-    private function has_shipping_option(string $shipping_option, $response): bool
-    {
-        if (\is_object($response) && \property_exists($response, 'shippingOptions')) {
-            if (\property_exists($response->shippingOptions, $shipping_option) && !empty($response->shippingOptions->$shipping_option)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Append rates to rates array
-     *
-     * @param  mixed $rates
-     * @return void
-     */
-    private function append_rates($rates)
-    {
-        if (\is_array($rates) && !empty($rates)) {
-            $this->rates = \array_merge($this->rates, $rates);
-        }
-    }
-
-    /**
      * Apply tax mode
-     *
-     * @param  mixed $rates
-     * @return void
      */
-    public function apply_tax_mode()
+    public function apply_tax_mode(): void
     {
         $rates = array();
 

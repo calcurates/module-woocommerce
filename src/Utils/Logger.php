@@ -14,7 +14,7 @@ if (!\defined('ABSPATH')) {
 class Logger
 {
     /**
-     * Defult WooCommerce logger
+     * Default WooCommerce logger
      *
      * @var \WC_Logger
      */
@@ -36,42 +36,38 @@ class Logger
     /**
      * Add to logs
      *
-     * @param string $type
-     * @param string $title
-     * @param array $data
-     * @return void
+     * @param string $level One of the following:
+     *     'emergency': System is unusable.
+     *     'alert': Action must be taken immediately.
+     *     'critical': Critical conditions.
+     *     'error': Error conditions.
+     *     'warning': Warning conditions.
+     *     'notice': Normal but significant condition.
+     *     'info': Informational messages.
+     *     'debug': Debug-level messages.
      */
-    private function log(string $type, string $title = '', array $data = array()): void
+    private function log(string $level, string $message = '', array $data = array()): void
     {
-        if (\is_array($data) && !empty($data)) {
-            $log = "\n" . "==== " . $title . " ====" . "\n" . \print_r($data, true) . "====END LOG====" . "\n\n";
-            $this->logger->$type($log, array('source' => $this->source));
-        } else {
-            $this->logger->$type($title, array('source' => $this->source));
+        if ($data) {
+            $message = "\n" . "==== " . $message . " ====" . "\n" . \print_r($data, true) . "====END LOG====" . "\n\n";
         }
+
+        $this->logger->log($level, $message, array('source' => $this->source));
     }
 
     /**
      * Add to logs as debug info
-     *
-     * @param string $title
-     * @param array $data
-     * @return void
      */
-    public function debug(string $title = '', array $data = array()): void
+    public function debug(string $message, array $data = array()): void
     {
-        $this->log('debug', $title, $data);
+        $this->log('debug', $message, $data);
     }
 
     /**
      * Add to logs as critical info
-     *
-     * @param string $title
-     * @param array $data
-     * @return void
      */
-    public function critical(string $title = '', array $data = array()): void
+    public function critical(string $message, array $data = array()): void
     {
-        $this->log('critical', $title, $data);
+        $this->log('critical', $message, $data);
     }
 }

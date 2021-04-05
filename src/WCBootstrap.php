@@ -8,17 +8,12 @@ if (!\defined('ABSPATH')) {
     exit;
 }
 
-if (!\class_exists(WCBootstarp::class)) {
+if (!\class_exists(WCBootstrap::class)) {
     /**
      * Changes WC by adding some new features through hooks
      */
-    class WCBootstarp
+    class WCBootstrap
     {
-        /**
-         * run
-         *
-         * @return void
-         */
         public function run(): void
         {
             // Create Calcurates shipping method
@@ -34,11 +29,6 @@ if (!\class_exists(WCBootstarp::class)) {
             \add_action('woocommerce_email_after_order_table', array($this, 'add_shipping_data_after_order_table_in_email'), 10, 4);
         }
 
-        /**
-         * init_shipping
-         *
-         * @return void
-         */
         public function init_shipping(): void
         {
             if (\class_exists('WC_Shipping_Method')) {
@@ -50,21 +40,15 @@ if (!\class_exists(WCBootstarp::class)) {
         /**
          * Shipping methods register themselves by returning their main class name through the woocommerce_shipping_methods filter.
          *
-         * @param  array $methods
-         * @return array
+         * @param  array<string, string> $methods
+         * @return array<string, string>
          */
         public function add_calcurates_shipping(array $methods): array
         {
-            $methods['calcurates'] = 'WC_Calcurates_Shipping_Method';
+            $methods[\WC_Calcurates_Shipping_Method::CODE] = 'WC_Calcurates_Shipping_Method';
             return $methods;
         }
 
-        /**
-         * ship_to_different_address_set_session
-         *
-         * @param  string $data
-         * @return string
-         */
         public function ship_to_different_address_set_session(string $data): string
         {
             $data_array = array();
@@ -82,13 +66,6 @@ if (!\class_exists(WCBootstarp::class)) {
             return $data;
         }
 
-        /**
-         * action_after_shipping_rate
-         *
-         * @param  \WC_Shipping_Rate $rate
-         * @param  int $index
-         * @return void
-         */
         public function add_data_after_shipping_rate(\WC_Shipping_Rate $rate, int $index): void
         {
             if (false === \strpos($rate->get_id(), 'calcurates:')) {
@@ -100,14 +77,12 @@ if (!\class_exists(WCBootstarp::class)) {
             $text = null;
 
             // shipping rate description
-            if (\array_key_exists('message', $meta)) {
-                if ($meta['message']) {
-                    $text .= "<div class='calcurates-checkout__shipping-rate-message'>" . $meta['message'] . "</div>";
-                }
+            if (isset($meta['message'])) {
+                $text .= "<div class='calcurates-checkout__shipping-rate-message'>" . $meta['message'] . "</div>";
             }
 
             // shipping rate dates
-            if (\array_key_exists('delivery_date_from', $meta) && \array_key_exists('delivery_date_to', $meta)) {
+            if (isset($meta['delivery_date_from'], $meta['delivery_date_to'])) {
                 $estimated_delivery_date = '';
 
                 if ($meta['delivery_date_from'] === $meta['delivery_date_to']) {
@@ -144,15 +119,6 @@ if (!\class_exists(WCBootstarp::class)) {
             }
         }
 
-        /**
-         * add_shipping_data_after_order_table_in_email
-         *
-         * @param  \WC_Order $order
-         * @param  bool $sent_to_admin
-         * @param  string $plain_text
-         * @param  \WC_Email $email
-         * @return void
-         */
         public function add_shipping_data_after_order_table_in_email(\WC_Order $order, bool $sent_to_admin, string $plain_text, \WC_Email $email): void
         {
             $message = null;
@@ -161,8 +127,9 @@ if (!\class_exists(WCBootstarp::class)) {
             $estimated_delivery_date = '';
             $text = '';
 
-            foreach ($order->get_items('shipping') as $item_id => $item) {
-                if ($item->get_method_id() === 'calcurates') {
+            /** @var \WC_Order_Item_Shipping $item */
+            foreach ($order->get_items('shipping') as $item) {
+                if ($item->get_method_id() === \WC_Calcurates_Shipping_Method::CODE) {
                     $message = $item->get_meta('message');
                     $delivery_date_from = $item->get_meta('delivery_date_from');
                     $delivery_date_to = $item->get_meta('delivery_date_to');

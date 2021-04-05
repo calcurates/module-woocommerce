@@ -1,7 +1,6 @@
 <?php
 namespace Calcurates\Calcurates;
 
-use Calcurates\Calcurates\CalcuratesClient;
 use Calcurates\Calcurates\Rates\Rates;
 use Calcurates\Calcurates\RequestsBodyBuilders\RatesRequestBodyBuilder;
 
@@ -15,21 +14,21 @@ class Calcurates
     /**
      * Rates request body builder
      *
-     * @var Calcurates\Calcurates\RequestsBodyBuilders\RatesRequestBodyBuilder
+     * @var RatesRequestBodyBuilder
      */
     private $rates_request_body_builder;
 
     /**
      * CalcuratesClient
      *
-     * @var Calcurates\Calcurates\CalcuratesClient
+     * @var CalcuratesClient
      */
     private $calcurates_client;
 
     /**
      * Tools for rates processing
      *
-     * @var Calcurates\Calcurates\Rates\Rates
+     * @var Rates
      */
     private $rates_tools;
 
@@ -40,11 +39,6 @@ class Calcurates
         $this->rates_tools = $rates_tools;
     }
 
-    /**
-     * get_rates
-     *
-     * @return array
-     */
     public function get_rates(): array
     {
         // build body for request

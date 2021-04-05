@@ -13,6 +13,8 @@ if (!\defined('ABSPATH')) {
 
 class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
 {
+    public const CODE = 'calcurates';
+
     /**
      * Debug mode
      *
@@ -27,6 +29,9 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
      */
     private $plugin_api_key;
 
+    /**
+     * @var string
+     */
     private $generate_new_api_key;
 
     /**
@@ -51,16 +56,11 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
     private $tax_mode;
 
 
-    /**
-     * __construct
-     *
-     * @param  int $instance_id
-     */
     public function __construct($instance_id = 0)
     {
         parent::__construct($instance_id);
 
-        $this->id = 'calcurates';
+        $this->id = self::CODE;
         $this->method_title = __('Calcurates Shipping Method');
         $this->method_description = __('Calcurates Shipping Method');
 
@@ -75,11 +75,6 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         $this->init();
     }
 
-    /**
-     * init
-     *
-     * @return void
-     */
     public function init(): void
     {
         $this->init_form_fields();
@@ -96,18 +91,13 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         \add_action('woocommerce_update_options_shipping_' . $this->id, array($this, 'process_admin_options'));
     }
 
-    /**
-     * init_form_fields
-     *
-     * @return void
-     */
-    public function init_form_fields()
+    public function init_form_fields(): void
     {
         $this->form_fields = array(
             'calcurates_api_url' => array(
                 'title' => __('Calcurates Api URL', 'woocommerce'),
                 'type' => 'text',
-                'default' => Basic::get_api_url(),
+                'default' => 'https://api.calcurates.com',
                 'desc_tip' => false,
             ),
             'calcurates_api_key' => array(
@@ -157,10 +147,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
     }
 
     /**
-     * Called to calculate shipping rates for this method.
-     *
-     * @param array $package Package array.
-     * @return void
+     * @inheritdoc
      */
     public function calculate_shipping($package = array()): void
     {
@@ -195,11 +182,9 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
     }
 
     /**
-     * process_admin_options
-     *
-     * @return void
+     * @inheritdoc
      */
-    public function process_admin_options(): void
+    public function process_admin_options(): bool
     {
         parent::process_admin_options();
 
@@ -210,5 +195,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
             \update_option(Basic::get_prefix() . 'key', $key);
             $this->update_option('plugin_api_key', $key);
         }
+
+        return true;
     }
 }

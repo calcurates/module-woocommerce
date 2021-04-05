@@ -2,7 +2,6 @@
 
 namespace Calcurates;
 
-use Calcurates\Basic;
 
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
@@ -15,15 +14,10 @@ if (!\class_exists(Assets::class)) {
      */
     class Assets
     {
-
         /**
          * Register stylesheet
-         *
-         * @param string $file_name
-         *
-         * @return bool
          */
-        public function register_style(string $file_name): bool
+        private function register_style(string $file_name): bool
         {
             $styles_url = \plugins_url('/assets/css/' . $file_name, __DIR__);
 
@@ -34,9 +28,6 @@ if (!\class_exists(Assets::class)) {
 
         /**
          * Add stylesheet
-         *
-         * @param  mixed $file_name
-         * @return void
          */
         public function enqueue_styles(): void
         {

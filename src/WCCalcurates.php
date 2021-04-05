@@ -2,9 +2,7 @@
 
 namespace Calcurates;
 
-use Calcurates\Assets;
 use Calcurates\RESTAPI\WoocommerceSettingsRESTController;
-use Calcurates\WCBootstarp;
 
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
@@ -17,20 +15,21 @@ if (!\class_exists(WCCalcurates::class)) {
      */
     class WCCalcurates
     {
-        protected $wc_bootsrap;
-        protected $assets;
-        protected $wc_settings_routes;
+        /**
+         * @var WCBootstrap
+         */
+        private $wc_bootsrap;
+        /**
+         * @var Assets
+         */
+        private $assets;
 
         public function __construct()
         {
-            $this->wc_bootsrap = new WCBootstarp();
+            $this->wc_bootsrap = new WCBootstrap();
             $this->assets = new Assets();
         }
-        /**
-         * run
-         *
-         * @return void
-         */
+
         public function run(): void
         {
             $this->restapi_register_routes();
@@ -40,8 +39,6 @@ if (!\class_exists(WCCalcurates::class)) {
 
         /**
          * Register REST API routes
-         *
-         * @return void
          */
         public function restapi_register_routes(): void
         {
@@ -50,8 +47,6 @@ if (!\class_exists(WCCalcurates::class)) {
 
         /**
          * Set WC hooks and add new shipping method
-         *
-         * @return void
          */
         public function woocommerce_bootstrap(): void
         {
@@ -60,8 +55,6 @@ if (!\class_exists(WCCalcurates::class)) {
 
         /**
          * Register CSS styles
-         *
-         * @return void
          */
         public function enqueue_styles(): void
         {
