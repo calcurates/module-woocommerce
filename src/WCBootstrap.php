@@ -78,18 +78,18 @@ if (!\class_exists(WCBootstrap::class)) {
 
             // shipping rate description
             if (isset($meta['message'])) {
-                $text .= "<div class='calcurates-checkout__shipping-rate-message'>" . $meta['message'] . "</div>";
+                $text .= '<div class="calcurates-checkout__shipping-rate-message">' . $meta['message'] . '</div>';
             }
 
             // shipping rate dates, use \DateTime objects
             $estimated_delivery_date_text = $this->get_estimated_delivery_date_text($meta['delivery_date_from'], $meta['delivery_date_to']);
             
             if($estimated_delivery_date_text){
-                $text .= "<div class='calcurates-checkout__shipping-rate-dates'>Estimated delivery date: " . $estimated_delivery_date_text . "</div>";
+                $text .= '<div class="calcurates-checkout__shipping-rate-dates">Estimated delivery date: ' . $estimated_delivery_date_text . '</div>';
             }
 
             if ($text) {
-                echo "<div class='calcurates-checkout__shipping-rate-description'>" . $text . "</div>";
+                echo '<div class="calcurates-checkout__shipping-rate-description">' . $text . '</div>';
             }
         }
 
