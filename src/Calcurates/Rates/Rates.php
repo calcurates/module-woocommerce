@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Calcurates\Calcurates\Rates;
 
 use Calcurates\Calcurates\Rates\Extractors\RatesExtractorFactory;
@@ -33,12 +35,12 @@ class Rates
     {
         $this->tax_mode = $tax_mode;
         $this->package = $package;
-        $this->rates = array();
+        $this->rates = [];
         $this->rates_extractor_factory = new RatesExtractorFactory();
     }
 
     /**
-     * Extract rates from Calcurates response
+     * Extract rates from Calcurates response.
      */
     public function extract(array $response): array
     {
@@ -61,14 +63,14 @@ class Rates
     }
 
     /**
-     * Sort rates by priority or cost
+     * Sort rates by priority or cost.
      */
     private function rates_sort(): void
     {
-        $rates = array(
-            'has_priority' => array(),
-            'no_priority' => array(),
-        );
+        $rates = [
+            'has_priority' => [],
+            'no_priority' => [],
+        ];
 
         foreach ($this->rates as $rate) {
             $rates[$rate['priority'] ? 'has_priority' : 'no_priority'][] = $rate;
@@ -78,6 +80,7 @@ class Rates
             if ($a['priority'] === $b['priority']) {
                 return 0;
             }
+
             return ($a['priority'] < $b['priority']) ? -1 : 1;
         });
 
@@ -93,58 +96,58 @@ class Rates
     }
 
     /**
-     * Convert rates to WooCommerce compatible data structure
+     * Convert rates to WooCommerce compatible data structure.
      */
     public function convert_rates_to_wc_rates(): array
     {
-        $rates = array();
+        $rates = [];
 
         foreach ($this->rates as $rate) {
-            $rates[] = array(
-                'id' => 'calcurates:' . $rate['id'],
+            $rates[] = [
+                'id' => 'calcurates:'.$rate['id'],
                 'label' => $rate['label'],
                 'cost' => $rate['cost'],
                 'package' => $this->package,
-                'meta_data' => array(
+                'meta_data' => [
                     'message' => $rate['message'],
                     'delivery_date_from' => $rate['delivery_date_from'],
                     'delivery_date_to' => $rate['delivery_date_to'],
                     'tax' => $rate['tax'],
-                ),
+                ],
                 'priority' => $rate['priority'],
-            );
+            ];
         }
 
         return $rates;
     }
 
     /**
-     * Apply tax mode
+     * Apply tax mode.
      */
     public function apply_tax_mode(): void
     {
-        $rates = array();
+        $rates = [];
 
         foreach ($this->rates as $rate) {
             if ($rate['tax']) {
-                if ($this->tax_mode === 'tax_included') {
+                if ('tax_included' === $this->tax_mode) {
                     $rate['label'] .= ' - duties & tax included';
                     $rate['cost'] += $rate['tax'];
                     $rates[] = $rate;
-                } elseif ($this->tax_mode === 'without_tax') {
+                } elseif ('without_tax' === $this->tax_mode) {
                     $rates[] = $rate;
-                } elseif ($this->tax_mode === 'both') {
+                } elseif ('both' === $this->tax_mode) {
                     $label = $rate['label'];
                     $id = $rate['id'];
                     $cost = $rate['cost'];
 
-                    $rate['label'] = $label . ' - duties & tax included';
-                    $rate['id'] = $id . 'tax_included';
+                    $rate['label'] = $label.' - duties & tax included';
+                    $rate['id'] = $id.'tax_included';
                     $rate['cost'] += $rate['tax'];
                     $rates[] = $rate;
 
-                    $rate['label'] = $label . ' - without duties & tax';
-                    $rate['id'] = $id . 'without_tax';
+                    $rate['label'] = $label.' - without duties & tax';
+                    $rate['id'] = $id.'without_tax';
                     $rate['cost'] = $cost;
                     $rates[] = $rate;
                 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Calcurates\Basic;
 use Calcurates\Calcurates\Calcurates;
 use Calcurates\Calcurates\CalcuratesClient;
@@ -16,14 +18,14 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
     public const CODE = 'calcurates';
 
     /**
-     * Debug mode
+     * Debug mode.
      *
      * @var string
      */
     private $debug_mode;
 
     /**
-     * Key for that module API access
+     * Key for that module API access.
      *
      * @var string
      */
@@ -35,26 +37,25 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
     private $generate_new_api_key;
 
     /**
-     * Calcurates API URL
+     * Calcurates API URL.
      *
      * @var string
      */
     private $calcurates_api_url;
 
     /**
-     * Calcurates API access key
+     * Calcurates API access key.
      *
      * @var string
      */
     private $calcurates_api_key;
 
     /**
-     * Tax view type
+     * Tax view type.
      *
      * @var string
      */
     private $tax_mode;
-
 
     public function __construct($instance_id = 0)
     {
@@ -67,10 +68,10 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         $this->enabled = 'yes';
         $this->title = 'Calcurates Shipping Method';
 
-        $this->supports = array(
+        $this->supports = [
             'shipping-zones',
             'settings',
-        );
+        ];
 
         $this->init();
     }
@@ -88,68 +89,68 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         $this->tax_mode = $this->get_option('tax_mode');
 
         // Save settings in admin if you have any defined
-        \add_action('woocommerce_update_options_shipping_' . $this->id, array($this, 'process_admin_options'));
+        add_action('woocommerce_update_options_shipping_'.$this->id, [$this, 'process_admin_options']);
     }
 
     public function init_form_fields(): void
     {
-        $this->form_fields = array(
-            'calcurates_api_url' => array(
+        $this->form_fields = [
+            'calcurates_api_url' => [
                 'title' => __('Calcurates Api URL', 'woocommerce'),
                 'type' => 'text',
                 'default' => 'https://api.calcurates.com',
                 'desc_tip' => false,
-            ),
-            'calcurates_api_key' => array(
+            ],
+            'calcurates_api_key' => [
                 'title' => __('Calcurates Api Key', 'woocommerce'),
                 'type' => 'text',
                 'description' => __('Copy your Api Key from Calcurates panel', 'woocommerce'),
-                'default' => "",
+                'default' => '',
                 'desc_tip' => false,
-            ),
-            'plugin_api_key' => array(
+            ],
+            'plugin_api_key' => [
                 'title' => __('Plugin Api Key', 'woocommerce'),
                 'type' => 'text',
                 'description' => __('Copy this Api Key to Calcurates panel', 'woocommerce'),
-                'default' => \get_option(Basic::get_prefix() . 'key'),
+                'default' => get_option(Basic::get_prefix().'key'),
                 'desc_tip' => false,
-                'custom_attributes' => array(
+                'custom_attributes' => [
                     'readonly' => 'readonly',
-                ),
-            ),
-            'generate_new_api_key' => array(
+                ],
+            ],
+            'generate_new_api_key' => [
                 'title' => __('Generate new Plugin Api Key', 'woocommerce'),
                 'type' => 'checkbox',
                 'description' => __('Check and save changes to generate new Plugin Api Key', 'woocommerce'),
                 'desc_tip' => false,
-            ),
-            'debug_mode' => array(
+            ],
+            'debug_mode' => [
                 'title' => __('Debug', 'woocommerce'),
                 'type' => 'select',
                 'default' => 'off',
-                'options' => array(
+                'options' => [
                     'off' => 'Off',
                     'errors' => 'Log errors only',
                     'all' => 'Log all data',
-                ),
-            ),
-            'tax_mode' => array(
+                ],
+            ],
+            'tax_mode' => [
                 'title' => __('Display rates with tax & duties', 'woocommerce'),
                 'type' => 'select',
                 'default' => 'tax_included',
-                'options' => array(
+                'options' => [
                     'tax_included' => 'Duties & tax included',
                     'without_tax' => 'Without duties & tax',
                     'both' => 'Both',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function calculate_shipping($package = array()): void
+    public function calculate_shipping($package = []): void
     {
         $rates = $this->get_rates($package);
 
@@ -161,15 +162,14 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
     }
 
     /**
-     * Get rates
+     * Get rates.
      *
-     * @param array $package Package array.
-     * @return array
+     * @param array $package package array
      */
-    private function get_rates(array $package = array()): array
+    private function get_rates(array $package = []): array
     {
         if (!$this->instance_id) {
-            return array();
+            return [];
         }
 
         $calcurates_client = new CalcuratesClient($this->calcurates_api_key, $this->calcurates_api_url, $this->debug_mode);
@@ -182,17 +182,17 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function process_admin_options(): bool
     {
         parent::process_admin_options();
 
         // TODO: needs refactor
-        if (\array_key_exists('woocommerce_' . $this->id . '_generate_new_api_key', $_POST) && $_POST['woocommerce_' . $this->id . '_generate_new_api_key'] === 1) {
+        if (\array_key_exists('woocommerce_'.$this->id.'_generate_new_api_key', $_POST) && 1 === $_POST['woocommerce_'.$this->id.'_generate_new_api_key']) {
             $this->update_option('generate_new_api_key', 'no');
-            $key = \wc_rand_hash();
-            \update_option(Basic::get_prefix() . 'key', $key);
+            $key = wc_rand_hash();
+            update_option(Basic::get_prefix().'key', $key);
             $this->update_option('plugin_api_key', $key);
         }
 

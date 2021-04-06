@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Calcurates\Calcurates;
 
 use Calcurates\Calcurates\Rates\Rates;
@@ -12,21 +15,21 @@ if (!\defined('ABSPATH')) {
 class Calcurates
 {
     /**
-     * Rates request body builder
+     * Rates request body builder.
      *
      * @var RatesRequestBodyBuilder
      */
     private $rates_request_body_builder;
 
     /**
-     * CalcuratesClient
+     * CalcuratesClient.
      *
      * @var CalcuratesClient
      */
     private $calcurates_client;
 
     /**
-     * Tools for rates processing
+     * Tools for rates processing.
      *
      * @var Rates
      */
@@ -48,7 +51,7 @@ class Calcurates
         $response = $this->calcurates_client->get_rates($rates_request_body);
 
         if (!$response) {
-            return array();
+            return [];
         }
 
         // extract rates from response

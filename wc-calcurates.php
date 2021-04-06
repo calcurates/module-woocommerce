@@ -1,7 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 /**
- * Plugin Name:  WooCommerce Calcurates
+ * Plugin Name:  WooCommerce Calcurates.
  */
 
 namespace Calcurates;
@@ -14,11 +16,11 @@ if (!\defined('ABSPATH')) {
 /**
  * Composer autoload.
  */
-require_once plugin_dir_path(__FILE__) . 'lib/autoload.php';
+require_once plugin_dir_path(__FILE__).'lib/autoload.php';
 
-/**
+/*
  * Register activation hook
  */
-\register_activation_hook(__FILE__, [__NAMESPACE__ . '\Activator', 'activate']);
+register_activation_hook(__FILE__, [__NAMESPACE__.'\Activator', 'activate']);
 
 (new WCCalcurates())->run();

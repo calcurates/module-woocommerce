@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Calcurates\Calcurates\Rates\Extractors;
 
 use Calcurates\Contracts\Rates\RatesExtractorInterface;
@@ -10,7 +13,7 @@ if (!\defined('ABSPATH')) {
 }
 
 /**
- * Factory for extractors
+ * Factory for extractors.
  */
 class RatesExtractorFactory
 {
@@ -23,7 +26,7 @@ class RatesExtractorFactory
 
     public function create(string $rate_name)
     {
-        $extractor = __NAMESPACE__ . '\\' . \ucfirst($rate_name) . 'RatesExtractor';
+        $extractor = __NAMESPACE__.'\\'.\ucfirst($rate_name).'RatesExtractor';
         if (\class_exists($extractor)) {
             $extractor_instance = new $extractor($this->logger);
             if ($extractor_instance instanceof RatesExtractorInterface) {

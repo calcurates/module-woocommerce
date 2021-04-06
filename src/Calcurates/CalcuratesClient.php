@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Calcurates\Calcurates;
 
 use Calcurates\Basic;
@@ -11,33 +13,33 @@ if (!\defined('ABSPATH')) {
 }
 
 /**
- * Http client for Calcurates API
+ * Http client for Calcurates API.
  */
 class CalcuratesClient
 {
     /**
-     * Logger
+     * Logger.
      *
      * @var \Calcurates\Utils\Logger
      */
     private $logger;
 
     /**
-     * Calcurates API key for auth
+     * Calcurates API key for auth.
      *
      * @var string
      */
     private $api_key;
 
     /**
-     * Calcurates API URL
+     * Calcurates API URL.
      *
      * @var string
      */
     private $api_url;
 
     /**
-     * Debug level mode
+     * Debug level mode.
      *
      * @var string
      */
@@ -52,7 +54,7 @@ class CalcuratesClient
     }
 
     /**
-     * Get rates from Calcurates server
+     * Get rates from Calcurates server.
      */
     public function get_rates(array $rates_request_body): ?array
     {
@@ -61,44 +63,43 @@ class CalcuratesClient
 
     private function request(array $request_body, string $path): ?array
     {
-        $args = array(
-            'user-agent' => 'calcurates/module-woocommerce/' . Basic::get_version(),
+        $args = [
+            'user-agent' => 'calcurates/module-woocommerce/'.Basic::get_version(),
             'compress' => true,
             'decompress' => true,
             'timeout' => 10,
             'method' => 'POST',
-            'headers' => array(
+            'headers' => [
                 'X-API-KEY' => null,
                 'Content-Type' => 'application/json',
-            ),
-            'body' => \wp_json_encode($request_body),
-        );
+            ],
+            'body' => wp_json_encode($request_body),
+        ];
 
-        if ($this->debug_mode === 'all') {
+        if ('all' === $this->debug_mode) {
             $this->logger->debug('Calcurates API request', $args);
         }
 
         $args['headers']['X-API-KEY'] = $this->api_key;
 
+        $result = wp_safe_remote_request($this->api_url.$path, $args);
 
-        $result = \wp_safe_remote_request($this->api_url . $path, $args);
-
-        if (\is_wp_error($result) || \wp_remote_retrieve_response_code($result) !== 200) {
-            if ($this->debug_mode === 'all' || $this->debug_mode === 'errors') {
-                $this->logger->critical('Calcurates API request error', (array)$result);
+        if (is_wp_error($result) || 200 !== wp_remote_retrieve_response_code($result)) {
+            if ('all' === $this->debug_mode || 'errors' === $this->debug_mode) {
+                $this->logger->critical('Calcurates API request error', (array) $result);
             }
 
             return null;
         }
 
-        $response = \wp_remote_retrieve_body($result);
+        $response = wp_remote_retrieve_body($result);
         $decodedResponse = \json_decode($response, true);
 
         if (null === $decodedResponse && \JSON_ERROR_NONE !== \json_last_error()) {
-            $this->logger->critical('Can\'t parse the Calcurates API json response: ' . \json_last_error_msg(), array('response' => $response));
+            $this->logger->critical('Can\'t parse the Calcurates API json response: '.\json_last_error_msg(), ['response' => $response]);
         }
 
-        if ($this->debug_mode === 'all') {
+        if ('all' === $this->debug_mode) {
             $this->logger->debug('Calcurates API response', $decodedResponse);
         }
 

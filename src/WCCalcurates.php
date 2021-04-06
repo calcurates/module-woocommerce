@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Calcurates;
 
 use Calcurates\RESTAPI\WoocommerceSettingsRESTController;
@@ -11,7 +13,7 @@ if (!\defined('ABSPATH')) {
 
 if (!\class_exists(WCCalcurates::class)) {
     /**
-     * Base plugin class
+     * Base plugin class.
      */
     class WCCalcurates
     {
@@ -38,15 +40,15 @@ if (!\class_exists(WCCalcurates::class)) {
         }
 
         /**
-         * Register REST API routes
+         * Register REST API routes.
          */
         public function restapi_register_routes(): void
         {
-            \add_action('rest_api_init', array(new WoocommerceSettingsRESTController(), 'register_routes'));
+            add_action('rest_api_init', [new WoocommerceSettingsRESTController(), 'register_routes']);
         }
 
         /**
-         * Set WC hooks and add new shipping method
+         * Set WC hooks and add new shipping method.
          */
         public function woocommerce_bootstrap(): void
         {
@@ -54,11 +56,11 @@ if (!\class_exists(WCCalcurates::class)) {
         }
 
         /**
-         * Register CSS styles
+         * Register CSS styles.
          */
         public function enqueue_styles(): void
         {
-            \add_action('wp_enqueue_scripts', array($this->assets, 'enqueue_styles'));
+            add_action('wp_enqueue_scripts', [$this->assets, 'enqueue_styles']);
         }
     }
 }

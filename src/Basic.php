@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Calcurates;
 
 // Stop direct HTTP access.
@@ -9,7 +11,7 @@ if (!\defined('ABSPATH')) {
 
 if (!\class_exists(Basic::class)) {
     /**
-     * Storage of basic information
+     * Storage of basic information.
      */
     class Basic
     {
@@ -30,7 +32,7 @@ if (!\class_exists(Basic::class)) {
         }
 
         /**
-         * Plugin text domain
+         * Plugin text domain.
          */
         public static function get_plugin_text_domain(): string
         {
@@ -38,11 +40,11 @@ if (!\class_exists(Basic::class)) {
         }
 
         /**
-         * Get plugin dir path
+         * Get plugin dir path.
          */
         public static function get_plugin_dir_path(): string
         {
-            return \trailingslashit(\realpath(__DIR__ . \DIRECTORY_SEPARATOR . '..'));
+            return trailingslashit(\realpath(__DIR__.\DIRECTORY_SEPARATOR.'..'));
         }
     }
 }

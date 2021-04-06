@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Calcurates\Calcurates\Rates\Extractors;
 
 use Calcurates\Contracts\Rates\RatesExtractorInterface;
@@ -13,20 +15,20 @@ class InStorePickupsRatesExtractor implements RatesExtractorInterface
 {
     public function extract(array $in_store_rates): array
     {
-        $ready_rates = array();
+        $ready_rates = [];
 
         foreach ($in_store_rates as $in_store_rate) {
-            if ($in_store_rate['success'] !== true) {
+            if (true !== $in_store_rate['success']) {
                 continue;
             }
 
             foreach ($in_store_rate->stores as $rate) {
-                if ($rate['success'] !== true) {
+                if (true !== $rate['success']) {
                     continue;
                 }
 
-                $ready_rates[] = array(
-                    'id' => $in_store_rate['id'] . '_' . $rate['id'],
+                $ready_rates[] = [
+                    'id' => $in_store_rate['id'].'_'.$rate['id'],
                     'label' => $rate['name'],
                     'cost' => $rate['rate']['cost'],
                     'tax' => $rate['rate']['tax'] ? $rate['rate']['tax'] : 0,
@@ -34,7 +36,7 @@ class InStorePickupsRatesExtractor implements RatesExtractorInterface
                     'delivery_date_from' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['from'] : null,
                     'delivery_date_to' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['to'] : null,
                     'priority' => $in_store_rate['priority'],
-                );
+                ];
             }
         }
 

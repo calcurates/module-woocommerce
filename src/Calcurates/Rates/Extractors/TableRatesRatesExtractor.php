@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Calcurates\Calcurates\Rates\Extractors;
 
 use Calcurates\Contracts\Rates\RatesExtractorInterface;
@@ -13,20 +15,20 @@ class TableRatesRatesExtractor implements RatesExtractorInterface
 {
     public function extract(array $table_rates): array
     {
-        $ready_rates = array();
+        $ready_rates = [];
 
         foreach ($table_rates as $table_rate) {
-            if ($table_rate['success'] !== true) {
+            if (true !== $table_rate['success']) {
                 continue;
             }
 
             foreach ($table_rate['methods'] as $rate) {
-                if ($rate['success'] !== true) {
+                if (true !== $rate['success']) {
                     continue;
                 }
 
-                $ready_rates[] = array(
-                    'id' => $table_rate['id'] . '_' . $rate['id'],
+                $ready_rates[] = [
+                    'id' => $table_rate['id'].'_'.$rate['id'],
                     'label' => $rate['name'],
                     'cost' => $rate['rate']['cost'],
                     'tax' => $rate['rate']['tax'] ? $rate['rate']['tax'] : 0,
@@ -34,7 +36,7 @@ class TableRatesRatesExtractor implements RatesExtractorInterface
                     'delivery_date_from' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['from'] : null,
                     'delivery_date_to' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['to'] : null,
                     'priority' => $table_rate['priority'],
-                );
+                ];
             }
         }
 

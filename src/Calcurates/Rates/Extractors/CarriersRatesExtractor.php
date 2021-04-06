@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Calcurates\Calcurates\Rates\Extractors;
 
 use Calcurates\Contracts\Rates\RatesExtractorInterface;
@@ -13,21 +15,21 @@ class CarriersRatesExtractor implements RatesExtractorInterface
 {
     public function extract(array $carriers): array
     {
-        $ready_rates = array();
+        $ready_rates = [];
 
         foreach ($carriers as $carrier) {
-            if ($carrier['success'] !== true) {
+            if (true !== $carrier['success']) {
                 continue;
             }
 
             foreach ($carrier['rates'] as $rate) {
-                if ($rate['success'] !== true) {
+                if (true !== $rate['success']) {
                     continue;
                 }
 
-                $services_names = array();
-                $services_messages = array();
-                $services_ids = array();
+                $services_names = [];
+                $services_messages = [];
+                $services_ids = [];
 
                 foreach ($rate['services'] as $services) {
                     if ($services['message']) {
@@ -38,21 +40,20 @@ class CarriersRatesExtractor implements RatesExtractorInterface
                     $services_names[] = $services['name'];
                 }
 
-
                 $services_messages = \implode('. ', $services_messages);
                 $services_ids = \implode('_', $services_ids);
                 $services_names = \implode(', ', $services_names);
 
-                $ready_rates[] = array(
-                    'id' => $carrier['id'] . '_' . $services_ids,
-                    'label' => $carrier['name'] . '. ' . $services_names,
+                $ready_rates[] = [
+                    'id' => $carrier['id'].'_'.$services_ids,
+                    'label' => $carrier['name'].'. '.$services_names,
                     'cost' => $rate['rate']['cost'],
                     'tax' => $rate['rate']['tax'] ? $rate['rate']['tax'] : 0,
-                    'message' => $carrier['message'] . ' ' . $services_messages,
+                    'message' => $carrier['message'].' '.$services_messages,
                     'delivery_date_from' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['from'] : null,
                     'delivery_date_to' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['to'] : null,
                     'priority' => $carrier['priority'],
-                );
+                ];
             }
         }
 

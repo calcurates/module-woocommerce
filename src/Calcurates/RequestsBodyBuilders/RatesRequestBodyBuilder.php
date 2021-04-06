@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Calcurates\Calcurates\RequestsBodyBuilders;
 
 // Stop direct HTTP access.
@@ -10,45 +12,45 @@ if (!\defined('ABSPATH')) {
 class RatesRequestBodyBuilder
 {
     /**
-     * Package from basket
+     * Package from basket.
      *
-     * @param array $package Package array.
+     * @param array $package package array
      */
     private $package;
 
-    public function __construct(array $package = array())
+    public function __construct(array $package = [])
     {
         $this->package = $package;
     }
 
     /**
-     * Build request body
+     * Build request body.
      */
     public function build(): array
     {
-        $coupons = \WC()->cart->get_coupons();
+        $coupons = WC()->cart->get_coupons();
         $coupon = \reset($coupons);
 
-        $request_body = array(
+        $request_body = [
             'promoCode' => $coupon ? $coupon->get_code() : null, // FIXME coud be few coupons
             'shipTo' => $this->prepare_ship_to_data(),
-            "products" => $this->prepare_products_data(),
-            "customerGroup" => \is_user_logged_in() ? 'customer' : 'guest',
-        );
+            'products' => $this->prepare_products_data(),
+            'customerGroup' => is_user_logged_in() ? 'customer' : 'guest',
+        ];
 
         return $request_body;
     }
 
     /**
-     * Prepare shipping data
+     * Prepare shipping data.
      */
     public function prepare_ship_to_data(): array
     {
         $contact_name = null;
         $country_code = null;
-        $customer_session_data = \WC()->session->get('customer');
-        $ship_to_different_address = \WC()->session->get('ship_to_different_address') ?? 0;
-        $postcode = $ship_to_different_address ? ($customer_session_data['shipping_postcode'] ?: "string") : ($customer_session_data['postcode'] ?: "string"); // fixme: remove the "string"
+        $customer_session_data = WC()->session->get('customer');
+        $ship_to_different_address = WC()->session->get('ship_to_different_address') ?? 0;
+        $postcode = $ship_to_different_address ? ($customer_session_data['shipping_postcode'] ?: 'string') : ($customer_session_data['postcode'] ?: 'string'); // fixme: remove the "string"
         $first_name = $ship_to_different_address ? ($customer_session_data['shipping_first_name'] ?: null) : ($customer_session_data['first_name'] ?: null);
         $last_name = $ship_to_different_address ? ($customer_session_data['shipping_last_name'] ?: null) : ($customer_session_data['last_name'] ?: null);
         $company = $ship_to_different_address ? ($customer_session_data['shipping_company'] ?: null) : ($customer_session_data['company'] ?: null);
@@ -62,20 +64,20 @@ class RatesRequestBodyBuilder
             $contact_name .= $first_name;
         }
         if ($last_name) {
-            $contact_name .= " " . $last_name;
+            $contact_name .= ' '.$last_name;
         }
 
         if (isset($customer_session_data['shipping_country']) && $customer_session_data['shipping_country']) {
             $country_code = $customer_session_data['shipping_country'];
         } else {
-            $default_location = \wc_get_customer_default_location();
+            $default_location = wc_get_customer_default_location();
 
             if ($default_location['country']) {
                 $country_code = $default_location['country'];
             }
         }
 
-        $ship_to = array(
+        $ship_to = [
             'country' => $country_code,
             'city' => $city, // FIXME it could be empty in WC but in api it requires even as empty param,
             'contactName' => $contact_name,
@@ -86,18 +88,18 @@ class RatesRequestBodyBuilder
             'postalCode' => $postcode, // FIXME it could be empty in WC but in api it requires
             'addressLine1' => $addr_1,
             'addressLine2' => $addr_2,
-        );
+        ];
 
         return $ship_to;
     }
 
     /**
-     * Prepare products data
+     * Prepare products data.
      */
     public function prepare_products_data(): array
     {
         $package = $this->package;
-        $products = array();
+        $products = [];
 
         foreach ($package['contents'] as $cart_product) {
             /** @var \WC_Product $product */
@@ -107,45 +109,44 @@ class RatesRequestBodyBuilder
                 continue;
             }
 
-            $data = array(
-                "quoteItemId" => $cart_product['product_id'], // FIXME
-                "sku" => $product->get_sku() ?: null,
-                "priceWithoutTax" => ($cart_product['line_total']) / $cart_product['quantity'],
-                "discountAmount" => null, // FIXME what is that
-                "quantity" => $cart_product['quantity'],
-                "weight" => (float)$product->get_weight(),
-                "inventories" => null,
-                "attributes" => array(
-                    "length" => (float)$product->get_length(),
-                    "width" => (float)$product->get_width(),
-                    "height" => (float)$product->get_height(),
-                    "date_created" => $product->get_date_created() ? $product->get_date_created()->getTimestamp() : null,
-                    "date_modified" => $product->get_date_modified() ? $product->get_date_modified()->getTimestamp() : null,
-                    "status" => $product->get_status(),
-                    "is_featured" => $product->is_featured(),
-                    "catalog_visibility" => $product->get_catalog_visibility(),
-                    "price" => (float)$product->get_price(),
-                    "regular_price" => (float)$product->get_regular_price(),
-                    "sale_price" => (float)$product->get_sale_price(),
-                    "date_on_sale_from" => $product->get_date_on_sale_from() ? $product->get_date_on_sale_from()->getTimestamp() : null,
-                    "date_on_sale_to" => $product->get_date_on_sale_to() ? $product->get_date_on_sale_to()->getTimestamp() : null,
-                    "total_sales" => $product->get_total_sales(),
-                    "managing_stock" => $product->managing_stock(),
-                    "is_in_stock" => $product->is_in_stock(),
-                    "backorders_allowed" => $product->backorders_allowed(),
-                    "low_stock_amount" => $product->get_low_stock_amount() ?: null,
-                    "is_sold_individually" => $product->is_sold_individually(),
-                    "purchase_note" => $product->get_purchase_note(),
-                    "virtual" => $product->is_virtual(),
-                    "downloadable" => $product->is_downloadable(),
-                    "categories" => $product->get_category_ids(),
-                    "tags" => $product->get_tag_ids(),
-                ),
-            );
+            $data = [
+                'quoteItemId' => $cart_product['product_id'], // FIXME
+                'sku' => $product->get_sku() ?: null,
+                'priceWithoutTax' => ($cart_product['line_total']) / $cart_product['quantity'],
+                'discountAmount' => null, // FIXME what is that
+                'quantity' => $cart_product['quantity'],
+                'weight' => (float) $product->get_weight(),
+                'inventories' => null,
+                'attributes' => [
+                    'length' => (float) $product->get_length(),
+                    'width' => (float) $product->get_width(),
+                    'height' => (float) $product->get_height(),
+                    'date_created' => $product->get_date_created() ? $product->get_date_created()->getTimestamp() : null,
+                    'date_modified' => $product->get_date_modified() ? $product->get_date_modified()->getTimestamp() : null,
+                    'status' => $product->get_status(),
+                    'is_featured' => $product->is_featured(),
+                    'catalog_visibility' => $product->get_catalog_visibility(),
+                    'price' => (float) $product->get_price(),
+                    'regular_price' => (float) $product->get_regular_price(),
+                    'sale_price' => (float) $product->get_sale_price(),
+                    'date_on_sale_from' => $product->get_date_on_sale_from() ? $product->get_date_on_sale_from()->getTimestamp() : null,
+                    'date_on_sale_to' => $product->get_date_on_sale_to() ? $product->get_date_on_sale_to()->getTimestamp() : null,
+                    'total_sales' => $product->get_total_sales(),
+                    'managing_stock' => $product->managing_stock(),
+                    'is_in_stock' => $product->is_in_stock(),
+                    'backorders_allowed' => $product->backorders_allowed(),
+                    'low_stock_amount' => $product->get_low_stock_amount() ?: null,
+                    'is_sold_individually' => $product->is_sold_individually(),
+                    'purchase_note' => $product->get_purchase_note(),
+                    'virtual' => $product->is_virtual(),
+                    'downloadable' => $product->is_downloadable(),
+                    'categories' => $product->get_category_ids(),
+                    'tags' => $product->get_tag_ids(),
+                ],
+            ];
 
             if ($cart_product['variation_id'] && $product->get_parent_id()) { // variation
-
-                $parent_product = \wc_get_product($product->get_parent_id());
+                $parent_product = wc_get_product($product->get_parent_id());
                 $wc_product_attrs = $parent_product->get_attributes();
 
                 if (empty($data['attributes']['categories'])) {
@@ -159,7 +160,7 @@ class RatesRequestBodyBuilder
                 //fixme: only \WC_Product_Variation or \WC_Product_Simple
                 foreach ($product->get_variation_attributes(false) as $taxonomy => $terms_slug) {
                     if ($terms_slug) {
-                        $term_obj = \get_term_by('slug', $terms_slug, $taxonomy);
+                        $term_obj = get_term_by('slug', $terms_slug, $taxonomy);
 
                         if ($term_obj) {
                             $data['attributes']['variation'][] = $term_obj->term_id;
@@ -178,11 +179,12 @@ class RatesRequestBodyBuilder
 
             $products[] = $data;
         }
+
         return $products;
     }
 
     /**
-     * Get state name by code
+     * Get state name by code.
      */
     private function get_state_name_by_code(?string $country_code, ?string $state_code): ?string
     {
@@ -190,7 +192,7 @@ class RatesRequestBodyBuilder
             return null;
         }
 
-        $states = \WC()->countries->get_states($country_code);
+        $states = WC()->countries->get_states($country_code);
 
         if ($states && isset($states[$state_code])) {
             return $states[$state_code];
