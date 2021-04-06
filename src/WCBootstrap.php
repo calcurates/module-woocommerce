@@ -128,41 +128,35 @@ if (!\class_exists(WCBootstrap::class)) {
 
         /**
          * Get text string with delivery dates
-         *
-         * @param string|null $from
-         * @param string|null $to
          */
-        private function get_estimated_delivery_date_text($from_date, $to_date): string
+        private function get_estimated_delivery_date_text(?string $from_date, ?string $to_date): string
         {
             $from = null;
             $to = null;
 
             // get \DateTime objects 
             try{
-                $from = $from_date ? new \DateTime($from_date) : null;
+                $from = $from_date ? (new \DateTime($from_date))->setTimezone(\wp_timezone()) : null;
             }catch(\Exception $e){
                 
             }
 
             try{
-                $to = $to_date ? new \DateTime($to_date) : null;
+                $to = $to_date ? (new \DateTime($to_date))->setTimezone(\wp_timezone()) : null;
             }catch(\Exception $e){
                 
             }
 
-            // if no \DateTime objects
-            if(!$from instanceof \DateTime && !$to instanceof \DateTime){
+            if(!$from && !$to){
                 return '';
             }
 
-            // if both \DateTime objects
-            if($from instanceof \DateTime && $to instanceof \DateTime){
-                // set WP time zones
-                $from->setTimezone(\wp_timezone());
-                $to->setTimezone(\wp_timezone());
-                
+            if($from && $to){
+                $formattedFrom = $from->format($this->wp_datetime_fromat());
+                $formattedTo = $to->format($this->wp_datetime_fromat());
+
                 // do on equal dates
-                if ($from->format('U') === $to->format('U')) {
+                if ($formattedFrom === $formattedTo) {
                     return $from->format($this->wp_datetime_fromat());
                 }
 
@@ -170,18 +164,12 @@ if (!\class_exists(WCBootstrap::class)) {
             }
 
             // if has only 'from' date
-            if($from instanceof \DateTime){
-                // set WP time zone
-                $from->setTimezone(\wp_timezone());
-
+            if($from){
                 return 'From '.$from->format($this->wp_datetime_fromat());
             }
 
             // if has only 'to' date
-            if($to instanceof \DateTime){
-                // set WP time zone
-                $to->setTimezone(\wp_timezone());
-
+            if($to){
                 return 'To '.$to->format($this->wp_datetime_fromat());
             }
         }
