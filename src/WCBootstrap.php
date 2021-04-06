@@ -81,37 +81,11 @@ if (!\class_exists(WCBootstrap::class)) {
                 $text .= "<div class='calcurates-checkout__shipping-rate-message'>" . $meta['message'] . "</div>";
             }
 
-            // shipping rate dates
-            if (isset($meta['delivery_date_from'], $meta['delivery_date_to'])) {
-                $estimated_delivery_date = '';
-
-                if ($meta['delivery_date_from'] === $meta['delivery_date_to']) {
-                    $delivery_date_from = \strtotime($meta['delivery_date_from']);
-
-                    if ($delivery_date_from) {
-                        $delivery_date_from = \date(\get_option('date_format') . " " . \get_option('time_format'), $delivery_date_from);
-
-                        $estimated_delivery_date = $delivery_date_from;
-                    }
-                } else {
-                    $delivery_date_from = \strtotime($meta['delivery_date_from']);
-                    $delivery_date_to = \strtotime($meta['delivery_date_to']);
-
-                    if ($delivery_date_from) {
-                        $delivery_date_from = \date(\get_option('date_format') . " " . \get_option('time_format'), $delivery_date_from);
-                    }
-                    if ($delivery_date_to) {
-                        $delivery_date_to = \date(\get_option('date_format') . " " . \get_option('time_format'), $delivery_date_to);
-                    }
-
-                    if ($delivery_date_from && $delivery_date_to) {
-                        $estimated_delivery_date = $delivery_date_from . ' - ' . $delivery_date_to;
-                    }
-                }
-
-                if ($estimated_delivery_date) {
-                    $text .= "<div class='calcurates-checkout__shipping-rate-dates'>Estimated delivery date: " . $estimated_delivery_date . "</div>";
-                }
+            // shipping rate dates, use \DateTime objects
+            $estimated_delivery_date_text = $this->get_estimated_delivery_date_text($meta['delivery_date_from'], $meta['delivery_date_to']);
+            
+            if($estimated_delivery_date_text){
+                $text .= "<div class='calcurates-checkout__shipping-rate-dates'>Estimated delivery date: " . $estimated_delivery_date_text . "</div>";
             }
 
             if ($text) {
@@ -137,32 +111,12 @@ if (!\class_exists(WCBootstrap::class)) {
                 }
             }
 
-            if ($delivery_date_from && $delivery_date_from === $delivery_date_to) {
-                $delivery_date_from = \strtotime($delivery_date_from);
-
-                if ($delivery_date_from) {
-                    $delivery_date_from = \date(\get_option('date_format') . " " . \get_option('time_format'), $delivery_date_from);
-                    $estimated_delivery_date = $delivery_date_from;
-                }
-            } elseif ($delivery_date_from && $delivery_date_to) {
-                $delivery_date_from = \strtotime($delivery_date_from);
-                $delivery_date_to = \strtotime($delivery_date_to);
-
-                if ($delivery_date_from) {
-                    $delivery_date_from = \date(\get_option('date_format') . " " . \get_option('time_format'), $delivery_date_from);
-                }
-                if ($delivery_date_to) {
-                    $delivery_date_to = \date(\get_option('date_format') . " " . \get_option('time_format'), $delivery_date_to);
-                }
-
-                if ($delivery_date_from && $delivery_date_to) {
-                    $estimated_delivery_date = $delivery_date_from . ' - ' . $delivery_date_to;
-                }
-            }
-
             if ($message) {
                 $text .= "Shipping info: " . $message . "<br/>";
             }
+
+            $estimated_delivery_date = $this->get_estimated_delivery_date_text($delivery_date_from, $delivery_date_to);
+
             if ($estimated_delivery_date) {
                 $text .= "Estimated delivery date: " . $estimated_delivery_date;
             }
@@ -171,5 +125,60 @@ if (!\class_exists(WCBootstrap::class)) {
                 echo "<p>" . $text . "</p>";
             }
         }
+
+        /**
+         * Get text string with delivery dates
+         *
+         * @param \DateTime|null $from
+         * @param \DateTime|null $to
+         * @return string
+         */
+        private function get_estimated_delivery_date_text($from, $to): string
+        {
+            // if no \DateTime objects
+            if(!$from instanceof \DateTime && !$to instanceof \DateTime){
+                return '';
+            }
+
+            // if both \DateTime objects
+            if($from instanceof \DateTime && $to instanceof \DateTime){
+                // set WP time zones
+                $from->setTimezone(\wp_timezone());
+                $to->setTimezone(\wp_timezone());
+                
+                // do on equal dates
+                if ($from->format('U') === $to->format('U')) {
+                    return $from->format($this->wp_datetime_fromat());
+                }
+
+                return $from->format($this->wp_datetime_fromat()). ' - ' . $to->format($this->wp_datetime_fromat());
+            }
+
+            // if has only 'from' date
+            if($from instanceof \DateTime){
+                // set WP time zone
+                $from->setTimezone(\wp_timezone());
+
+                return 'From '.$from->format($this->wp_datetime_fromat());
+            }
+
+            // if has only 'to' date
+            if($to instanceof \DateTime){
+                // set WP time zone
+                $to->setTimezone(\wp_timezone());
+
+                return 'To '.$to->format($this->wp_datetime_fromat());
+            }
+        }
+
+        /**
+         * Get current store date and time formats
+         */
+        private function wp_datetime_fromat(): string
+        {
+            return \get_option('date_format') . " " . \get_option('time_format');
+        }
     }
+
+
 }
