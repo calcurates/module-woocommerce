@@ -129,11 +129,27 @@ if (!\class_exists(WCBootstrap::class)) {
         /**
          * Get text string with delivery dates
          *
-         * @param \DateTime|null $from
-         * @param \DateTime|null $to
+         * @param string|null $from
+         * @param string|null $to
          */
-        private function get_estimated_delivery_date_text($from, $to): string
+        private function get_estimated_delivery_date_text($from_date, $to_date): string
         {
+            $from = null;
+            $to = null;
+
+            // get  \DateTime objects 
+            try{
+                $from = $from_date ? new \DateTime($from_date) : null;
+            }catch(\Exception $e){
+                
+            }
+
+            try{
+                $to = $to_date ? new \DateTime($to_date) : null;
+            }catch(\Exception $e){
+                
+            }
+
             // if no \DateTime objects
             if(!$from instanceof \DateTime && !$to instanceof \DateTime){
                 return '';

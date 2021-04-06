@@ -49,8 +49,8 @@ class CarriersRatesExtractor implements RatesExtractorInterface
                     'cost' => $rate['rate']['cost'],
                     'tax' => $rate['rate']['tax'] ? $rate['rate']['tax'] : 0,
                     'message' => $carrier['message'] . ' ' . $services_messages,
-                    'delivery_date_from' => isset($rate['rate']['estimatedDeliveryDate']) ? new  \DateTime($rate['rate']['estimatedDeliveryDate']['from']) : null,
-                    'delivery_date_to' => isset($rate['rate']['estimatedDeliveryDate']) ? new  \DateTime($rate['rate']['estimatedDeliveryDate']['to']) : null,
+                    'delivery_date_from' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['from'] : null,
+                    'delivery_date_to' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['to'] : null,
                     'priority' => $carrier['priority'],
                 );
             }
