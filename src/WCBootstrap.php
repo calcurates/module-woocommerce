@@ -131,7 +131,6 @@ if (!\class_exists(WCBootstrap::class)) {
          *
          * @param \DateTime|null $from
          * @param \DateTime|null $to
-         * @return string
          */
         private function get_estimated_delivery_date_text($from, $to): string
         {
