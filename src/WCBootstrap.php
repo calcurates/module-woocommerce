@@ -152,15 +152,15 @@ if (!\class_exists(WCBootstrap::class)) {
             }
 
             if($from && $to){
-                $formattedFrom = $from->format($this->wp_datetime_fromat());
-                $formattedTo = $to->format($this->wp_datetime_fromat());
+                $formatted_from = $from->format($this->wp_datetime_fromat());
+                $formatted_to = $to->format($this->wp_datetime_fromat());
 
                 // do on equal dates
-                if ($formattedFrom === $formattedTo) {
-                    return $from->format($this->wp_datetime_fromat());
+                if ($formatted_from === $formatted_to) {
+                    return $formatted_from;
                 }
 
-                return $from->format($this->wp_datetime_fromat()). ' - ' . $to->format($this->wp_datetime_fromat());
+                return $formatted_from. ' - ' . $formatted_to;
             }
 
             // if has only 'from' date
