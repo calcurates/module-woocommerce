@@ -55,7 +55,6 @@ if (!\class_exists(WoocommerceSettingsRESTController::class)) {
         {
             // TODO: refactor array building in oop manner
             $data['time_zone'] = get_option('timezone_string');
-            $data['gmt_offset'] = get_option('gmt_offset');
             $data['currency'] = get_woocommerce_currency();
             $data['weight_unit'] = get_option('woocommerce_weight_unit');
             $data['dimension_unit'] = get_option('woocommerce_dimension_unit');
