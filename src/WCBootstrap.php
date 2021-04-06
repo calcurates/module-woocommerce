@@ -182,6 +182,4 @@ if (!\class_exists(WCBootstrap::class)) {
             return \get_option('date_format') . " " . \get_option('time_format');
         }
     }
-
-
 }
