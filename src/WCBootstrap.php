@@ -137,7 +137,7 @@ if (!\class_exists(WCBootstrap::class)) {
             $from = null;
             $to = null;
 
-            // get  \DateTime objects 
+            // get \DateTime objects 
             try{
                 $from = $from_date ? new \DateTime($from_date) : null;
             }catch(\Exception $e){
