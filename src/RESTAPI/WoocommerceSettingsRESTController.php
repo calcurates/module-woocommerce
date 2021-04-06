@@ -43,7 +43,7 @@ if (!\class_exists(WoocommerceSettingsRESTController::class)) {
          */
         public function permissions_check(\WP_REST_Request $request): bool
         {
-            $x_api_key = $request->get_header('HTTP_X_API_KEY');
+            $x_api_key = $request->get_header('X_API_KEY');
 
             return $x_api_key && $x_api_key === get_option(Basic::get_prefix().'key');
         }
