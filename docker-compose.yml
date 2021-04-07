@@ -1,0 +1,57 @@
+version: "3.8"
+
+volumes:
+  app_code:
+    name: "wc_calcurates_volume"
+
+services:
+  php:
+    build:
+      args:
+        uname: ${PHP_UNAME}
+        uid: ${PHP_UID}
+        gid: ${PHP_GID}
+        wp_version: ${WP_VERSION}
+        wc_version: ${WC_VERSION}
+      context: .docker/php
+      dockerfile: Dockerfile
+    environment:
+      COMPOSER_MEMORY_LIMIT: -1
+      XDEBUG_CONFIG: mode=${XDEBUG_MODE} idekey=${XDEBUG_IDEKEY} client_host=${XDEBUG_REMOTE_HOST} client_port=${XDEBUG_STORM_PORT}
+      PHP_IDE_CONFIG: serverName=${XDEBUG_STORM_SERVER_NAME}
+    restart: unless-stopped
+    volumes:
+      - ./.docker/php/wordpress-bedrock/development.php:/var/www/html/config/environments/development.php
+      - ./wc-calcurates.php:/var/www/html/web/app/plugins/wc-calcurates/wc-calcurates.php
+      - ./.env:/var/www/html/.env
+      - ./lib:/var/www/html/web/app/plugins/wc-calcurates/lib
+      - ./src:/var/www/html/web/app/plugins/wc-calcurates/src
+      - ./logs:/var/www/html/web/app/uploads/wc-logs
+      - ./includes:/var/www/html/web/app/plugins/wc-calcurates/includes
+
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - ./.docker/mysql:/docker-entrypoint-initdb.d
+    ports:
+      - ${DB_PORT}:3306
+
+  nginx:
+    image: nginx
+    volumes:
+      - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - app_code:/var/www/html
+      - ./assets:/var/www/html/web/app/plugins/wc-calcurates/assets
+    depends_on:
+      - php
+    ports:
+      - ${NGINX_PORT}:80
+    restart: unless-stopped

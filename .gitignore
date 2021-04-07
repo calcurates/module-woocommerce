@@ -1,0 +1,38 @@
+# Blacklist files/folders in same directory as the .gitignore file
+/*
+
+# Whitelist some files
+!.gitignore
+!.gitattributes
+!.gitlab-ci.yml
+!README.md
+!.env.example
+!docker-compose.yml
+!.editorconfig
+!index.php
+!uninstall.php
+!composer.json
+!composer.lock
+!.php_cs.dist
+!phpstan.neon.dist
+!swagger.yaml
+
+# Ignore all files named .DS_Store or ending with .log
+**/.DS_Store
+**.log
+
+# Whitelist folder/a/b1/ and folder/a/b2/
+# trailing "/" is optional for folders, may match file though.
+# "/" is NOT optional when followed by a *
+!wc-calcurates.php
+!.docker/
+.docker/*
+!.docker/mysql/
+!.docker/nginx/default.conf
+!.docker/nginx/Dockerfile
+!.docker/php/
+.docker/php/wordpress-bedrock/*
+!.docker/php/wordpress-bedrock/development.php.example
+!src
+!assets
+!includes

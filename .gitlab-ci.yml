@@ -1,0 +1,46 @@
+image: php:7.4-cli-alpine3.13
+
+before_script:
+    - apk add openssh-client
+
+stages:
+    - test
+    - deploy
+    - build
+
+test:
+    tags:
+        - calcurates
+    stage: test
+    script:
+        - echo "No tests"
+
+deploy_staging:
+    tags:
+        - calcurates
+    stage: deploy
+    script:
+        - echo "Deploy to staging server"
+        - echo "$SSH_PRIVATE_KEY" > ./id_rsa
+        - chmod 600 ./id_rsa
+        - ssh -o StrictHostKeyChecking=no -p"$SSH_PORT" -i ./id_rsa "$SSH_USER"@"$SSH_STAGING_HOST" "$SSH_DEPLOY_SCRIPT"
+    only:
+        - dev
+
+build:
+    tags:
+        - calcurates
+    stage: build
+    script:
+        - echo "Build"
+        - apk add unzip
+        - curl -L -o /composer.phar https://github.com/composer/composer/releases/download/2.0.12/composer.phar && chmod 755 /composer.phar
+        - php /composer.phar install --no-interaction --prefer-dist --no-progress --ansi --no-dev --optimize-autoloader
+        - mkdir wc-calcurates
+        - mv assets includes src lib wc-calcurates/
+        - mv index.php README.md uninstall.php wc-calcurates.php wc-calcurates/
+    artifacts:
+        paths:
+            - wc-calcurates
+    only:
+        - master
