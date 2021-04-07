@@ -43,4 +43,4 @@ build:
         paths:
             - wc-calcurates
     only:
-        - dev
+        - master
