@@ -3,6 +3,8 @@
 
 # Whitelist some files
 !.gitignore
+!.gitattributes
+!.gitlab-ci.yml
 !README.md
 !.env.example
 !docker-compose.yml
