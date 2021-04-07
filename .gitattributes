@@ -7,5 +7,6 @@ docker-compose.yml     export-ignore
 .env.example           export-ignore
 .php_cs.dist           export-ignore
 phpstan.neon.dist      export-ignore
+swagger.yaml           export-ignore
 composer.json          export-ignore
 composer.lock          export-ignore
