@@ -33,12 +33,14 @@ build:
     stage: build
     script:
         - echo "Build"
-        - apk add unzip git
+        - apk add unzip
         - curl -L -o /composer.phar https://github.com/composer/composer/releases/download/2.0.12/composer.phar && chmod 755 /composer.phar
         - php /composer.phar install --no-interaction --prefer-dist --no-progress --ansi --no-dev --optimize-autoloader
-        - git archive --format=zip --prefix=wc-calcurates/ -o wc-calcurates.zip HEAD
+        - mkdir /wc-calcurates
+        - mv assets includes src lib /wc-calcurates/
+        - mv index.php README.md uninstall.php wc-calcurates.php /wc-calcurates/
     artifacts:
         paths:
-            - wc-calcurates.zip
+            - /wc-calcurates
     only:
         - dev
