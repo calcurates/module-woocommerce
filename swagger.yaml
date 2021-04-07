@@ -1,0 +1,163 @@
+openapi: 3.0.0
+info:
+  version: "1.0.0"
+  title: "WooCommerce Clacurates"
+  description: "WooCommerce Clacurates API scheme"
+
+servers:
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/ijakparov/wc-calcurates/1.0.0
+  - description: Staging API
+    url: https://staging-woocommerce.calcurates.com/wp-json/calcurates/v1
+paths:
+  /woocommers-settings:
+    get:
+      security:
+        - ApiKey: []
+      summary: Get WooCommerce settings
+      description: Get WooCommerce settings for Calcurates sync
+      responses:
+        "200":
+          description: WooCommerce settings
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - time_zone
+                  - website_id
+                  - currency
+                  - weight_unit
+                  - dimension_unit
+                  - customer_roles
+                  - attrs
+                properties:
+                  time_zone:
+                    type: string
+                    example: Asia/Yekaterinburg
+                    description: PHP timezone string
+                  website_id:
+                    type: integer
+                    example: 1
+                    description: Current site ID
+                  currency:
+                    type: string
+                    example: USD
+                    description: Currency. ISO 4217 code
+                  weight_unit:
+                    type: string
+                    enum:
+                      - kg
+                      - g
+                      - lbs
+                      - oz
+                    example: kg
+                    description: Weight unit
+                  dimension_unit:
+                    type: string
+                    enum:
+                      - m
+                      - cm
+                      - mm
+                      - in
+                      - yd
+                    example: cm
+                    description: Dimension unit
+                  customer_roles:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/CustomerRole"
+                    description: Available customer roles
+                  attrs:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ProductAttr"
+                    description: Available product attributes
+
+components:
+  schemas:
+    CustomerRole:
+      type: object
+      description: Customer role object
+      required:
+        - title
+        - value
+      properties:
+        value:
+          type: string
+          enum:
+            - customer
+            - guest
+          description: "Customer role ID"
+        title:
+          type: string
+          enum:
+            - Customer
+            - Guest
+          description: "Customer role title"
+      example:
+        - value: customer
+          title: Customer
+        - value: guest
+          title: Guest
+    ProductAttr:
+      type: object
+      description: Product attribute object
+      required:
+        - title
+        - name
+        - field_type
+      properties:
+        title:
+          type: string
+          description: "Attribute title"
+        name:
+          type: string
+          description: "Attribute name"
+        can_multi:
+          type: boolean
+          example: true
+          description: Exists only if field_type is collection
+        field_type:
+          type: string
+          enum:
+            - number
+            - bool
+            - collection
+        values:
+          type: array
+          description: "Collection of attributes. Filed will appear only if field_type is collection"
+          items:
+            type: object
+            required:
+              - title
+              - value
+            properties:
+              value:
+                oneOf:
+                  - type: number
+                  - type: string
+                  - type: boolean
+              title:
+                type: string
+            example: []
+      example:
+        - title: Taste
+          name: taste
+          field_type: collection
+          can_multi: true
+          values:
+            - value: 28
+              title: Hot
+            - value: 27
+              title: Salty
+        - title: Date created
+          name: date_created
+          field_type: number
+
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      description: "Value: {apiKey}"
+      name: X-API-Key
+      in: header
