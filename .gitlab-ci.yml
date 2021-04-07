@@ -1,4 +1,4 @@
-image: alpine:3.13
+image: php:7.4-cli-alpine3.13
 
 before_script:
     - apk add openssh-client
@@ -6,6 +6,7 @@ before_script:
 stages:
     - test
     - deploy
+    - build
 
 test:
     tags:
@@ -23,5 +24,21 @@ deploy_staging:
         - echo "$SSH_PRIVATE_KEY" > ./id_rsa
         - chmod 600 ./id_rsa
         - ssh -o StrictHostKeyChecking=no -p"$SSH_PORT" -i ./id_rsa "$SSH_USER"@"$SSH_STAGING_HOST" "$SSH_DEPLOY_SCRIPT"
+    only:
+        - dev
+
+build:
+    tags:
+        - calcurates
+    stage: build
+    script:
+        - echo "Build"
+        - apk add unzip
+        - curl -L -o /composer.phar https://github.com/composer/composer/releases/download/2.0.12/composer.phar && chmod 755 /composer.phar
+        - php /composer.phar install --no-interaction --prefer-dist --no-progress --ansi --no-dev --optimize-autoloader
+        - git archive --format=zip --prefix=wc-calcurates/ -o wc-calcurates.zip HEAD
+    artifacts:
+        paths:
+            - wc-calcurates.zip
     only:
         - dev
