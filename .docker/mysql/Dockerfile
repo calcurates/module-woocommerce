@@ -1,4 +1,4 @@
-FROM nginx:stable
+FROM mysql:8
 
 RUN set -xe \
     && apt-get update \
