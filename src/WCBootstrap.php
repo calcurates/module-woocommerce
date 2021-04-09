@@ -148,10 +148,6 @@ if (!\class_exists(WCBootstrap::class)) {
             } catch (\Exception $e) {
             }
 
-            if (!$from && !$to) {
-                return '';
-            }
-
             if ($from && $to) {
                 $formatted_from = $from->format($this->wp_datetime_fromat());
                 $formatted_to = $to->format($this->wp_datetime_fromat());
@@ -173,6 +169,8 @@ if (!\class_exists(WCBootstrap::class)) {
             if ($to) {
                 return 'To '.$to->format($this->wp_datetime_fromat());
             }
+
+            return '';
         }
 
         /**

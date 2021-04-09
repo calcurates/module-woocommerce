@@ -110,10 +110,9 @@ class RatesRequestBodyBuilder
             }
 
             $data = [
-                'quoteItemId' => $cart_product['product_id'], // FIXME
+                'quoteItemId' => $cart_product['product_id'],
                 'sku' => $product->get_sku() ?: null,
-                'priceWithoutTax' => ($cart_product['line_total']) / $cart_product['quantity'],
-                'discountAmount' => null, // FIXME what is that
+                'price' => $cart_product['line_total'] / $cart_product['quantity'],
                 'quantity' => $cart_product['quantity'],
                 'weight' => (float) $product->get_weight(),
                 'inventories' => null,
