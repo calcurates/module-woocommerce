@@ -28,6 +28,10 @@ services:
       - ./README.md:/var/www/wordpress/wp-content/plugins/wc-calcurates/README.md
       - ./uninstall.php:/var/www/wordpress/wp-content/plugins/wc-calcurates/uninstall.php
       - ./wc-calcurates.php:/var/www/wordpress/wp-content/plugins/wc-calcurates/wc-calcurates.php
+      - ./composer.json:/var/www/wordpress/wp-content/plugins/wc-calcurates/composer.json
+      - ./composer.lock:/var/www/wordpress/wp-content/plugins/wc-calcurates/composer.lock
+      - ./.php_cs.dist:/var/www/wordpress/wp-content/plugins/wc-calcurates/.php_cs.dist
+      - ./phpstan.neon.dist:/var/www/wordpress/wp-content/plugins/wc-calcurates/phpstan.neon.dist
     expose:
       - "9011" # xdebug
 
