@@ -29,7 +29,7 @@ RUN docker-php-ext-configure gd \
 
 # Composer & WP-Cli
 RUN set -xe \
-    && curl -L -o /composer.phar https://github.com/composer/composer/releases/download/2.0.12/composer.phar \
+    && curl -L -o /composer.phar https://github.com/composer/composer/releases/download/2.0.13/composer.phar \
     && chmod 755 /composer.phar \
     && curl -L -o /wp-cli.phar https://github.com/wp-cli/wp-cli/releases/download/v2.4.0/wp-cli-2.4.0.phar \
     && chmod 755 /wp-cli.phar
