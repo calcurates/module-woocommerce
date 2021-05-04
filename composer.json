@@ -33,6 +33,6 @@
         "phpstan/phpstan": "^0.12",
         "szepeviktor/phpstan-wordpress": "^0.7",
         "php-stubs/woocommerce-stubs": "^5.2",
-        "friendsofphp/php-cs-fixer": "^2.18"
+        "friendsofphp/php-cs-fixer": "^2.19"
     }
 }
