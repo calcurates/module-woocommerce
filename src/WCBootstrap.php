@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Calcurates;
 
+use Calcurates\Warehouses\WarehousesTaxonomy;
+
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
     exit;
@@ -28,6 +30,10 @@ if (!\class_exists(WCBootstrap::class)) {
 
             // add text to order email
             add_action('woocommerce_email_after_order_table', [$this, 'add_shipping_data_after_order_table_in_email'], 10, 4);
+
+            // add warehouses select
+            add_action('woocommerce_product_options_shipping', [$this, 'add_warehouse_select']);
+            add_action('woocommerce_process_product_meta', [$this, 'save_warehouse_select'], 10, 2);
         }
 
         public function init_shipping(): void
@@ -179,6 +185,46 @@ if (!\class_exists(WCBootstrap::class)) {
         private function wp_datetime_fromat(): string
         {
             return get_option('date_format').' '.get_option('time_format');
+        }
+
+        /**
+         * Add Warehouse select.
+         */
+        public function add_warehouse_select(): void
+        {
+            $warehouses = [
+                '' => 'Please select',
+            ];
+
+            $terms = \get_terms(WarehousesTaxonomy::TAXONOMY_SLUG, [
+                'hide_empty' => false,
+                'fields' => 'id=>name',
+            ]);
+
+            if (\is_array($terms)) {
+                foreach ($terms as $key => $value) {
+                    $warehouses[get_term_meta($key, 'warehouse_code', true)] = $value;
+                }
+            }
+
+            echo '<div class="options_group">';
+
+            \woocommerce_wp_select([
+                'id' => 'warehouse',
+                'value' => get_post_meta(get_the_ID(), 'warehouse', true),
+                'label' => 'Warehouse',
+                'options' => $warehouses,
+            ]);
+
+            echo '</div>';
+        }
+
+        /**
+         * Save Warehouse.
+         */
+        public function save_warehouse_select($id, $post): void
+        {
+            update_post_meta($id, 'warehouse', $_POST['warehouse']);
         }
     }
 }
