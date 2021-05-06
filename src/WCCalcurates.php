@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Calcurates;
 
 use Calcurates\RESTAPI\WoocommerceSettingsRESTController;
+use Calcurates\Warehouses\WarehousesTaxonomy;
 
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
@@ -25,15 +26,21 @@ if (!\class_exists(WCCalcurates::class)) {
          * @var Assets
          */
         private $assets;
+        /**
+         * @var WarehousesTaxonomy
+         */
+        private $warehoses_taxonomy;
 
         public function __construct()
         {
+            $this->warehoses_taxonomy = new WarehousesTaxonomy();
             $this->wc_bootsrap = new WCBootstrap();
             $this->assets = new Assets();
         }
 
         public function run(): void
         {
+            $this->warehoses_taxonomy->init();
             $this->restapi_register_routes();
             $this->woocommerce_bootstrap();
             $this->enqueue_styles();
