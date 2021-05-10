@@ -115,7 +115,10 @@ class RatesRequestBodyBuilder
                 'price' => $cart_product['line_total'] / $cart_product['quantity'],
                 'quantity' => $cart_product['quantity'],
                 'weight' => (float) $product->get_weight(),
-                'inventories' => null,
+                'inventories' => $product->get_meta('warehouse') ? [
+                     'source' => $product->get_meta('warehouse'),
+                     'quantity' => $cart_product['quantity'],
+                     ] : null,
                 'attributes' => [
                     'length' => (float) $product->get_length(),
                     'width' => (float) $product->get_width(),
