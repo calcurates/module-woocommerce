@@ -24,7 +24,7 @@ class RatesExtractorFactory
         $this->logger = new Logger();
     }
 
-    public function create(string $rate_name)
+    public function create(string $rate_name): RatesExtractorInterface
     {
         $extractor = __NAMESPACE__.'\\'.\ucfirst($rate_name).'RatesExtractor';
         if (\class_exists($extractor)) {

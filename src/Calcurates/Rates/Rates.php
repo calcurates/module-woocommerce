@@ -25,7 +25,6 @@ class Rates
      * @var string
      */
     private $tax_mode;
-
     /**
      * @var array
      */

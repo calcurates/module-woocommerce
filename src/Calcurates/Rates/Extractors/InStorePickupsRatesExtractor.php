@@ -31,7 +31,7 @@ class InStorePickupsRatesExtractor implements RatesExtractorInterface
                     'id' => $in_store_rate['id'].'_'.$rate['id'],
                     'label' => $rate['name'],
                     'cost' => $rate['rate']['cost'],
-                    'tax' => $rate['rate']['tax'] ? $rate['rate']['tax'] : 0,
+                    'tax' => $rate['rate']['tax'] ?: 0,
                     'message' => $in_store_rate['message'],
                     'delivery_date_from' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['from'] : null,
                     'delivery_date_to' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['to'] : null,

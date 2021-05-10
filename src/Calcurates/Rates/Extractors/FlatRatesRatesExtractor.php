@@ -26,7 +26,7 @@ class FlatRatesRatesExtractor implements RatesExtractorInterface
                 'id' => $rate['id'],
                 'label' => $rate['name'],
                 'cost' => $rate['rate']['cost'],
-                'tax' => $rate['rate']['tax'] ? $rate['rate']['tax'] : 0,
+                'tax' => $rate['rate']['tax'] ?: 0,
                 'message' => $rate['message'],
                 'delivery_date_from' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['from'] : null,
                 'delivery_date_to' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['to'] : null,

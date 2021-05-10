@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Calcurates;
 
 use Calcurates\Origins\OriginsTaxonomy;
-use Calcurates\Origins\OriginUtils;
 use Calcurates\RESTAPI\WoocommerceOriginsRESTController;
 use Calcurates\RESTAPI\WoocommerceSettingsRESTController;
 
@@ -23,7 +22,7 @@ if (!\class_exists(WCCalcurates::class)) {
         /**
          * @var WCBootstrap
          */
-        private $wc_bootsrap;
+        private $wc_bootstrap;
         /**
          * @var Assets
          */
@@ -31,18 +30,18 @@ if (!\class_exists(WCCalcurates::class)) {
         /**
          * @var OriginsTaxonomy
          */
-        private $warehoses_taxonomy;
+        private $origins_taxonomy;
 
         public function __construct()
         {
-            $this->warehoses_taxonomy = new OriginsTaxonomy();
-            $this->wc_bootsrap = new WCBootstrap(new OriginUtils());
+            $this->origins_taxonomy = new OriginsTaxonomy();
+            $this->wc_bootstrap = new WCBootstrap();
             $this->assets = new Assets();
         }
 
         public function run(): void
         {
-            $this->warehoses_taxonomy->init();
+            $this->origins_taxonomy->init();
             $this->restapi_register_routes();
             $this->woocommerce_bootstrap();
             $this->enqueue_styles();
@@ -54,7 +53,7 @@ if (!\class_exists(WCCalcurates::class)) {
         public function restapi_register_routes(): void
         {
             add_action('rest_api_init', [new WoocommerceSettingsRESTController(), 'register_routes']);
-            add_action('rest_api_init', [new WoocommerceOriginsRESTController(new OriginUtils()), 'register_routes']);
+            add_action('rest_api_init', [new WoocommerceOriginsRESTController(), 'register_routes']);
         }
 
         /**
@@ -62,7 +61,7 @@ if (!\class_exists(WCCalcurates::class)) {
          */
         public function woocommerce_bootstrap(): void
         {
-            $this->wc_bootsrap->run();
+            $this->wc_bootstrap->run();
         }
 
         /**

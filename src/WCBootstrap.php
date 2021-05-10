@@ -18,16 +18,6 @@ if (!\class_exists(WCBootstrap::class)) {
      */
     class WCBootstrap
     {
-        /**
-         * @var OriginUtils
-         */
-        private $origin_utils;
-
-        public function __construct(OriginUtils $origin_utils)
-        {
-            $this->origin_utils = $origin_utils;
-        }
-
         public function run(): void
         {
             // Create Calcurates shipping method
@@ -166,8 +156,8 @@ if (!\class_exists(WCBootstrap::class)) {
             }
 
             if ($from && $to) {
-                $formatted_from = $from->format($this->wp_datetime_fromat());
-                $formatted_to = $to->format($this->wp_datetime_fromat());
+                $formatted_from = $from->format($this->wp_datetime_format());
+                $formatted_to = $to->format($this->wp_datetime_format());
 
                 // do on equal dates
                 if ($formatted_from === $formatted_to) {
@@ -179,12 +169,12 @@ if (!\class_exists(WCBootstrap::class)) {
 
             // if has only 'from' date
             if ($from) {
-                return 'From '.$from->format($this->wp_datetime_fromat());
+                return 'From '.$from->format($this->wp_datetime_format());
             }
 
             // if has only 'to' date
             if ($to) {
-                return 'To '.$to->format($this->wp_datetime_fromat());
+                return 'To '.$to->format($this->wp_datetime_format());
             }
 
             return '';
@@ -193,7 +183,7 @@ if (!\class_exists(WCBootstrap::class)) {
         /**
          * Get current store date and time formats.
          */
-        private function wp_datetime_fromat(): string
+        private function wp_datetime_format(): string
         {
             return get_option('date_format').' '.get_option('time_format');
         }
@@ -212,7 +202,7 @@ if (!\class_exists(WCBootstrap::class)) {
                 'fields' => 'id=>name',
             ]);
 
-            if (\is_array($terms)) {
+            if ($terms && \is_array($terms)) {
                 foreach ($terms as $key => $value) {
                     $origins[$key] = $value;
                 }
@@ -222,7 +212,7 @@ if (!\class_exists(WCBootstrap::class)) {
 
             \woocommerce_wp_select([
                 'id' => 'origin',
-                'value' => $this->origin_utils->get_origin_term_id_from_product(get_the_ID()) ?: '',
+                'value' => OriginUtils::getInstance()->get_origin_term_id_from_product(get_the_ID()) ?: '',
                 'label' => 'Origin',
                 'options' => $origins,
             ]);
@@ -235,7 +225,7 @@ if (!\class_exists(WCBootstrap::class)) {
          */
         public function save_origin_select($id, $post): void
         {
-            $last_origin_id = $this->origin_utils->get_origin_term_id_from_product($id);
+            $last_origin_id = OriginUtils::getInstance()->get_origin_term_id_from_product($id);
             $new_origin_id = $_POST['origin'];
 
             // remove product from last origin

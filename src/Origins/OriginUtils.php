@@ -12,6 +12,21 @@ if (!\defined('ABSPATH')) {
 if (!\class_exists('OriginUtils')) {
     class OriginUtils
     {
+        private static $instance;
+
+        private function __construct()
+        {
+        }
+
+        public static function getInstance(): self
+        {
+            if (null === self::$instance) {
+                self::$instance = new self();
+            }
+
+            return self::$instance;
+        }
+
         /**
          * Extract Origin code from product.
          */
@@ -33,7 +48,7 @@ if (!\class_exists('OriginUtils')) {
         {
             $origin_terms = wp_get_post_terms($product_id, OriginsTaxonomy::TAXONOMY_SLUG, ['fields' => 'ids']);
 
-            if (\is_array($origin_terms) && !empty($origin_terms)) {
+            if ($origin_terms && \is_array($origin_terms)) {
                 return \reset($origin_terms);
             }
 
