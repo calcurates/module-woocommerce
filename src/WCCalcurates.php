@@ -6,6 +6,7 @@ namespace Calcurates;
 
 use Calcurates\Origins\OriginUtils;
 use Calcurates\Origins\OriginsTaxonomy;
+use Calcurates\RESTAPI\WoocommerceOriginsRESTController;
 use Calcurates\RESTAPI\WoocommerceSettingsRESTController;
 
 // Stop direct HTTP access.
@@ -53,6 +54,7 @@ if (!\class_exists(WCCalcurates::class)) {
         public function restapi_register_routes(): void
         {
             add_action('rest_api_init', [new WoocommerceSettingsRESTController(), 'register_routes']);
+            add_action('rest_api_init', [new WoocommerceOriginsRESTController(new OriginUtils()), 'register_routes']);
         }
 
         /**
