@@ -73,6 +73,32 @@ paths:
                     items:
                       $ref: "#/components/schemas/ProductAttr"
                     description: Available product attributes
+  /woocommers-origins:
+    get:
+      security:
+        - ApiKey: []
+      summary: Get WooCommerce origins list
+      description: Get WooCommerce origins list
+      responses:
+        "200":
+          description: WooCommerce Origins
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - origins
+                properties:
+                  origins:
+                    type: array
+                    items:
+                      type: string
+                    example:
+                      [
+                        9133516b37244b2034c78d5b4919ec319b8572da,
+                        9133516b37244b2034c78d5b4919ec319b8572dd,
+                      ]
+                    description: Origins codes array
 
 components:
   schemas:

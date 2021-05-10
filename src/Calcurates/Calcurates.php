@@ -57,8 +57,7 @@ class Calcurates
         // extract rates from response
         $this->rates_tools->extract($response);
         $this->rates_tools->apply_tax_mode();
-        $rates = $this->rates_tools->convert_rates_to_wc_rates();
 
-        return $rates;
+        return $this->rates_tools->convert_rates_to_wc_rates();
     }
 }

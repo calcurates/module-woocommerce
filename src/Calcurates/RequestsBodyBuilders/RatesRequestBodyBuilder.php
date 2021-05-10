@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Calcurates\Calcurates\RequestsBodyBuilders;
 
+use Calcurates\Origins\OriginUtils;
+
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
     exit;
@@ -18,7 +20,7 @@ class RatesRequestBodyBuilder
      */
     private $package;
 
-    public function __construct(array $package = [])
+    public function __construct(array $package)
     {
         $this->package = $package;
     }
@@ -31,14 +33,12 @@ class RatesRequestBodyBuilder
         $coupons = WC()->cart->get_coupons();
         $coupon = \reset($coupons);
 
-        $request_body = [
+        return [
             'promoCode' => $coupon ? $coupon->get_code() : null, // FIXME coud be few coupons
             'shipTo' => $this->prepare_ship_to_data(),
             'products' => $this->prepare_products_data(),
             'customerGroup' => is_user_logged_in() ? 'customer' : 'guest',
         ];
-
-        return $request_body;
     }
 
     /**
@@ -77,7 +77,7 @@ class RatesRequestBodyBuilder
             }
         }
 
-        $ship_to = [
+        return [
             'country' => $country_code,
             'city' => $city, // FIXME it could be empty in WC but in api it requires even as empty param,
             'contactName' => $contact_name,
@@ -89,8 +89,6 @@ class RatesRequestBodyBuilder
             'addressLine1' => $addr_1,
             'addressLine2' => $addr_2,
         ];
-
-        return $ship_to;
     }
 
     /**
@@ -98,12 +96,13 @@ class RatesRequestBodyBuilder
      */
     public function prepare_products_data(): array
     {
-        $package = $this->package;
         $products = [];
 
-        foreach ($package['contents'] as $cart_product) {
+        foreach ($this->package['contents'] as $cart_product) {
             /** @var \WC_Product $product */
             $product = $cart_product['data'];
+
+            $origin_code = OriginUtils::getInstance()->get_origin_code_from_product($cart_product['product_id']);
 
             if ($product->is_virtual() || $product->is_downloadable()) {
                 continue;
@@ -115,7 +114,10 @@ class RatesRequestBodyBuilder
                 'price' => $cart_product['line_total'] / $cart_product['quantity'],
                 'quantity' => $cart_product['quantity'],
                 'weight' => (float) $product->get_weight(),
-                'inventories' => null,
+                'inventories' => $origin_code ? [
+                     'source' => $origin_code,
+                     'quantity' => $cart_product['quantity'],
+                ] : null,
                 'attributes' => [
                     'length' => (float) $product->get_length(),
                     'width' => (float) $product->get_width(),

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Calcurates;
 
+use Calcurates\Origins\OriginsTaxonomy;
+use Calcurates\Origins\OriginUtils;
+
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
     exit;
@@ -28,6 +31,10 @@ if (!\class_exists(WCBootstrap::class)) {
 
             // add text to order email
             add_action('woocommerce_email_after_order_table', [$this, 'add_shipping_data_after_order_table_in_email'], 10, 4);
+
+            // add origins select
+            add_action('woocommerce_product_options_shipping', [$this, 'add_origin_select']);
+            add_action('woocommerce_process_product_meta', [$this, 'save_origin_select'], 10, 2);
         }
 
         public function init_shipping(): void
@@ -149,8 +156,8 @@ if (!\class_exists(WCBootstrap::class)) {
             }
 
             if ($from && $to) {
-                $formatted_from = $from->format($this->wp_datetime_fromat());
-                $formatted_to = $to->format($this->wp_datetime_fromat());
+                $formatted_from = $from->format($this->wp_datetime_format());
+                $formatted_to = $to->format($this->wp_datetime_format());
 
                 // do on equal dates
                 if ($formatted_from === $formatted_to) {
@@ -162,12 +169,12 @@ if (!\class_exists(WCBootstrap::class)) {
 
             // if has only 'from' date
             if ($from) {
-                return 'From '.$from->format($this->wp_datetime_fromat());
+                return 'From '.$from->format($this->wp_datetime_format());
             }
 
             // if has only 'to' date
             if ($to) {
-                return 'To '.$to->format($this->wp_datetime_fromat());
+                return 'To '.$to->format($this->wp_datetime_format());
             }
 
             return '';
@@ -176,9 +183,60 @@ if (!\class_exists(WCBootstrap::class)) {
         /**
          * Get current store date and time formats.
          */
-        private function wp_datetime_fromat(): string
+        private function wp_datetime_format(): string
         {
             return get_option('date_format').' '.get_option('time_format');
+        }
+
+        /**
+         * Add Origin select.
+         */
+        public function add_origin_select(): void
+        {
+            $origins = [
+                '' => 'Please select',
+            ];
+
+            $terms = \get_terms(OriginsTaxonomy::TAXONOMY_SLUG, [
+                'hide_empty' => false,
+                'fields' => 'id=>name',
+            ]);
+
+            if ($terms && \is_array($terms)) {
+                foreach ($terms as $key => $value) {
+                    $origins[$key] = $value;
+                }
+            }
+
+            echo '<div class="options_group">';
+
+            \woocommerce_wp_select([
+                'id' => 'origin',
+                'value' => OriginUtils::getInstance()->get_origin_term_id_from_product(get_the_ID()) ?: '',
+                'label' => 'Origin',
+                'options' => $origins,
+            ]);
+
+            echo '</div>';
+        }
+
+        /**
+         * Save Origin.
+         */
+        public function save_origin_select($id, $post): void
+        {
+            $last_origin_id = OriginUtils::getInstance()->get_origin_term_id_from_product($id);
+            $new_origin_id = $_POST['origin'];
+
+            // remove product from last origin
+            if ($last_origin_id) {
+                \wp_remove_object_terms($id, $last_origin_id, OriginsTaxonomy::TAXONOMY_SLUG);
+            }
+
+            // append product to new origin
+            if ($new_origin_id) {
+                \wp_set_post_terms($id, [(int) $new_origin_id], OriginsTaxonomy::TAXONOMY_SLUG, true);
+            }
         }
     }
 }

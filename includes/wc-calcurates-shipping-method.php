@@ -57,6 +57,9 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
      */
     private $tax_mode;
 
+    /**
+     * {@inheritdoc}
+     */
     public function __construct($instance_id = 0)
     {
         parent::__construct($instance_id);
@@ -154,7 +157,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
     {
         $rates = $this->get_rates($package);
 
-        if (!empty($rates)) {
+        if ($rates) {
             foreach ($rates as $rate) {
                 $this->add_rate($rate);
             }
@@ -166,7 +169,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
      *
      * @param array $package package array
      */
-    private function get_rates(array $package = []): array
+    private function get_rates(array $package): array
     {
         if (!$this->instance_id) {
             return [];
