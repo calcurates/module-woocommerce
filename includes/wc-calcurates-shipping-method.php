@@ -7,6 +7,7 @@ use Calcurates\Calcurates\Calcurates;
 use Calcurates\Calcurates\CalcuratesClient;
 use Calcurates\Calcurates\Rates\Rates;
 use Calcurates\Calcurates\RequestsBodyBuilders\RatesRequestBodyBuilder;
+use Calcurates\Warehouses\OriginUtils;
 
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
@@ -174,7 +175,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
 
         $calcurates_client = new CalcuratesClient($this->calcurates_api_key, $this->calcurates_api_url, $this->debug_mode);
 
-        $rates_request_body_builder = new RatesRequestBodyBuilder($package);
+        $rates_request_body_builder = new RatesRequestBodyBuilder($package, new OriginUtils());
 
         $rates_tools = new Rates($this->tax_mode, $package);
 

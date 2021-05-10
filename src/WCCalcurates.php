@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Calcurates;
 
-use Calcurates\RESTAPI\WoocommerceSettingsRESTController;
+use Calcurates\Warehouses\OriginUtils;
 use Calcurates\Warehouses\WarehousesTaxonomy;
+use Calcurates\RESTAPI\WoocommerceSettingsRESTController;
 
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
@@ -34,7 +35,7 @@ if (!\class_exists(WCCalcurates::class)) {
         public function __construct()
         {
             $this->warehoses_taxonomy = new WarehousesTaxonomy();
-            $this->wc_bootsrap = new WCBootstrap();
+            $this->wc_bootsrap = new WCBootstrap(new OriginUtils());
             $this->assets = new Assets();
         }
 

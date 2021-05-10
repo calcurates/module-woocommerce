@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Calcurates\Calcurates\RequestsBodyBuilders;
 
+use Calcurates\Warehouses\OriginUtils;
+
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
     exit;
@@ -17,10 +19,15 @@ class RatesRequestBodyBuilder
      * @param array $package package array
      */
     private $package;
+    /**
+     * @var OriginUtils
+     */
+    private $origin_utils;
 
-    public function __construct(array $package = [])
+    public function __construct(array $package = [], OriginUtils $origin_utils)
     {
         $this->package = $package;
+        $this->origin_utils = $origin_utils;
     }
 
     /**
@@ -105,18 +112,21 @@ class RatesRequestBodyBuilder
             /** @var \WC_Product $product */
             $product = $cart_product['data'];
 
+            $origin_code = $this->origin_utils->get_origin_code_from_product($cart_product['product_id']);
+
             if ($product->is_virtual() || $product->is_downloadable()) {
                 continue;
             }
 
+            
             $data = [
                 'quoteItemId' => $cart_product['product_id'],
                 'sku' => $product->get_sku() ?: null,
                 'price' => $cart_product['line_total'] / $cart_product['quantity'],
                 'quantity' => $cart_product['quantity'],
                 'weight' => (float) $product->get_weight(),
-                'inventories' => $product->get_meta('warehouse') ? [
-                     'source' => $product->get_meta('warehouse'),
+                'inventories' => $origin_code ? [
+                     'source' => $origin_code,
                      'quantity' => $cart_product['quantity'],
                      ] : null,
                 'attributes' => [

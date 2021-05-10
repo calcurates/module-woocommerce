@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Calcurates;
 
+use Calcurates\Warehouses\OriginUtils;
 use Calcurates\Warehouses\WarehousesTaxonomy;
 
 // Stop direct HTTP access.
@@ -17,6 +18,15 @@ if (!\class_exists(WCBootstrap::class)) {
      */
     class WCBootstrap
     {
+        /**
+         * @var OriginUtils
+         */
+        private $origin_utils;
+
+        public function __construct(OriginUtils $origin_utils){
+            $this->origin_utils = $origin_utils;
+        }
+
         public function run(): void
         {
             // Create Calcurates shipping method
@@ -203,7 +213,7 @@ if (!\class_exists(WCBootstrap::class)) {
 
             if (\is_array($terms)) {
                 foreach ($terms as $key => $value) {
-                    $warehouses[get_term_meta($key, 'warehouse_code', true)] = $value;
+                    $warehouses[$key] = $value;
                 }
             }
 
@@ -211,7 +221,7 @@ if (!\class_exists(WCBootstrap::class)) {
 
             \woocommerce_wp_select([
                 'id' => 'warehouse',
-                'value' => get_post_meta(get_the_ID(), 'warehouse', true),
+                'value' => $this->origin_utils->get_origin_term_id_from_product(get_the_ID()) ?: '',
                 'label' => 'Warehouse',
                 'options' => $warehouses,
             ]);
@@ -224,7 +234,21 @@ if (!\class_exists(WCBootstrap::class)) {
          */
         public function save_warehouse_select($id, $post): void
         {
-            update_post_meta($id, 'warehouse', $_POST['warehouse']);
+            $last_origin_id = $this->origin_utils->get_origin_term_id_from_product($id);
+            $new_origin_id = $_POST['warehouse'];
+
+            // remove product from last origin
+            if($last_origin_id){
+                \wp_remove_object_terms($id, $last_origin_id, WarehousesTaxonomy::TAXONOMY_SLUG);
+            }
+
+            // append product to new origin
+            if($new_origin_id){
+                \wp_set_post_terms($id, [(int) $new_origin_id], WarehousesTaxonomy::TAXONOMY_SLUG, true);
+            }
         }
+
+
+     
     }
 }
