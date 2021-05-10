@@ -3,11 +3,11 @@
 declare(strict_types=1);
 
 use Calcurates\Basic;
+use Calcurates\Origins\OriginUtils;
 use Calcurates\Calcurates\Calcurates;
-use Calcurates\Calcurates\CalcuratesClient;
 use Calcurates\Calcurates\Rates\Rates;
+use Calcurates\Calcurates\CalcuratesClient;
 use Calcurates\Calcurates\RequestsBodyBuilders\RatesRequestBodyBuilder;
-use Calcurates\Warehouses\OriginUtils;
 
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Calcurates;
 
-use Calcurates\Warehouses\OriginUtils;
-use Calcurates\Warehouses\WarehousesTaxonomy;
+use Calcurates\Origins\OriginUtils;
+use Calcurates\Origins\OriginsTaxonomy;
 
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
@@ -41,9 +41,9 @@ if (!\class_exists(WCBootstrap::class)) {
             // add text to order email
             add_action('woocommerce_email_after_order_table', [$this, 'add_shipping_data_after_order_table_in_email'], 10, 4);
 
-            // add warehouses select
-            add_action('woocommerce_product_options_shipping', [$this, 'add_warehouse_select']);
-            add_action('woocommerce_process_product_meta', [$this, 'save_warehouse_select'], 10, 2);
+            // add origins select
+            add_action('woocommerce_product_options_shipping', [$this, 'add_origin_select']);
+            add_action('woocommerce_process_product_meta', [$this, 'save_origin_select'], 10, 2);
         }
 
         public function init_shipping(): void
@@ -198,53 +198,53 @@ if (!\class_exists(WCBootstrap::class)) {
         }
 
         /**
-         * Add Warehouse select.
+         * Add Origin select.
          */
-        public function add_warehouse_select(): void
+        public function add_origin_select(): void
         {
-            $warehouses = [
+            $origins = [
                 '' => 'Please select',
             ];
 
-            $terms = \get_terms(WarehousesTaxonomy::TAXONOMY_SLUG, [
+            $terms = \get_terms(OriginsTaxonomy::TAXONOMY_SLUG, [
                 'hide_empty' => false,
                 'fields' => 'id=>name',
             ]);
 
             if (\is_array($terms)) {
                 foreach ($terms as $key => $value) {
-                    $warehouses[$key] = $value;
+                    $origins[$key] = $value;
                 }
             }
 
             echo '<div class="options_group">';
 
             \woocommerce_wp_select([
-                'id' => 'warehouse',
+                'id' => 'origin',
                 'value' => $this->origin_utils->get_origin_term_id_from_product(get_the_ID()) ?: '',
-                'label' => 'Warehouse',
-                'options' => $warehouses,
+                'label' => 'Origin',
+                'options' => $origins,
             ]);
 
             echo '</div>';
         }
 
         /**
-         * Save Warehouse.
+         * Save Origin.
          */
-        public function save_warehouse_select($id, $post): void
+        public function save_origin_select($id, $post): void
         {
             $last_origin_id = $this->origin_utils->get_origin_term_id_from_product($id);
-            $new_origin_id = $_POST['warehouse'];
+            $new_origin_id = $_POST['origin'];
 
             // remove product from last origin
             if($last_origin_id){
-                \wp_remove_object_terms($id, $last_origin_id, WarehousesTaxonomy::TAXONOMY_SLUG);
+                \wp_remove_object_terms($id, $last_origin_id, OriginsTaxonomy::TAXONOMY_SLUG);
             }
 
             // append product to new origin
             if($new_origin_id){
-                \wp_set_post_terms($id, [(int) $new_origin_id], WarehousesTaxonomy::TAXONOMY_SLUG, true);
+                \wp_set_post_terms($id, [(int) $new_origin_id], OriginsTaxonomy::TAXONOMY_SLUG, true);
             }
         }
 

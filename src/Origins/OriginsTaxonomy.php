@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Calcurates\Warehouses;
+namespace Calcurates\Origins;
 
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
     exit;
 }
 
-if (!\class_exists('WarehousesTaxonomy')) {
-    class WarehousesTaxonomy
+if (!\class_exists('OriginsTaxonomy')) {
+    class OriginsTaxonomy
     {
-        public const TAXONOMY_SLUG = 'warehouse';
+        public const TAXONOMY_SLUG = 'origin';
 
         /**
          * Bootstrap new taxonomy.
@@ -30,10 +30,10 @@ if (!\class_exists('WarehousesTaxonomy')) {
             add_filter('manage_edit-'.self::TAXONOMY_SLUG.'_columns', [$this, 'edit_columns']);
             add_filter('manage_'.self::TAXONOMY_SLUG.'_custom_column', [$this, 'manage_columns'], 10, 3);
 
-            // generate Warehouse code
-            add_action('create_'.self::TAXONOMY_SLUG, [$this, 'generate_warehouse_code'], 10, 2);
+            // generate Origin code
+            add_action('create_'.self::TAXONOMY_SLUG, [$this, 'generate_origin_code'], 10, 2);
 
-            // show Warehouse code
+            // show Origin code
             add_action(self::TAXONOMY_SLUG.'_edit_form_fields', [$this, 'add_taxonomy_custom_fields'], 10, 2);
         }
 
@@ -43,20 +43,20 @@ if (!\class_exists('WarehousesTaxonomy')) {
         public function register_taxonomy(): void
         {
             $labels = [
-                'name' => __('Warehouse'),
-                'singular_name' => __('Warehouse'),
-                'menu_name' => __('Warehouses'),
-                'all_items' => __('All Warehouses'),
+                'name' => __('Origin'),
+                'singular_name' => __('Origin'),
+                'menu_name' => __('Origins'),
+                'all_items' => __('All Origins'),
                 'parent_item' => null,
                 'parent_item_colon' => null,
-                'new_item_name' => __('New Warehouse Name'),
-                'add_new_item' => __('Add New Warehouse'),
-                'edit_item' => __('Edit Warehouse'),
-                'update_item' => __('Update Warehouse'),
-                'separate_items_with_commas' => __('Separate Warehouse with commas'),
-                'search_items' => __('Search Warehouses'),
-                'add_or_remove_items' => __('Add or remove Warehouses'),
-                'choose_from_most_used' => __('Choose from the most used Warehouses'),
+                'new_item_name' => __('New Origin Name'),
+                'add_new_item' => __('Add New Origin'),
+                'edit_item' => __('Edit Origin'),
+                'update_item' => __('Update Origin'),
+                'separate_items_with_commas' => __('Separate Origin with commas'),
+                'search_items' => __('Search Origins'),
+                'add_or_remove_items' => __('Add or remove Origins'),
+                'choose_from_most_used' => __('Choose from the most used Origins'),
             ];
             $capabilities = [
                 'manage_terms' => 'manage_woocommerce',
@@ -113,7 +113,7 @@ if (!\class_exists('WarehousesTaxonomy')) {
         {
             switch ($column_name) {
                 case 'code':
-                    echo \get_term_meta($term_id, 'warehouse_code', true);
+                    echo \get_term_meta($term_id, 'origin_code', true);
                     break;
                 default:
                     break;
@@ -121,15 +121,15 @@ if (!\class_exists('WarehousesTaxonomy')) {
         }
 
         /**
-         * Generate Warehouse Code.
+         * Generate Origin Code.
          */
-        public function generate_warehouse_code(int $term_id, int $tt_id): void
+        public function generate_origin_code(int $term_id, int $tt_id): void
         {
-            add_term_meta($term_id, 'warehouse_code', \wc_rand_hash(), true);
+            add_term_meta($term_id, 'origin_code', \wc_rand_hash(), true);
         }
 
         /**
-         * Print fields to warehouse taxonomy.
+         * Print fields to origin taxonomy.
          */
         public function add_taxonomy_custom_fields(\WP_Term $term): void
         {
@@ -137,10 +137,10 @@ if (!\class_exists('WarehousesTaxonomy')) {
 
 		<tr class="form-field">
 			<th scope="row" valign="top">
-				<label>Warehouse Code</label>
+				<label>Origin Code</label>
 			</th>
 			<td>
-				<p><?php echo get_term_meta($term->term_id, 'warehouse_code', true); ?></p>
+				<p><?php echo get_term_meta($term->term_id, 'origin_code', true); ?></p>
 			</td>
 		</tr>
 

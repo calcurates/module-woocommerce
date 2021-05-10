@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Calcurates\Calcurates\RequestsBodyBuilders;
 
-use Calcurates\Warehouses\OriginUtils;
+use Calcurates\Origins\OriginUtils;
 
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {

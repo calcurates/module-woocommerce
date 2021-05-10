@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Calcurates;
 
-use Calcurates\Warehouses\OriginUtils;
-use Calcurates\Warehouses\WarehousesTaxonomy;
+use Calcurates\Origins\OriginUtils;
+use Calcurates\Origins\OriginsTaxonomy;
 use Calcurates\RESTAPI\WoocommerceSettingsRESTController;
 
 // Stop direct HTTP access.
@@ -28,13 +28,13 @@ if (!\class_exists(WCCalcurates::class)) {
          */
         private $assets;
         /**
-         * @var WarehousesTaxonomy
+         * @var OriginsTaxonomy
          */
         private $warehoses_taxonomy;
 
         public function __construct()
         {
-            $this->warehoses_taxonomy = new WarehousesTaxonomy();
+            $this->warehoses_taxonomy = new OriginsTaxonomy();
             $this->wc_bootsrap = new WCBootstrap(new OriginUtils());
             $this->assets = new Assets();
         }
