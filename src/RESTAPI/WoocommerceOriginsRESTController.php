@@ -28,7 +28,6 @@ if (!\class_exists(WoocommerceOriginsRESTController::class)) {
             $this->namespace = 'calcurates/v1';
             $this->rest_base = 'woocommers-origins';
             $this->origin_utils = $origin_utils;
-
         }
 
         /**
@@ -62,7 +61,7 @@ if (!\class_exists(WoocommerceOriginsRESTController::class)) {
         public function get_data(\WP_REST_Request $request): array
         {
             return [
-                'origins' => $this->origin_utils->get_origins_codes()
+                'origins' => $this->origin_utils->get_origins_codes(),
             ];
         }
     }

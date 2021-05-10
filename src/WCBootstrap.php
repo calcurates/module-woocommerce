@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Calcurates;
 
-use Calcurates\Origins\OriginUtils;
 use Calcurates\Origins\OriginsTaxonomy;
+use Calcurates\Origins\OriginUtils;
 
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
@@ -23,7 +23,8 @@ if (!\class_exists(WCBootstrap::class)) {
          */
         private $origin_utils;
 
-        public function __construct(OriginUtils $origin_utils){
+        public function __construct(OriginUtils $origin_utils)
+        {
             $this->origin_utils = $origin_utils;
         }
 
@@ -238,17 +239,14 @@ if (!\class_exists(WCBootstrap::class)) {
             $new_origin_id = $_POST['origin'];
 
             // remove product from last origin
-            if($last_origin_id){
+            if ($last_origin_id) {
                 \wp_remove_object_terms($id, $last_origin_id, OriginsTaxonomy::TAXONOMY_SLUG);
             }
 
             // append product to new origin
-            if($new_origin_id){
+            if ($new_origin_id) {
                 \wp_set_post_terms($id, [(int) $new_origin_id], OriginsTaxonomy::TAXONOMY_SLUG, true);
             }
         }
-
-
-     
     }
 }

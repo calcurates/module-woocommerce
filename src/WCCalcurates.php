@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Calcurates;
 
-use Calcurates\Origins\OriginUtils;
 use Calcurates\Origins\OriginsTaxonomy;
+use Calcurates\Origins\OriginUtils;
 use Calcurates\RESTAPI\WoocommerceOriginsRESTController;
 use Calcurates\RESTAPI\WoocommerceSettingsRESTController;
 

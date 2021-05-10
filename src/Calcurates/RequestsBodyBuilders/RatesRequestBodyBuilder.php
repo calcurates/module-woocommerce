@@ -118,7 +118,6 @@ class RatesRequestBodyBuilder
                 continue;
             }
 
-            
             $data = [
                 'quoteItemId' => $cart_product['product_id'],
                 'sku' => $product->get_sku() ?: null,
