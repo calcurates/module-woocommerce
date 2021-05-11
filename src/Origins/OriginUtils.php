@@ -98,7 +98,7 @@ if (!\class_exists('OriginUtils')) {
                 'meta_query' => array(
                     array(
                        'key'       => 'origin_code',
-                       'value'     => \sanitize_title($code),
+                       'value'     => \sanitize_text_field($code),
                        'compare'   => '='
                     )
                 )

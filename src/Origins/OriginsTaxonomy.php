@@ -163,7 +163,7 @@ if (!\class_exists('OriginsTaxonomy')) {
          */
         public function save_code_field(int $term_id, int $tt_id): void
         {
-            add_term_meta($term_id, 'origin_code', \sanitize_title($_POST['origin_code']), true);
+            add_term_meta($term_id, 'origin_code', \sanitize_text_field($_POST['origin_code']), true);
         }
 
         /**
@@ -172,7 +172,7 @@ if (!\class_exists('OriginsTaxonomy')) {
          * @return string|\WP_Error
          */
         public function validate_code(string $term, string $taxonomy ) {
-            if (self::TAXONOMY_SLUG === $taxonomy && (!\sanitize_title($_POST['origin_code']) || OriginUtils::getInstance()->is_code_exists($_POST['origin_code']))) {
+            if (self::TAXONOMY_SLUG === $taxonomy && (!\sanitize_text_field($_POST['origin_code']) || OriginUtils::getInstance()->is_code_exists($_POST['origin_code']))) {
                 return new \WP_Error( 'code-validation-error', __('The Code already exists. Please enter a unique one.') );
             }
 
