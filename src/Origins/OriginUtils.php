@@ -58,29 +58,31 @@ if (!\class_exists('OriginUtils')) {
         }
 
         /**
-         * Get all Origins codes array.
+         * Get all Origins with codes and names.
          */
-        public function get_origins_codes(): array
+        public function get_origins_for_rest(): array
         {
-            $codes = [];
+            $origins = [];
 
-            $origins_term_ids = get_terms([
+            $origins_terms = get_terms([
                 'taxonomy' => OriginsTaxonomy::TAXONOMY_SLUG,
-                'hide_empty' => false,
-                'fields' => 'ids',
+                'hide_empty' => false
             ]);
 
-            if ($origins_term_ids) {
-                foreach ($origins_term_ids as $term_id) {
-                    $code = get_term_meta($term_id, 'origin_code', true);
+            if ($origins_terms && \is_array($origins_terms)) {
+                foreach ($origins_terms as $term) {
+                    $code = get_term_meta($term->term_id, 'origin_code', true);
 
                     if ($code) {
-                        $codes[] = $code;
+                        $origins[] = [
+                            'name' => $term->name,
+                            'code' => $code
+                        ];
                     }
                 }
             }
 
-            return $codes;
+            return $origins;
         }
 
         /**

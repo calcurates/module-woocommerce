@@ -55,7 +55,7 @@ if (!\class_exists(WoocommerceOriginsRESTController::class)) {
         public function get_data(\WP_REST_Request $request): array
         {
             return [
-                'origins' => OriginUtils::getInstance()->get_origins_codes(),
+                'origins' => OriginUtils::getInstance()->get_origins_for_rest(),
             ];
         }
     }
