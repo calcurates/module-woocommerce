@@ -163,7 +163,7 @@ if (!\class_exists('OriginsTaxonomy')) {
          */
         public function save_code_field(int $term_id, int $tt_id): void
         {
-            add_term_meta($term_id, 'origin_code', $_POST['origin_code'], true);
+            add_term_meta($term_id, 'origin_code', \sanitize_title($_POST['origin_code']), true);
         }
 
         /**
