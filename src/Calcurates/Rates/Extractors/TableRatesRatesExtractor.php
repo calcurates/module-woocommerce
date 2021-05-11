@@ -22,19 +22,19 @@ class TableRatesRatesExtractor implements RatesExtractorInterface
                 continue;
             }
 
-            foreach ($table_rate['methods'] as $rate) {
-                if (true !== $rate['success']) {
+            foreach ($table_rate['methods'] as $method) {
+                if (true !== $method['success']) {
                     continue;
                 }
 
                 $ready_rates[] = [
-                    'id' => $table_rate['id'].'_'.$rate['id'],
-                    'label' => $rate['name'],
-                    'cost' => $rate['rate']['cost'],
-                    'tax' => $rate['rate']['tax'] ?: 0,
+                    'id' => $table_rate['id'].'_'.$method['id'],
+                    'label' => $method['name'],
+                    'cost' => $method['rate']['cost'],
+                    'tax' => $method['rate']['tax'] ?: 0,
                     'message' => $table_rate['message'],
-                    'delivery_date_from' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['from'] : null,
-                    'delivery_date_to' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['to'] : null,
+                    'delivery_date_from' => isset($method['rate']['estimatedDeliveryDate']) ? $method['rate']['estimatedDeliveryDate']['from'] : null,
+                    'delivery_date_to' => isset($method['rate']['estimatedDeliveryDate']) ? $method['rate']['estimatedDeliveryDate']['to'] : null,
                     'priority' => $table_rate['priority'],
                 ];
             }

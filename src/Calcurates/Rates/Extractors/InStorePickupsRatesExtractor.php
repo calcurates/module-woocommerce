@@ -22,19 +22,19 @@ class InStorePickupsRatesExtractor implements RatesExtractorInterface
                 continue;
             }
 
-            foreach ($in_store_rate->stores as $rate) {
-                if (true !== $rate['success']) {
+            foreach ($in_store_rate['stores'] as $store) {
+                if (true !== $store['success']) {
                     continue;
                 }
 
                 $ready_rates[] = [
-                    'id' => $in_store_rate['id'].'_'.$rate['id'],
-                    'label' => $rate['name'],
-                    'cost' => $rate['rate']['cost'],
-                    'tax' => $rate['rate']['tax'] ?: 0,
+                    'id' => $in_store_rate['id'].'_'.$store['id'],
+                    'label' => $store['name'],
+                    'cost' => $store['rate']['cost'],
+                    'tax' => $store['rate']['tax'] ?: 0,
                     'message' => $in_store_rate['message'],
-                    'delivery_date_from' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['from'] : null,
-                    'delivery_date_to' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['to'] : null,
+                    'delivery_date_from' => isset($store['rate']['estimatedDeliveryDate']) ? $store['rate']['estimatedDeliveryDate']['from'] : null,
+                    'delivery_date_to' => isset($store['rate']['estimatedDeliveryDate']) ? $store['rate']['estimatedDeliveryDate']['to'] : null,
                     'priority' => $in_store_rate['priority'],
                 ];
             }

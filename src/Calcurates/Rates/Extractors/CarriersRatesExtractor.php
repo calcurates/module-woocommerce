@@ -31,13 +31,13 @@ class CarriersRatesExtractor implements RatesExtractorInterface
                 $services_messages = [];
                 $services_ids = [];
 
-                foreach ($rate['services'] as $services) {
-                    if ($services['message']) {
-                        $services_messages[] = $services['message'];
+                foreach ($rate['services'] as $service) {
+                    if ($service['message']) {
+                        $services_messages[] = $service['message'];
                     }
 
-                    $services_ids[] = $services['id'];
-                    $services_names[] = $services['name'];
+                    $services_ids[] = $service['id'];
+                    $services_names[] = $service['name'];
                 }
 
                 $services_messages = \implode('. ', $services_messages);
