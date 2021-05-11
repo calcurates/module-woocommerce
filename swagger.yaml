@@ -90,15 +90,18 @@ paths:
                   - origins
                 properties:
                   origins:
-                    type: array
-                    items:
-                      type: string
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      code:
+                        type: string
                     example:
-                      [
-                        9133516b37244b2034c78d5b4919ec319b8572da,
-                        9133516b37244b2034c78d5b4919ec319b8572dd,
-                      ]
-                    description: Origins codes array
+                      - name: Origin 1
+                        code: ABC-1
+                      - name: Origin 2
+                        code: ABC-2
+                    description: Origins
 
 components:
   schemas:
