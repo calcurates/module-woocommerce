@@ -31,10 +31,16 @@ if (!\class_exists('OriginsTaxonomy')) {
             add_filter('manage_'.self::TAXONOMY_SLUG.'_custom_column', [$this, 'manage_columns'], 10, 3);
 
             // generate Origin code
-            add_action('create_'.self::TAXONOMY_SLUG, [$this, 'generate_origin_code'], 10, 2);
+            add_action('create_'.self::TAXONOMY_SLUG, [$this, 'save_code_field'], 10, 2);
 
             // show Origin code
             add_action(self::TAXONOMY_SLUG.'_edit_form_fields', [$this, 'add_taxonomy_custom_fields'], 10, 2);
+
+            // Add Origin code field
+            add_action(OriginsTaxonomy::TAXONOMY_SLUG.'_add_form_fields', [$this, 'add_code_field']);
+
+            // Validate the Code
+            add_filter( 'pre_insert_term', [$this, 'validate_code'], 10, 2 );
         }
 
         /**
@@ -120,13 +126,6 @@ if (!\class_exists('OriginsTaxonomy')) {
             }
         }
 
-        /**
-         * Generate Origin Code.
-         */
-        public function generate_origin_code(int $term_id, int $tt_id): void
-        {
-            add_term_meta($term_id, 'origin_code', \wc_rand_hash(), true);
-        }
 
         /**
          * Print fields to origin taxonomy.
@@ -146,5 +145,39 @@ if (!\class_exists('OriginsTaxonomy')) {
 
 		<?php
         }
+        /**
+         * Add code field to 'add term' screen
+         */
+        public function add_code_field( string $taxonomy_slug ): void {
+            ?>
+            <div class="form-field form-required">
+                <label for="tag-title">Code</label>
+                <input name="origin_code" id="tag-title" type="text" value="" maxlength="255" aria-required="true"/>
+                <p>Enter any unique code</p>
+            </div>
+            <?php
+        }
+
+        /**
+         * Save Origin Code.
+         */
+        public function save_code_field(int $term_id, int $tt_id): void
+        {
+            add_term_meta($term_id, 'origin_code', $_POST['origin_code'], true);
+        }
+
+        /**
+         * Code validation
+         *
+         * @return string|\WP_Error
+         */
+        public function validate_code(string $term, string $taxonomy ) {
+            if (self::TAXONOMY_SLUG === $taxonomy && (!\sanitize_title($_POST['origin_code']) || OriginUtils::getInstance()->is_code_exists($_POST['origin_code']))) {
+                return new \WP_Error( 'code-validation-error', __('The Code already exists. Please enter a unique one.') );
+            }
+
+            return $term;
+        }
+
     }
 }
