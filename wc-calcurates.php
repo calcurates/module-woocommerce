@@ -10,7 +10,7 @@ declare(strict_types=1);
  * Requires at least: 5.0
  * Requires PHP:      7.1.3
  * Author:            Calcurates s.r.o.
- * Author URI:        http://calcurates.com/.
+ * Author URI:        https://calcurates.com
  */
 
 namespace Calcurates;
