@@ -20,7 +20,20 @@ if (!\class_exists(Basic::class)) {
          */
         public static function get_version(): string
         {
-            return '0.0.1';
+            static $version = null;
+            if ($version) {
+                return $version;
+            }
+
+            $composer = \file_get_contents(self::get_plugin_dir_path().'composer.json');
+            if (false !== $composer) {
+                $json = \json_decode($composer, true);
+                $version = $json['version'];
+            } else {
+                $version = 'dev';
+            }
+
+            return $version;
         }
 
         /**
@@ -44,7 +57,7 @@ if (!\class_exists(Basic::class)) {
          */
         public static function get_plugin_dir_path(): string
         {
-            return \trailingslashit(\realpath(__DIR__.\DIRECTORY_SEPARATOR.'..'));
+            return \trailingslashit(\dirname(__DIR__));
         }
     }
 }

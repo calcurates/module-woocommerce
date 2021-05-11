@@ -4,6 +4,8 @@
 - PHP >= 7.1.3
 - MySQL >= 5.7
 - Web-Server (Nginx/Apache/etc...)
+- Wordpress >= 5.2
+- WooCommerce >= 4.3
 
 #### Docker setup
 Copy `.env.example` to `.env`. Set env vars as you need.
