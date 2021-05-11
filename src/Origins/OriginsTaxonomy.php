@@ -37,10 +37,10 @@ if (!\class_exists('OriginsTaxonomy')) {
             add_action(self::TAXONOMY_SLUG.'_edit_form_fields', [$this, 'add_taxonomy_custom_fields'], 10, 2);
 
             // Add Origin code field
-            add_action(OriginsTaxonomy::TAXONOMY_SLUG.'_add_form_fields', [$this, 'add_code_field']);
+            add_action(self::TAXONOMY_SLUG.'_add_form_fields', [$this, 'add_code_field']);
 
             // Validate the Code
-            add_filter( 'pre_insert_term', [$this, 'validate_code'], 10, 2 );
+            add_filter('pre_insert_term', [$this, 'validate_code'], 10, 2);
         }
 
         /**
@@ -126,7 +126,6 @@ if (!\class_exists('OriginsTaxonomy')) {
             }
         }
 
-
         /**
          * Print fields to origin taxonomy.
          */
@@ -145,10 +144,12 @@ if (!\class_exists('OriginsTaxonomy')) {
 
 		<?php
         }
+
         /**
-         * Add code field to 'add term' screen
+         * Add code field to 'add term' screen.
          */
-        public function add_code_field( string $taxonomy_slug ): void {
+        public function add_code_field(string $taxonomy_slug): void
+        {
             ?>
             <div class="form-field form-required">
                 <label for="tag-title">Code</label>
@@ -167,17 +168,17 @@ if (!\class_exists('OriginsTaxonomy')) {
         }
 
         /**
-         * Code validation
+         * Code validation.
          *
          * @return string|\WP_Error
          */
-        public function validate_code(string $term, string $taxonomy ) {
+        public function validate_code(string $term, string $taxonomy)
+        {
             if (self::TAXONOMY_SLUG === $taxonomy && (!\sanitize_text_field($_POST['origin_code']) || OriginUtils::getInstance()->is_code_exists($_POST['origin_code']))) {
-                return new \WP_Error( 'code-validation-error', __('The Code already exists. Please enter a unique one.') );
+                return new \WP_Error('code-validation-error', __('The Code already exists. Please enter a unique one.'));
             }
 
             return $term;
         }
-
     }
 }

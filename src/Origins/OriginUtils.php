@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Calcurates\Origins;
 
-use Calcurates\Origins\OriginsTaxonomy;
-
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
     exit;
@@ -66,7 +64,7 @@ if (!\class_exists('OriginUtils')) {
 
             $origins_terms = get_terms([
                 'taxonomy' => OriginsTaxonomy::TAXONOMY_SLUG,
-                'hide_empty' => false
+                'hide_empty' => false,
             ]);
 
             if ($origins_terms && \is_array($origins_terms)) {
@@ -76,7 +74,7 @@ if (!\class_exists('OriginUtils')) {
                     if ($code) {
                         $origins[] = [
                             'name' => $term->name,
-                            'code' => $code
+                            'code' => $code,
                         ];
                     }
                 }
@@ -86,22 +84,21 @@ if (!\class_exists('OriginUtils')) {
         }
 
         /**
-         * Check if Code exists
+         * Check if Code exists.
          */
         public function is_code_exists(string $code): bool
         {
-
             $origins_term_ids = get_terms([
                 'taxonomy' => OriginsTaxonomy::TAXONOMY_SLUG,
                 'hide_empty' => false,
                 'fields' => 'ids',
-                'meta_query' => array(
-                    array(
-                       'key'       => 'origin_code',
-                       'value'     => \sanitize_text_field($code),
-                       'compare'   => '='
-                    )
-                )
+                'meta_query' => [
+                    [
+                       'key' => 'origin_code',
+                       'value' => \sanitize_text_field($code),
+                       'compare' => '=',
+                    ],
+                ],
             ]);
 
             if ($origins_term_ids && \is_array($origins_term_ids)) {
