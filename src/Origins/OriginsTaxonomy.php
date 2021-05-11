@@ -153,7 +153,7 @@ if (!\class_exists('OriginsTaxonomy')) {
             <div class="form-field form-required">
                 <label for="tag-title">Code</label>
                 <input name="origin_code" id="tag-title" type="text" value="" maxlength="255" aria-required="true"/>
-                <p>Enter any unique code</p>
+                <p>Enter any unique code.</p>
             </div>
             <?php
         }
