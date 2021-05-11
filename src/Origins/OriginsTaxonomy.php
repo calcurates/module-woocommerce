@@ -30,7 +30,7 @@ if (!\class_exists('OriginsTaxonomy')) {
             add_filter('manage_edit-'.self::TAXONOMY_SLUG.'_columns', [$this, 'edit_columns']);
             add_filter('manage_'.self::TAXONOMY_SLUG.'_custom_column', [$this, 'manage_columns'], 10, 3);
 
-            // generate Origin code
+            // Save Origin code
             add_action('create_'.self::TAXONOMY_SLUG, [$this, 'save_code_field'], 10, 2);
 
             // show Origin code
