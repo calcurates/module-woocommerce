@@ -21,27 +21,27 @@ if (!\class_exists(WCBootstrap::class)) {
         public function run(): void
         {
             // Create Calcurates shipping method
-            add_action('init', [$this, 'init_shipping']);
+            \add_action('init', [$this, 'init_shipping']);
 
             // Add feature to add to session ship_to_different_address checkbox status on checkout
-            add_action('woocommerce_checkout_update_order_review', [$this, 'ship_to_different_address_set_session']);
+            \add_action('woocommerce_checkout_update_order_review', [$this, 'ship_to_different_address_set_session']);
 
             // add text after rate on checkout
-            add_action('woocommerce_after_shipping_rate', [$this, 'add_data_after_shipping_rate'], 10, 2);
+            \add_action('woocommerce_after_shipping_rate', [$this, 'add_data_after_shipping_rate'], 10, 2);
 
             // add text to order email
-            add_action('woocommerce_email_after_order_table', [$this, 'add_shipping_data_after_order_table_in_email'], 10, 4);
+            \add_action('woocommerce_email_after_order_table', [$this, 'add_shipping_data_after_order_table_in_email'], 10, 4);
 
             // add origins select
-            add_action('woocommerce_product_options_shipping', [$this, 'add_origin_select']);
-            add_action('woocommerce_process_product_meta', [$this, 'save_origin_select'], 10, 2);
+            \add_action('woocommerce_product_options_shipping', [$this, 'add_origin_select']);
+            \add_action('woocommerce_process_product_meta', [$this, 'save_origin_select'], 10, 2);
         }
 
         public function init_shipping(): void
         {
             if (\class_exists('WC_Shipping_Method')) {
                 require_once Basic::get_plugin_dir_path().'includes/wc-calcurates-shipping-method.php';
-                add_filter('woocommerce_shipping_methods', [$this, 'add_calcurates_shipping']);
+                \add_filter('woocommerce_shipping_methods', [$this, 'add_calcurates_shipping']);
             }
         }
 
@@ -67,9 +67,9 @@ if (!\class_exists(WCBootstrap::class)) {
                 \parse_str($data, $data_array);
 
                 if (\array_key_exists('ship_to_different_address', $data_array) && $data_array['ship_to_different_address']) {
-                    WC()->session->set('ship_to_different_address', 1);
+                    \WC()->session->set('ship_to_different_address', 1);
                 } else {
-                    WC()->session->set('ship_to_different_address', 0);
+                    \WC()->session->set('ship_to_different_address', 0);
                 }
             }
 
@@ -146,12 +146,12 @@ if (!\class_exists(WCBootstrap::class)) {
 
             // get \DateTime objects
             try {
-                $from = $from_date ? (new \DateTime($from_date))->setTimezone(wp_timezone()) : null;
+                $from = $from_date ? (new \DateTime($from_date))->setTimezone(\wp_timezone()) : null;
             } catch (\Exception $e) {
             }
 
             try {
-                $to = $to_date ? (new \DateTime($to_date))->setTimezone(wp_timezone()) : null;
+                $to = $to_date ? (new \DateTime($to_date))->setTimezone(\wp_timezone()) : null;
             } catch (\Exception $e) {
             }
 
@@ -185,7 +185,7 @@ if (!\class_exists(WCBootstrap::class)) {
          */
         private function wp_datetime_format(): string
         {
-            return get_option('date_format').' '.get_option('time_format');
+            return \get_option('date_format').' '.\get_option('time_format');
         }
 
         /**
@@ -212,7 +212,7 @@ if (!\class_exists(WCBootstrap::class)) {
 
             \woocommerce_wp_select([
                 'id' => 'origin',
-                'value' => OriginUtils::getInstance()->get_origin_term_id_from_product(get_the_ID()) ?: '',
+                'value' => OriginUtils::getInstance()->get_origin_term_id_from_product(\get_the_ID()) ?: '',
                 'label' => 'Origin',
                 'options' => $origins,
             ]);

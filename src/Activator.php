@@ -31,8 +31,8 @@ if (!\class_exists(Activator::class)) {
         {
             // Check if WooCommerce is has been activated
             if (!\defined('WC_VERSION')) {
-                wp_die(
-                    __('WooCommerce Calcurates requires WooCommerce 3.9 or later.', 'WC_Calcurates')
+                \wp_die(
+                    \__('WooCommerce Calcurates requires WooCommerce 3.9 or later.', 'WC_Calcurates')
                 );
             }
         }
@@ -42,8 +42,8 @@ if (!\class_exists(Activator::class)) {
          */
         public static function key_setup(): void
         {
-            if (!get_option(Basic::get_prefix().'key')) {
-                update_option(Basic::get_prefix().'key', wc_rand_hash());
+            if (!\get_option(Basic::get_prefix().'key')) {
+                \update_option(Basic::get_prefix().'key', \wc_rand_hash());
             }
         }
     }

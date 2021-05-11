@@ -28,7 +28,7 @@
 !composer.json
 !composer.lock
 
-!.php_cs.dist
+!.php-cs-fixer.dist.php
 !phpstan.neon.dist
 !swagger.yaml
 

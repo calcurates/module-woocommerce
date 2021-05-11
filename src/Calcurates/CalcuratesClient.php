@@ -73,7 +73,7 @@ class CalcuratesClient
                 'X-API-KEY' => null,
                 'Content-Type' => 'application/json',
             ],
-            'body' => wp_json_encode($request_body),
+            'body' => \wp_json_encode($request_body),
         ];
 
         if ('all' === $this->debug_mode) {
@@ -82,9 +82,9 @@ class CalcuratesClient
 
         $args['headers']['X-API-KEY'] = $this->api_key;
 
-        $result = wp_safe_remote_request($this->api_url.$path, $args);
+        $result = \wp_safe_remote_request($this->api_url.$path, $args);
 
-        if (is_wp_error($result) || 200 !== wp_remote_retrieve_response_code($result)) {
+        if (\is_wp_error($result) || 200 !== \wp_remote_retrieve_response_code($result)) {
             if ('all' === $this->debug_mode || 'errors' === $this->debug_mode) {
                 $this->logger->critical('Calcurates API request error', (array) $result);
             }
@@ -92,7 +92,7 @@ class CalcuratesClient
             return null;
         }
 
-        $response = wp_remote_retrieve_body($result);
+        $response = \wp_remote_retrieve_body($result);
         $decodedResponse = \json_decode($response, true);
 
         if (null === $decodedResponse && \JSON_ERROR_NONE !== \json_last_error()) {

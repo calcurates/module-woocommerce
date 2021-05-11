@@ -32,7 +32,7 @@ class Logger
 
     public function __construct()
     {
-        $this->logger = wc_get_logger();
+        $this->logger = \wc_get_logger();
         $this->source = Basic::get_plugin_text_domain();
     }
 

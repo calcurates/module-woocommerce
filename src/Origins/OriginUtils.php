@@ -35,7 +35,7 @@ if (!\class_exists('OriginUtils')) {
             $origin_term_id = $this->get_origin_term_id_from_product($product_id);
 
             if ($origin_term_id) {
-                return get_term_meta($origin_term_id, 'origin_code', true);
+                return \get_term_meta($origin_term_id, 'origin_code', true);
             }
 
             return null;
@@ -46,7 +46,7 @@ if (!\class_exists('OriginUtils')) {
          */
         public function get_origin_term_id_from_product(int $product_id): ?int
         {
-            $origin_terms = wp_get_post_terms($product_id, OriginsTaxonomy::TAXONOMY_SLUG, ['fields' => 'ids']);
+            $origin_terms = \wp_get_post_terms($product_id, OriginsTaxonomy::TAXONOMY_SLUG, ['fields' => 'ids']);
 
             if ($origin_terms && \is_array($origin_terms)) {
                 return \reset($origin_terms);
@@ -62,14 +62,14 @@ if (!\class_exists('OriginUtils')) {
         {
             $origins = [];
 
-            $origins_terms = get_terms([
+            $origins_terms = \get_terms([
                 'taxonomy' => OriginsTaxonomy::TAXONOMY_SLUG,
                 'hide_empty' => false,
             ]);
 
             if ($origins_terms && \is_array($origins_terms)) {
                 foreach ($origins_terms as $term) {
-                    $code = get_term_meta($term->term_id, 'origin_code', true);
+                    $code = \get_term_meta($term->term_id, 'origin_code', true);
 
                     if ($code) {
                         $origins[] = [
@@ -88,7 +88,7 @@ if (!\class_exists('OriginUtils')) {
          */
         public function is_code_exists(string $code): bool
         {
-            $origins_term_ids = get_terms([
+            $origins_term_ids = \get_terms([
                 'taxonomy' => OriginsTaxonomy::TAXONOMY_SLUG,
                 'hide_empty' => false,
                 'fields' => 'ids',

@@ -30,7 +30,7 @@ services:
       - ./wc-calcurates.php:/var/www/wordpress/wp-content/plugins/wc-calcurates/wc-calcurates.php
       - ./composer.json:/var/www/wordpress/wp-content/plugins/wc-calcurates/composer.json
       - ./composer.lock:/var/www/wordpress/wp-content/plugins/wc-calcurates/composer.lock
-      - ./.php_cs.dist:/var/www/wordpress/wp-content/plugins/wc-calcurates/.php_cs.dist
+      - ./.php-cs-fixer.dist.php:/var/www/wordpress/wp-content/plugins/wc-calcurates/.php-cs-fixer.dist.php
       - ./phpstan.neon.dist:/var/www/wordpress/wp-content/plugins/wc-calcurates/phpstan.neon.dist
     expose:
       - "9011" # xdebug

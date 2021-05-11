@@ -29,7 +29,7 @@ if (!\class_exists(WoocommerceOriginsRESTController::class)) {
          */
         public function register_routes(): void
         {
-            register_rest_route($this->namespace, '/'.$this->rest_base, [
+            \register_rest_route($this->namespace, '/'.$this->rest_base, [
                 [
                     'methods' => 'GET',
                     'callback' => [$this, 'get_data'],
@@ -46,7 +46,7 @@ if (!\class_exists(WoocommerceOriginsRESTController::class)) {
         {
             $x_api_key = $request->get_header('X_API_KEY');
 
-            return $x_api_key && $x_api_key === get_option(Basic::get_prefix().'key');
+            return $x_api_key && $x_api_key === \get_option(Basic::get_prefix().'key');
         }
 
         /**

@@ -65,8 +65,8 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         parent::__construct($instance_id);
 
         $this->id = self::CODE;
-        $this->method_title = __('Calcurates Shipping Method');
-        $this->method_description = __('Calcurates Shipping Method');
+        $this->method_title = \__('Calcurates Shipping Method');
+        $this->method_description = \__('Calcurates Shipping Method');
 
         $this->enabled = 'yes';
         $this->title = 'Calcurates Shipping Method';
@@ -92,43 +92,43 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         $this->tax_mode = $this->get_option('tax_mode');
 
         // Save settings in admin if you have any defined
-        add_action('woocommerce_update_options_shipping_'.$this->id, [$this, 'process_admin_options']);
+        \add_action('woocommerce_update_options_shipping_'.$this->id, [$this, 'process_admin_options']);
     }
 
     public function init_form_fields(): void
     {
         $this->form_fields = [
             'calcurates_api_url' => [
-                'title' => __('Calcurates Api URL', 'woocommerce'),
+                'title' => \__('Calcurates Api URL', 'woocommerce'),
                 'type' => 'text',
                 'default' => 'https://api.calcurates.com',
                 'desc_tip' => false,
             ],
             'calcurates_api_key' => [
-                'title' => __('Calcurates Api Key', 'woocommerce'),
+                'title' => \__('Calcurates Api Key', 'woocommerce'),
                 'type' => 'text',
-                'description' => __('Copy your Api Key from Calcurates panel', 'woocommerce'),
+                'description' => \__('Copy your Api Key from Calcurates panel', 'woocommerce'),
                 'default' => '',
                 'desc_tip' => false,
             ],
             'plugin_api_key' => [
-                'title' => __('Plugin Api Key', 'woocommerce'),
+                'title' => \__('Plugin Api Key', 'woocommerce'),
                 'type' => 'text',
-                'description' => __('Copy this Api Key to Calcurates panel', 'woocommerce'),
-                'default' => get_option(Basic::get_prefix().'key'),
+                'description' => \__('Copy this Api Key to Calcurates panel', 'woocommerce'),
+                'default' => \get_option(Basic::get_prefix().'key'),
                 'desc_tip' => false,
                 'custom_attributes' => [
                     'readonly' => 'readonly',
                 ],
             ],
             'generate_new_api_key' => [
-                'title' => __('Generate new Plugin Api Key', 'woocommerce'),
+                'title' => \__('Generate new Plugin Api Key', 'woocommerce'),
                 'type' => 'checkbox',
-                'description' => __('Check and save changes to generate new Plugin Api Key', 'woocommerce'),
+                'description' => \__('Check and save changes to generate new Plugin Api Key', 'woocommerce'),
                 'desc_tip' => false,
             ],
             'debug_mode' => [
-                'title' => __('Debug', 'woocommerce'),
+                'title' => \__('Debug', 'woocommerce'),
                 'type' => 'select',
                 'default' => 'off',
                 'options' => [
@@ -138,7 +138,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
                 ],
             ],
             'tax_mode' => [
-                'title' => __('Display rates with tax & duties', 'woocommerce'),
+                'title' => \__('Display rates with tax & duties', 'woocommerce'),
                 'type' => 'select',
                 'default' => 'tax_included',
                 'options' => [
@@ -194,8 +194,8 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         // TODO: needs refactor
         if (\array_key_exists('woocommerce_'.$this->id.'_generate_new_api_key', $_POST) && '1' === $_POST['woocommerce_'.$this->id.'_generate_new_api_key']) {
             $this->update_option('generate_new_api_key', 'no');
-            $key = wc_rand_hash();
-            update_option(Basic::get_prefix().'key', $key);
+            $key = \wc_rand_hash();
+            \update_option(Basic::get_prefix().'key', $key);
             $this->update_option('plugin_api_key', $key);
         }
 
