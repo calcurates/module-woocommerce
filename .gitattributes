@@ -8,5 +8,4 @@ docker-compose.yml     export-ignore
 .php-cs-fixer.dist.php export-ignore
 phpstan.neon.dist      export-ignore
 swagger.yaml           export-ignore
-composer.json          export-ignore
 composer.lock          export-ignore
