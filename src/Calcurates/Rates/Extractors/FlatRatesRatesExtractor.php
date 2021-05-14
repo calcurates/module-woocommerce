@@ -18,20 +18,20 @@ class FlatRatesRatesExtractor implements RatesExtractorInterface
         $ready_rates = [];
 
         foreach ($rates as $rate) {
-            if (true !== $rate['success']) {
-                continue;
+            if ($rate['success'] || (!$rate['success'] && $rate['message'])) {
+                $ready_rates[] = [
+                    'has_error' => !$rate['success'],
+                    'id' => $rate['id'],
+                    'label' => $rate['name'],
+                    'cost' => $rate['rate']['cost'] ?? 0,
+                    'tax' => $rate['rate']['tax'] ?? 0,
+                    'message' => $rate['message'],
+                    'delivery_date_from' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['from'] : null,
+                    'delivery_date_to' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['to'] : null,
+                    'priority' => $rate['priority'],
+                    'rate_image' => $rate['imageUri'],
+                ];
             }
-
-            $ready_rates[] = [
-                'id' => $rate['id'],
-                'label' => $rate['name'],
-                'cost' => $rate['rate']['cost'],
-                'tax' => $rate['rate']['tax'] ?: 0,
-                'message' => $rate['message'],
-                'delivery_date_from' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['from'] : null,
-                'delivery_date_to' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['to'] : null,
-                'priority' => $rate['priority'],
-            ];
         }
 
         return $ready_rates;

@@ -70,6 +70,7 @@ if (!\class_exists(WCCalcurates::class)) {
         public function enqueue_styles(): void
         {
             \add_action('wp_enqueue_scripts', [$this->assets, 'enqueue_styles']);
+            \add_action('wp_enqueue_scripts', [$this->assets, 'enqueue_js']);
         }
     }
 }
