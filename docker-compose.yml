@@ -62,6 +62,7 @@ services:
     volumes:
       - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
       - app_code:/var/www/wordpress
+      - ./assets:/var/www/wordpress/wp-content/plugins/wc-calcurates/assets
     depends_on:
       - php
     ports:

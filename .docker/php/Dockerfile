@@ -15,7 +15,8 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
   unzip \
   cron \
   default-mysql-client \
-  mc
+  mc \
+  htop
 
 
 # PHP
