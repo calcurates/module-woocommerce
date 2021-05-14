@@ -35,6 +35,11 @@ if (!\class_exists(WCBootstrap::class)) {
             // add origins select
             \add_action('woocommerce_product_options_shipping', [$this, 'add_origin_select']);
             \add_action('woocommerce_process_product_meta', [$this, 'save_origin_select'], 10, 2);
+
+            // validate selected rate if has no error
+            \add_action('woocommerce_after_checkout_validation', [$this, 'validate_selected_rate'], 10, 2);
+
+            add_filter('woocommerce_cart_shipping_method_full_label', [$this, 'filter_woocommerce_cart_shipping_method_full_label'], 10, 2);
         }
 
         public function init_shipping(): void
@@ -99,7 +104,7 @@ if (!\class_exists(WCBootstrap::class)) {
             }
 
             if ($text) {
-                echo '<div class="calcurates-checkout__shipping-rate-description">'.$text.'</div>';
+                echo '<div class="calcurates-checkout__shipping-rate-description '.($meta['has_error'] ? 'calcurates-checkout__shipping-rate-description_has-error' : '').'">'.$text.'</div>';
             }
         }
 
@@ -237,6 +242,53 @@ if (!\class_exists(WCBootstrap::class)) {
             if ($new_origin_id) {
                 \wp_set_post_terms($id, [(int) $new_origin_id], OriginsTaxonomy::TAXONOMY_SLUG, true);
             }
+        }
+        
+        /**
+         * Validate selected rate if has no error.
+         */
+        public function validate_selected_rate(array $data, \WP_Error $errors): void
+        {
+            $chosen_shipping_methods = \WC()->session->get('chosen_shipping_methods');
+
+            if (!is_array($chosen_shipping_methods)) {
+                return;
+            }
+
+            foreach ($chosen_shipping_methods as $chosen_method) {
+                // The array of shipping methods enabled for the current shipping zone:
+                $shipping_methods = \WC()->session->get('shipping_for_package_0')['rates'];
+
+                foreach ($shipping_methods as $method_id => $shipping_rate) {
+                    if ($shipping_rate->get_id() === $chosen_method) {
+                        $meta = $shipping_rate->get_meta_data();
+
+                        if ($meta['has_error'] ?? false) {
+                            $errors->add('validation', __('Chosen Shipping method is not available.'));
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
+        /**
+         * Change checkout rate HTML if it's Calcurates rate
+         */
+        public function filter_woocommerce_cart_shipping_method_full_label(string $label, \WC_Shipping_Rate $rate): string
+        {
+            if (false === \strpos($rate->get_id(), 'calcurates:')) {
+                return $label;
+            }
+
+            $meta = $rate->get_meta_data();
+
+            $label = '<div class="calcurates-checkout__shipping-rate-label-wrap">
+            '.($meta['rate_image'] ? '<img src="'.$meta['rate_image'].'" class="calcurates-checkout__shipping-rate-image"  />' : '').'
+            <span class="calcurates-checkout__shipping-rate-text">'.$label.'</span>
+            </div>';
+
+            return $label;
         }
     }
 }

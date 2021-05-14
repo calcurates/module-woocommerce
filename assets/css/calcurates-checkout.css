@@ -1,9 +1,38 @@
+.calcurates-checkout__shipping-rate{
+
+}
 .calcurates-checkout__shipping-rate-description{
     margin-bottom: 10px;
+}
+.calcurates-checkout__shipping-rate-description_has-error{
+   color:brown;
 }
 .calcurates-checkout__shipping-rate-message{
    font-size: 13px;
 }
 .calcurates-checkout__shipping-rate-dates{
    font-size: 13px;
+}
+.calcurates-checkout__shipping-rate-label-wrap{
+   display: inline-flex;
+   justify-content: center;
+   align-items: center;
+}
+.calcurates-checkout__shipping-rate-text{
+   display: flex;
+}
+.calcurates-checkout__shipping-rate-label{
+   display: inline-flex !important;
+   align-items: center;
+}
+.calcurates-checkout__shipping-rate-label .amount{
+   margin-left: 10px;
+}
+.calcurates-checkout__shipping-rate-image{
+   max-width: 100px;
+   max-height: 30px;
+   margin-right: 10px;
+}
+.calcurates-checkout__shipping-rate_disabled input, .calcurates-checkout__shipping-rate_disabled .calcurates-checkout__shipping-rate-label-wrap{
+   opacity: 0.5;
 }

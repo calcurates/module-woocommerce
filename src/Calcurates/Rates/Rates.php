@@ -112,6 +112,8 @@ class Rates
                     'delivery_date_from' => $rate['delivery_date_from'],
                     'delivery_date_to' => $rate['delivery_date_to'],
                     'tax' => $rate['tax'],
+                    'has_error' => $rate['has_error'],
+                    'rate_image' => $rate['rate_image'],
                 ],
                 'priority' => $rate['priority'],
             ];
