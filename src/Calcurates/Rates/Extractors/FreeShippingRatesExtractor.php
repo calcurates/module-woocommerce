@@ -29,7 +29,7 @@ class FreeShippingRatesExtractor implements RatesExtractorInterface
                     'delivery_date_from' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['from'] : null,
                     'delivery_date_to' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['to'] : null,
                     'priority' => $rate['priority'],
-                    'rate_image' => $rate['imageUri']
+                    'rate_image' => $rate['imageUri'],
                 ];
             }
         }

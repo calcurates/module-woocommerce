@@ -30,7 +30,7 @@ class InStorePickupsRatesExtractor implements RatesExtractorInterface
                     'delivery_date_from' => null,
                     'delivery_date_to' => null,
                     'priority' => $in_store_rate['priority'],
-                    'rate_image' => $in_store_rate['imageUri']
+                    'rate_image' => $in_store_rate['imageUri'],
                 ];
             }
 
@@ -50,7 +50,7 @@ class InStorePickupsRatesExtractor implements RatesExtractorInterface
                         'delivery_date_from' => isset($store['rate']['estimatedDeliveryDate']) ? $store['rate']['estimatedDeliveryDate']['from'] : null,
                         'delivery_date_to' => isset($store['rate']['estimatedDeliveryDate']) ? $store['rate']['estimatedDeliveryDate']['to'] : null,
                         'priority' => $in_store_rate['priority'],
-                        'rate_image' => $store['imageUri']
+                        'rate_image' => $store['imageUri'],
                     ];
                 }
             }

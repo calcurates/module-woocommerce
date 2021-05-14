@@ -30,7 +30,7 @@ class RateShoppingRatesExtractor implements RatesExtractorInterface
                     'delivery_date_from' => null,
                     'delivery_date_to' => null,
                     'priority' => $rate_shopping['priority'],
-                    'rate_image' => $rate_shopping['imageUri']
+                    'rate_image' => $rate_shopping['imageUri'],
                 ];
             }
 
@@ -39,11 +39,11 @@ class RateShoppingRatesExtractor implements RatesExtractorInterface
             }
 
             foreach ($rate_shopping['carriers'] as $carrier) {
-                if (true !== $carrier['success']) {
+                if (!$carrier['success']) {
                     continue;
                 }
                 foreach ($carrier['rates'] as $rate) {
-                    if (true !== $rate['success']) {
+                    if (!$rate['success']) {
                         continue;
                     }
 
@@ -74,8 +74,7 @@ class RateShoppingRatesExtractor implements RatesExtractorInterface
                         'delivery_date_from' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['from'] : null,
                         'delivery_date_to' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['to'] : null,
                         'priority' => $rate_shopping['priority'],
-                        'rate_image' => $rate_shopping['imageUri']
-
+                        'rate_image' => $rate_shopping['imageUri'],
                     ];
                 }
             }

@@ -39,7 +39,7 @@ if (!\class_exists(WCBootstrap::class)) {
             // validate selected rate if has no error
             \add_action('woocommerce_after_checkout_validation', [$this, 'validate_selected_rate'], 10, 2);
 
-            add_filter('woocommerce_cart_shipping_method_full_label', [$this, 'filter_woocommerce_cart_shipping_method_full_label'], 10, 2);
+            \add_filter('woocommerce_cart_shipping_method_full_label', [$this, 'filter_woocommerce_cart_shipping_method_full_label'], 10, 2);
         }
 
         public function init_shipping(): void
@@ -93,14 +93,14 @@ if (!\class_exists(WCBootstrap::class)) {
 
             // shipping rate description
             if (isset($meta['message'])) {
-                $text .= '<div class="calcurates-checkout__shipping-rate-message">'.$meta['message'].'</div>';
+                $text .= '<div class="calcurates-checkout__shipping-rate-message">'.\htmlspecialchars($meta['message'], \ENT_NOQUOTES).'</div>';
             }
 
             // shipping rate dates, use \DateTime objects
             $estimated_delivery_date_text = $this->get_estimated_delivery_date_text($meta['delivery_date_from'], $meta['delivery_date_to']);
 
             if ($estimated_delivery_date_text) {
-                $text .= '<div class="calcurates-checkout__shipping-rate-dates">Estimated delivery date: '.$estimated_delivery_date_text.'</div>';
+                $text .= '<div class="calcurates-checkout__shipping-rate-dates">Estimated delivery date: '.\htmlspecialchars($estimated_delivery_date_text, \ENT_NOQUOTES).'</div>';
             }
 
             if ($text) {
@@ -113,7 +113,6 @@ if (!\class_exists(WCBootstrap::class)) {
             $message = null;
             $delivery_date_from = null;
             $delivery_date_to = null;
-            $estimated_delivery_date = '';
             $text = '';
 
             /** @var \WC_Order_Item_Shipping $item */
@@ -127,13 +126,18 @@ if (!\class_exists(WCBootstrap::class)) {
             }
 
             if ($message) {
-                $text .= 'Shipping info: '.$message.'<br/>';
+                $text .= 'Shipping info: '.\htmlspecialchars($message, \ENT_NOQUOTES).'<br/>';
             }
 
-            $estimated_delivery_date = $this->get_estimated_delivery_date_text($delivery_date_from, $delivery_date_to);
+            if ($delivery_date_from || $delivery_date_to) {
+                $estimated_delivery_date = $this->get_estimated_delivery_date_text(
+                    $delivery_date_from,
+                    $delivery_date_to
+                );
 
-            if ($estimated_delivery_date) {
-                $text .= 'Estimated delivery date: '.$estimated_delivery_date;
+                if ($estimated_delivery_date) {
+                    $text .= 'Estimated delivery date: '.\htmlspecialchars($estimated_delivery_date, \ENT_NOQUOTES);
+                }
             }
 
             if ($text) {
@@ -243,7 +247,7 @@ if (!\class_exists(WCBootstrap::class)) {
                 \wp_set_post_terms($id, [(int) $new_origin_id], OriginsTaxonomy::TAXONOMY_SLUG, true);
             }
         }
-        
+
         /**
          * Validate selected rate if has no error.
          */
@@ -251,7 +255,7 @@ if (!\class_exists(WCBootstrap::class)) {
         {
             $chosen_shipping_methods = \WC()->session->get('chosen_shipping_methods');
 
-            if (!is_array($chosen_shipping_methods)) {
+            if (!\is_array($chosen_shipping_methods)) {
                 return;
             }
 
@@ -259,12 +263,13 @@ if (!\class_exists(WCBootstrap::class)) {
                 // The array of shipping methods enabled for the current shipping zone:
                 $shipping_methods = \WC()->session->get('shipping_for_package_0')['rates'];
 
-                foreach ($shipping_methods as $method_id => $shipping_rate) {
+                foreach ($shipping_methods as $shipping_rate) {
                     if ($shipping_rate->get_id() === $chosen_method) {
                         $meta = $shipping_rate->get_meta_data();
 
                         if ($meta['has_error'] ?? false) {
-                            $errors->add('validation', __('Chosen Shipping method is not available.'));
+                            $errors->add('validation', \__('Chosen Shipping method is not available.'));
+
                             return;
                         }
                     }
@@ -273,7 +278,7 @@ if (!\class_exists(WCBootstrap::class)) {
         }
 
         /**
-         * Change checkout rate HTML if it's Calcurates rate
+         * Change checkout rate HTML if it's Calcurates rate.
          */
         public function filter_woocommerce_cart_shipping_method_full_label(string $label, \WC_Shipping_Rate $rate): string
         {
@@ -283,12 +288,10 @@ if (!\class_exists(WCBootstrap::class)) {
 
             $meta = $rate->get_meta_data();
 
-            $label = '<div class="calcurates-checkout__shipping-rate-label-wrap">
-            '.($meta['rate_image'] ? '<img src="'.$meta['rate_image'].'" class="calcurates-checkout__shipping-rate-image"  />' : '').'
+            return '<div class="calcurates-checkout__shipping-rate-label-wrap">
+            '.($meta['rate_image'] ? '<img src="'.\htmlspecialchars($meta['rate_image']).'" class="calcurates-checkout__shipping-rate-image"  />' : '').'
             <span class="calcurates-checkout__shipping-rate-text">'.$label.'</span>
             </div>';
-
-            return $label;
         }
     }
 }

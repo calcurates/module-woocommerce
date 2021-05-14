@@ -30,7 +30,7 @@ class TableRatesRatesExtractor implements RatesExtractorInterface
                     'delivery_date_from' => isset($method['rate']['estimatedDeliveryDate']) ? $method['rate']['estimatedDeliveryDate']['from'] : null,
                     'delivery_date_to' => isset($method['rate']['estimatedDeliveryDate']) ? $method['rate']['estimatedDeliveryDate']['to'] : null,
                     'priority' => $table_rate['priority'],
-                    'rate_image' => $table_rate['imageUri']
+                    'rate_image' => $table_rate['imageUri'],
                 ];
             }
 
@@ -51,7 +51,7 @@ class TableRatesRatesExtractor implements RatesExtractorInterface
                         'delivery_date_from' => isset($method['rate']['estimatedDeliveryDate']) ? $method['rate']['estimatedDeliveryDate']['from'] : null,
                         'delivery_date_to' => isset($method['rate']['estimatedDeliveryDate']) ? $method['rate']['estimatedDeliveryDate']['to'] : null,
                         'priority' => $table_rate['priority'],
-                        'rate_image' => $method['imageUri']
+                        'rate_image' => $method['imageUri'],
                     ];
                 }
             }
