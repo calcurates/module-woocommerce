@@ -156,8 +156,8 @@ if (!\class_exists(WCBootstrap::class)) {
             }
 
             if ($from && $to) {
-                $formatted_from = $from->format($this->wp_datetime_format());
-                $formatted_to = $to->format($this->wp_datetime_format());
+                $formatted_from = $from->format($this->wp_date_format());
+                $formatted_to = $to->format($this->wp_date_format());
 
                 // do on equal dates
                 if ($formatted_from === $formatted_to) {
@@ -169,23 +169,23 @@ if (!\class_exists(WCBootstrap::class)) {
 
             // if has only 'from' date
             if ($from) {
-                return 'From '.$from->format($this->wp_datetime_format());
+                return 'From '.$from->format($this->wp_date_format());
             }
 
             // if has only 'to' date
             if ($to) {
-                return 'To '.$to->format($this->wp_datetime_format());
+                return 'To '.$to->format($this->wp_date_format());
             }
 
             return '';
         }
 
         /**
-         * Get current store date and time formats.
+         * Get current store date format.
          */
-        private function wp_datetime_format(): string
+        private function wp_date_format(): string
         {
-            return \get_option('date_format').' '.\get_option('time_format');
+            return \get_option('date_format');
         }
 
         /**
