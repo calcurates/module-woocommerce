@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Calcurates\Calcurates\RequestsBodyBuilders;
+namespace Calcurates\HttpClient\RequestsBodyBuilders;
 
 use Calcurates\Origins\OriginUtils;
 

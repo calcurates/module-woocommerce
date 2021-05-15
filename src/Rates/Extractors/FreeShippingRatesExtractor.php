@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Calcurates\Calcurates\Rates\Extractors;
+namespace Calcurates\Rates\Extractors;
 
 use Calcurates\Contracts\Rates\RatesExtractorInterface;
 
@@ -11,7 +11,7 @@ if (!\defined('ABSPATH')) {
     exit;
 }
 
-class FlatRatesRatesExtractor implements RatesExtractorInterface
+class FreeShippingRatesExtractor implements RatesExtractorInterface
 {
     public function extract(array $rates): array
     {

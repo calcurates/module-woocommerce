@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-use Calcurates\Basic;
-use Calcurates\Calcurates\Calcurates;
-use Calcurates\Calcurates\CalcuratesClient;
-use Calcurates\Calcurates\Rates\Rates;
-use Calcurates\Calcurates\RequestsBodyBuilders\RatesRequestBodyBuilder;
+use Calcurates\HttpClient\CalcuratesHttpClient;
+use Calcurates\HttpClient\RequestsBodyBuilders\RatesRequestBodyBuilder;
+use Calcurates\Rates\Rates;
+use Calcurates\WCCalcurates;
 
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
@@ -115,7 +114,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
                 'title' => \__('Plugin Api Key', 'woocommerce'),
                 'type' => 'text',
                 'description' => \__('Copy this Api Key to Calcurates panel', 'woocommerce'),
-                'default' => \get_option(Basic::get_prefix().'key'),
+                'default' => \get_option(WCCalcurates::get_prefix().'key'),
                 'desc_tip' => false,
                 'custom_attributes' => [
                     'readonly' => 'readonly',
@@ -175,13 +174,24 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
             return [];
         }
 
-        $calcurates_client = new CalcuratesClient($this->calcurates_api_key, $this->calcurates_api_url, $this->debug_mode);
-
         $rates_request_body_builder = new RatesRequestBodyBuilder($package);
+        // build body for request
+        $rates_request_body = $rates_request_body_builder->build();
+
+        $calcurates_client = new CalcuratesHttpClient($this->calcurates_api_key, $this->calcurates_api_url, $this->debug_mode);
+        // get request results
+        $response = $calcurates_client->get_rates($rates_request_body);
+        if (!$response) {
+            return [];
+        }
 
         $rates_tools = new Rates($this->tax_mode, $package);
 
-        return (new Calcurates($calcurates_client, $rates_request_body_builder, $rates_tools))->get_rates();
+        // extract rates from response
+        $rates_tools->extract($response);
+        $rates_tools->apply_tax_mode();
+
+        return $rates_tools->convert_rates_to_wc_rates();
     }
 
     /**
@@ -195,7 +205,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         if (\array_key_exists('woocommerce_'.$this->id.'_generate_new_api_key', $_POST) && '1' === $_POST['woocommerce_'.$this->id.'_generate_new_api_key']) {
             $this->update_option('generate_new_api_key', 'no');
             $key = \wc_rand_hash();
-            \update_option(Basic::get_prefix().'key', $key);
+            \update_option(WCCalcurates::get_prefix().'key', $key);
             $this->update_option('plugin_api_key', $key);
         }
 

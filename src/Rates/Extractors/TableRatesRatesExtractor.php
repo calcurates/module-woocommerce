@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Calcurates\Calcurates\Rates\Extractors;
+namespace Calcurates\Rates\Extractors;
 
 use Calcurates\Contracts\Rates\RatesExtractorInterface;
 

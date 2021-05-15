@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Calcurates\Calcurates\Rates;
+namespace Calcurates\Rates;
 
-use Calcurates\Calcurates\Rates\Extractors\RatesExtractorFactory;
+use Calcurates\Rates\Extractors\RatesExtractorFactory;
 
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {

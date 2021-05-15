@@ -9,9 +9,12 @@ if (!\defined('ABSPATH')) {
     exit;
 }
 
-if (!\class_exists('OriginUtils')) {
+if (!\class_exists(OriginUtils::class)) {
     class OriginUtils
     {
+        /**
+         * @var self
+         */
         private static $instance;
 
         private function __construct()
@@ -101,11 +104,7 @@ if (!\class_exists('OriginUtils')) {
                 ],
             ]);
 
-            if ($origins_term_ids && \is_array($origins_term_ids)) {
-                return true;
-            }
-
-            return false;
+            return $origins_term_ids && \is_array($origins_term_ids);
         }
     }
 }

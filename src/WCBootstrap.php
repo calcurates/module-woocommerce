@@ -44,8 +44,8 @@ if (!\class_exists(WCBootstrap::class)) {
 
         public function init_shipping(): void
         {
-            if (\class_exists('WC_Shipping_Method')) {
-                require_once Basic::get_plugin_dir_path().'includes/wc-calcurates-shipping-method.php';
+            if (\class_exists(\WC_Shipping_Method::class)) {
+                require_once WCCalcurates::get_plugin_dir_path().'includes/wc-calcurates-shipping-method.php';
                 \add_filter('woocommerce_shipping_methods', [$this, 'add_calcurates_shipping']);
             }
         }

@@ -24,7 +24,7 @@ if (!\class_exists(Assets::class)) {
 
             $styles_url = \apply_filters('wc_calcurates_load_style', $styles_url);
 
-            return \wp_register_style(Basic::get_plugin_text_domain(), $styles_url);
+            return \wp_register_style(WCCalcurates::get_plugin_text_domain(), $styles_url);
         }
 
         /**
@@ -36,7 +36,7 @@ if (!\class_exists(Assets::class)) {
 
             $js_url = \apply_filters('wc_calcurates_load_js', $js_url);
 
-            return \wp_register_script(Basic::get_plugin_text_domain(), $js_url, ['jquery']);
+            return \wp_register_script(WCCalcurates::get_plugin_text_domain(), $js_url, ['jquery']);
         }
 
         /**
@@ -45,7 +45,7 @@ if (!\class_exists(Assets::class)) {
         public function enqueue_styles(): void
         {
             if ($this->register_style('calcurates-checkout.css') && (\is_cart() || \is_checkout())) {
-                \wp_enqueue_style(Basic::get_plugin_text_domain());
+                \wp_enqueue_style(WCCalcurates::get_plugin_text_domain());
             }
         }
 
@@ -55,7 +55,7 @@ if (!\class_exists(Assets::class)) {
         public function enqueue_js(): void
         {
             if ($this->register_js('calcurates-checkout.js') && (\is_cart() || \is_checkout())) {
-                \wp_enqueue_script(Basic::get_plugin_text_domain());
+                \wp_enqueue_script(WCCalcurates::get_plugin_text_domain());
             }
         }
     }

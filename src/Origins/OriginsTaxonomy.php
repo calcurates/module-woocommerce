@@ -9,7 +9,7 @@ if (!\defined('ABSPATH')) {
     exit;
 }
 
-if (!\class_exists('OriginsTaxonomy')) {
+if (!\class_exists(OriginsTaxonomy::class)) {
     class OriginsTaxonomy
     {
         public const TAXONOMY_SLUG = 'origin';

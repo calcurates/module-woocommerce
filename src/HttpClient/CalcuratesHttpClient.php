@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Calcurates\Calcurates;
+namespace Calcurates\HttpClient;
 
-use Calcurates\Basic;
-use Calcurates\Utils\Logger;
+use Calcurates\Logger;
+use Calcurates\WCCalcurates;
 
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
@@ -15,15 +15,8 @@ if (!\defined('ABSPATH')) {
 /**
  * Http client for Calcurates API.
  */
-class CalcuratesClient
+class CalcuratesHttpClient
 {
-    /**
-     * Logger.
-     *
-     * @var \Calcurates\Utils\Logger
-     */
-    private $logger;
-
     /**
      * Calcurates API key for auth.
      *
@@ -47,7 +40,6 @@ class CalcuratesClient
 
     public function __construct(string $api_key, string $api_url, string $debug_mode)
     {
-        $this->logger = new Logger();
         $this->api_key = $api_key;
         $this->api_url = $api_url;
         $this->debug_mode = $debug_mode;
@@ -64,7 +56,7 @@ class CalcuratesClient
     private function request(array $request_body, string $path): ?array
     {
         $args = [
-            'user-agent' => 'calcurates/module-woocommerce/'.Basic::get_version(),
+            'user-agent' => 'calcurates/module-woocommerce/'.WCCalcurates::get_version(),
             'compress' => true,
             'decompress' => true,
             'timeout' => 10,
@@ -77,7 +69,7 @@ class CalcuratesClient
         ];
 
         if ('all' === $this->debug_mode) {
-            $this->logger->debug('Calcurates API request', $args);
+            Logger::getInstance()->debug('Calcurates API request', $args);
         }
 
         $args['headers']['X-API-KEY'] = $this->api_key;
@@ -86,7 +78,7 @@ class CalcuratesClient
 
         if (\is_wp_error($result) || 200 !== \wp_remote_retrieve_response_code($result)) {
             if ('all' === $this->debug_mode || 'errors' === $this->debug_mode) {
-                $this->logger->critical('Calcurates API request error', (array) $result);
+                Logger::getInstance()->critical('Calcurates API request error', (array) $result);
             }
 
             return null;
@@ -96,11 +88,11 @@ class CalcuratesClient
         $decodedResponse = \json_decode($response, true);
 
         if (null === $decodedResponse && \JSON_ERROR_NONE !== \json_last_error()) {
-            $this->logger->critical('Can\'t parse the Calcurates API json response: '.\json_last_error_msg(), ['response' => $response]);
+            Logger::getInstance()->critical('Can\'t parse the Calcurates API json response: '.\json_last_error_msg(), ['response' => $response]);
         }
 
         if ('all' === $this->debug_mode) {
-            $this->logger->debug('Calcurates API response', $decodedResponse);
+            Logger::getInstance()->debug('Calcurates API response', $decodedResponse);
         }
 
         return $decodedResponse;

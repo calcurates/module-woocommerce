@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Calcurates\RESTAPI;
 
-use Calcurates\Basic;
 use Calcurates\Origins\OriginUtils;
+use Calcurates\WCCalcurates;
 
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
@@ -46,7 +46,7 @@ if (!\class_exists(WoocommerceOriginsRESTController::class)) {
         {
             $x_api_key = $request->get_header('X_API_KEY');
 
-            return $x_api_key && $x_api_key === \get_option(Basic::get_prefix().'key');
+            return $x_api_key && $x_api_key === \get_option(WCCalcurates::get_prefix().'key');
         }
 
         /**
