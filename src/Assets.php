@@ -36,7 +36,7 @@ if (!\class_exists(Assets::class)) {
 
             $js_url = \apply_filters('wc_calcurates_load_js', $js_url);
 
-            return \wp_register_script(WCCalcurates::get_plugin_text_domain(), $js_url, ['jquery']);
+            return \wp_register_script(WCCalcurates::get_plugin_text_domain(), $js_url, ['jquery', 'wc-cart', 'wc-checkout']);
         }
 
         /**
