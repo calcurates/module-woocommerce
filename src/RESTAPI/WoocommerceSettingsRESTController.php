@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Calcurates\RESTAPI;
 
-use Calcurates\Basic;
+use Calcurates\WCCalcurates;
 
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
@@ -28,7 +28,7 @@ if (!\class_exists(WoocommerceSettingsRESTController::class)) {
          */
         public function register_routes(): void
         {
-            register_rest_route($this->namespace, '/'.$this->rest_base, [
+            \register_rest_route($this->namespace, '/'.$this->rest_base, [
                 [
                     'methods' => 'GET',
                     'callback' => [$this, 'get_data'],
@@ -45,7 +45,7 @@ if (!\class_exists(WoocommerceSettingsRESTController::class)) {
         {
             $x_api_key = $request->get_header('X_API_KEY');
 
-            return $x_api_key && $x_api_key === get_option(Basic::get_prefix().'key');
+            return $x_api_key && $x_api_key === \get_option(WCCalcurates::get_prefix().'key');
         }
 
         /**
@@ -54,11 +54,11 @@ if (!\class_exists(WoocommerceSettingsRESTController::class)) {
         public function get_data(\WP_REST_Request $request): array
         {
             // TODO: refactor array building in oop manner
-            $data['time_zone'] = wc_timezone_string();
-            $data['website_id'] = get_current_blog_id();
-            $data['currency'] = get_woocommerce_currency();
-            $data['weight_unit'] = get_option('woocommerce_weight_unit');
-            $data['dimension_unit'] = get_option('woocommerce_dimension_unit');
+            $data['time_zone'] = \wc_timezone_string();
+            $data['website_id'] = \get_current_blog_id();
+            $data['currency'] = \get_woocommerce_currency();
+            $data['weight_unit'] = \get_option('woocommerce_weight_unit');
+            $data['dimension_unit'] = \get_option('woocommerce_dimension_unit');
             $data['customer_roles'] = [
                 [
                     'value' => 'customer',
@@ -216,7 +216,7 @@ if (!\class_exists(WoocommerceSettingsRESTController::class)) {
                 'values' => [],
             ];
 
-            $terms = get_terms('product_cat', [
+            $terms = \get_terms('product_cat', [
                 'hide_empty' => false,
             ]);
 
@@ -245,7 +245,7 @@ if (!\class_exists(WoocommerceSettingsRESTController::class)) {
                 'values' => [],
             ];
 
-            $terms = get_terms('product_tag', [
+            $terms = \get_terms('product_tag', [
                 'hide_empty' => false,
             ]);
 
@@ -268,21 +268,21 @@ if (!\class_exists(WoocommerceSettingsRESTController::class)) {
         {
             $attrs = [];
 
-            $attribute_taxonomies = wc_get_attribute_taxonomies();
+            $attribute_taxonomies = \wc_get_attribute_taxonomies();
 
             foreach ($attribute_taxonomies as $attribute) {
-                $taxonomy = wc_attribute_taxonomy_name($attribute->attribute_name);
+                $taxonomy = \wc_attribute_taxonomy_name($attribute->attribute_name);
 
-                if (taxonomy_exists($taxonomy)) {
+                if (\taxonomy_exists($taxonomy)) {
                     $data = [
                         'title' => $attribute->attribute_label,
-                        'name' => $attribute->attribute_name,
+                        'name' => 'pa_'.$attribute->attribute_name,
                         'field_type' => 'collection',
                         'can_multi' => true,
                         'values' => [],
                     ];
 
-                    $terms = get_terms($taxonomy, [
+                    $terms = \get_terms($taxonomy, [
                         'hide_empty' => false,
                     ]);
 

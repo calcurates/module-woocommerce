@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Calcurates\Calcurates\Rates;
+namespace Calcurates\Rates;
 
-use Calcurates\Calcurates\Rates\Extractors\RatesExtractorFactory;
+use Calcurates\Rates\Extractors\RatesExtractorFactory;
 
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
@@ -25,7 +25,6 @@ class Rates
      * @var string
      */
     private $tax_mode;
-
     /**
      * @var array
      */
@@ -113,6 +112,8 @@ class Rates
                     'delivery_date_from' => $rate['delivery_date_from'],
                     'delivery_date_to' => $rate['delivery_date_to'],
                     'tax' => $rate['tax'],
+                    'has_error' => $rate['has_error'],
+                    'rate_image' => $rate['rate_image'],
                 ],
                 'priority' => $rate['priority'],
             ];

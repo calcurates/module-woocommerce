@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Calcurates\Calcurates\RequestsBodyBuilders;
+namespace Calcurates\HttpClient\RequestsBodyBuilders;
+
+use Calcurates\Origins\OriginUtils;
 
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
@@ -18,7 +20,7 @@ class RatesRequestBodyBuilder
      */
     private $package;
 
-    public function __construct(array $package = [])
+    public function __construct(array $package)
     {
         $this->package = $package;
     }
@@ -28,17 +30,15 @@ class RatesRequestBodyBuilder
      */
     public function build(): array
     {
-        $coupons = WC()->cart->get_coupons();
+        $coupons = \WC()->cart->get_coupons();
         $coupon = \reset($coupons);
 
-        $request_body = [
+        return [
             'promoCode' => $coupon ? $coupon->get_code() : null, // FIXME coud be few coupons
             'shipTo' => $this->prepare_ship_to_data(),
             'products' => $this->prepare_products_data(),
-            'customerGroup' => is_user_logged_in() ? 'customer' : 'guest',
+            'customerGroup' => \is_user_logged_in() ? 'customer' : 'guest',
         ];
-
-        return $request_body;
     }
 
     /**
@@ -48,8 +48,8 @@ class RatesRequestBodyBuilder
     {
         $contact_name = null;
         $country_code = null;
-        $customer_session_data = WC()->session->get('customer');
-        $ship_to_different_address = WC()->session->get('ship_to_different_address') ?? 0;
+        $customer_session_data = \WC()->session->get('customer');
+        $ship_to_different_address = \WC()->session->get('ship_to_different_address') ?? 0;
         $postcode = $ship_to_different_address ? ($customer_session_data['shipping_postcode'] ?: 'string') : ($customer_session_data['postcode'] ?: 'string'); // fixme: remove the "string"
         $first_name = $ship_to_different_address ? ($customer_session_data['shipping_first_name'] ?: null) : ($customer_session_data['first_name'] ?: null);
         $last_name = $ship_to_different_address ? ($customer_session_data['shipping_last_name'] ?: null) : ($customer_session_data['last_name'] ?: null);
@@ -70,14 +70,14 @@ class RatesRequestBodyBuilder
         if (isset($customer_session_data['shipping_country']) && $customer_session_data['shipping_country']) {
             $country_code = $customer_session_data['shipping_country'];
         } else {
-            $default_location = wc_get_customer_default_location();
+            $default_location = \wc_get_customer_default_location();
 
             if ($default_location['country']) {
                 $country_code = $default_location['country'];
             }
         }
 
-        $ship_to = [
+        return [
             'country' => $country_code,
             'city' => $city, // FIXME it could be empty in WC but in api it requires even as empty param,
             'contactName' => $contact_name,
@@ -89,8 +89,6 @@ class RatesRequestBodyBuilder
             'addressLine1' => $addr_1,
             'addressLine2' => $addr_2,
         ];
-
-        return $ship_to;
     }
 
     /**
@@ -98,12 +96,13 @@ class RatesRequestBodyBuilder
      */
     public function prepare_products_data(): array
     {
-        $package = $this->package;
         $products = [];
 
-        foreach ($package['contents'] as $cart_product) {
+        foreach ($this->package['contents'] as $cart_product) {
             /** @var \WC_Product $product */
             $product = $cart_product['data'];
+
+            $origin_code = OriginUtils::getInstance()->get_origin_code_from_product($cart_product['product_id']);
 
             if ($product->is_virtual() || $product->is_downloadable()) {
                 continue;
@@ -115,7 +114,7 @@ class RatesRequestBodyBuilder
                 'price' => $cart_product['line_total'] / $cart_product['quantity'],
                 'quantity' => $cart_product['quantity'],
                 'weight' => (float) $product->get_weight(),
-                'inventories' => null,
+                'origin' => $origin_code ?: null,
                 'attributes' => [
                     'length' => (float) $product->get_length(),
                     'width' => (float) $product->get_width(),
@@ -145,7 +144,7 @@ class RatesRequestBodyBuilder
             ];
 
             if ($cart_product['variation_id'] && $product->get_parent_id()) { // variation
-                $parent_product = wc_get_product($product->get_parent_id());
+                $parent_product = \wc_get_product($product->get_parent_id());
                 $wc_product_attrs = $parent_product->get_attributes();
 
                 if (empty($data['attributes']['categories'])) {
@@ -159,7 +158,7 @@ class RatesRequestBodyBuilder
                 //fixme: only \WC_Product_Variation or \WC_Product_Simple
                 foreach ($product->get_variation_attributes(false) as $taxonomy => $terms_slug) {
                     if ($terms_slug) {
-                        $term_obj = get_term_by('slug', $terms_slug, $taxonomy);
+                        $term_obj = \get_term_by('slug', $terms_slug, $taxonomy);
 
                         if ($term_obj) {
                             $data['attributes']['variation'][] = $term_obj->term_id;
@@ -191,7 +190,7 @@ class RatesRequestBodyBuilder
             return null;
         }
 
-        $states = WC()->countries->get_states($country_code);
+        $states = \WC()->countries->get_states($country_code);
 
         if ($states && isset($states[$state_code])) {
             return $states[$state_code];
