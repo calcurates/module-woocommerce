@@ -38,7 +38,7 @@ build:
         - php /composer.phar install --no-interaction --prefer-dist --no-progress --ansi --no-dev --optimize-autoloader
         - mkdir wc-calcurates
         - mv assets includes src lib wc-calcurates/
-        - mv composer.json index.php README.md uninstall.php wc-calcurates.php wc-calcurates/
+        - mv composer.json index.php readme.txt uninstall.php wc-calcurates.php wc-calcurates/
     artifacts:
         paths:
             - wc-calcurates

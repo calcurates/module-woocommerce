@@ -24,14 +24,22 @@ services:
       - ./includes:/var/www/wordpress/wp-content/plugins/wc-calcurates/includes
       - ./lib:/var/www/wordpress/wp-content/plugins/wc-calcurates/lib
       - ./src:/var/www/wordpress/wp-content/plugins/wc-calcurates/src
-      - ./index.php:/var/www/wordpress/wp-content/plugins/wc-calcurates/index.php
-      - ./README.md:/var/www/wordpress/wp-content/plugins/wc-calcurates/README.md
-      - ./uninstall.php:/var/www/wordpress/wp-content/plugins/wc-calcurates/uninstall.php
-      - ./wc-calcurates.php:/var/www/wordpress/wp-content/plugins/wc-calcurates/wc-calcurates.php
+      - ./.editconfig:/var/www/wordpress/wp-content/plugins/wc-calcurates/.editconfig
+      - ./.env.example:/var/www/wordpress/wp-content/plugins/wc-calcurates/.env.example
+      - ./.gitattributes:/var/www/wordpress/wp-content/plugins/wc-calcurates/.gitattributes
+      - ./.gitignore:/var/www/wordpress/wp-content/plugins/wc-calcurates/.gitignore
+      - ./.gitlab-ci.yml:/var/www/wordpress/wp-content/plugins/wc-calcurates/.gitlab-ci.yml
+      - ./.php-cs-fixer.dist.php:/var/www/wordpress/wp-content/plugins/wc-calcurates/.php-cs-fixer.dist.php
       - ./composer.json:/var/www/wordpress/wp-content/plugins/wc-calcurates/composer.json
       - ./composer.lock:/var/www/wordpress/wp-content/plugins/wc-calcurates/composer.lock
-      - ./.php-cs-fixer.dist.php:/var/www/wordpress/wp-content/plugins/wc-calcurates/.php-cs-fixer.dist.php
+      - ./docker-compose.yml:/var/www/wordpress/wp-content/plugins/wc-calcurates/docker-compose.yml
+      - ./index.php:/var/www/wordpress/wp-content/plugins/wc-calcurates/index.php
       - ./phpstan.neon.dist:/var/www/wordpress/wp-content/plugins/wc-calcurates/phpstan.neon.dist
+      - ./README.md:/var/www/wordpress/wp-content/plugins/wc-calcurates/README.md
+      - ./readme.txt:/var/www/wordpress/wp-content/plugins/wc-calcurates/readme.txt
+      - ./swagger.yaml:/var/www/wordpress/wp-content/plugins/wc-calcurates/swagger.yaml
+      - ./uninstall.php:/var/www/wordpress/wp-content/plugins/wc-calcurates/uninstall.php
+      - ./wc-calcurates.php:/var/www/wordpress/wp-content/plugins/wc-calcurates/wc-calcurates.php
     expose:
       - "9011" # xdebug
 
