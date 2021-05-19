@@ -1,48 +1,67 @@
-### Calcurates WooCommerce module
+=== WooCommerce Calcurates ===
+Contributors: calcurates
+Tags: woocommerce, shipping rates, shipping methods, shipping carriers, shipping zones, shipping rules, delivery dates, international shipping, table rates, free shipping, in-store pickup, dimensional shipping, multi-origin shipping, dropshipping
+Requires at least: 5.2
+Tested up to: 5.7.1
+Requires PHP: 7.1.3
+Stable tag: 1.0.0
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-#### Requirements
-- PHP >= 7.1.3
-- MySQL >= 5.7
-- Web-Server (Nginx/Apache/etc...)
-- Wordpress >= 5.2
-- WooCommerce >= 4.3
+An ultimate multi-carrier shipping plugin for e-commerce that helps manage and display the right shipping methods and rates at checkout
 
-#### Docker setup
-Copy `.env.example` to `.env`. Set env vars as you need.
-```bash
-docker-compose up -d
-cd wp-content/plugins/wc-calcurates
-/composer.phar install
-```
-Go to http://localhost:8000
+== Description ==
 
-#### Activate plugin
-- Go to http://localhost:8000/wp-admin/plugins.php
-- Activate WooCommerce Calcurates
+# Overview
 
-#### Configure plugin
-- Go to http://localhost:8000/wp-admin/admin.php?page=wc-settings&tab=shipping
-- Press `Add shipping zone` button
-- Add Calcurates Shipping Method to shipping zone
-- Go to http://localhost:8000/wp-admin/admin.php?page=wc-settings&tab=shipping&section=calcurates
-- Set API URL and API key, copy Plugin API Key to your Calcurates panel, save changes
+Calcurates is a cloud-based entire shipping solution that calculates and shows the right shipping methods and rates to customers at checkout based on multiple conditions. It helps e-commerce to seamlessly integrate with major shipping carriers (DHL, UPS, FedEx, USPS, Purolator, Canada Post and more) in order to display real-time rates at checkout.
 
-#### Check plugin work
-- Add some product categories http://localhost:8000/wp-admin/edit-tags.php?taxonomy=product_cat&post_type=product
-- Add some product tags http://localhost:8000/wp-admin/edit-tags.php?taxonomy=product_tag&post_type=product
-- Add some product Attributes and Configure (fill) their terms with some data http://localhost:8000/wp-admin/edit.php?post_type=product&page=product_attributes
-- Add some products http://localhost:8000/wp-admin/edit.php?post_type=product
-- Go to http://localhost:8000/shop/ and add some products to cart
-- Go to http://localhost:8000/cart/. It's possible to add some shipping data if you wish. Press `Proceed to checkout`
-- Check it out
-- Check email log after order http://localhost:8000/wp-admin/tools.php?page=wpml_plugin_log. Need WP Mail Logging plugin to be activated.
+Calcurates helps you to reduce the gap between true shipping costs you bear and shipping rates your customers pay at the checkout. Bring your shipping to a new level and make it cost-effective and sales-stimulating.
 
-#### Dev tools
-```bash
-cd wp-content/plugins/wc-calcurates
-lib/bin/php-cs-fixer fix
-```
-```bash
-cd wp-content/plugins/wc-calcurates
-php -d=memory_limit=-1 lib/bin/phpstan
-```
+# Features
+
+- Shipping Zones
+- Custom Shipping Options (Flat Rate, Free Shipping)
+- Carrier Shipping Options
+- Table Rates
+- Multi-Origin Shipping
+- Shipping Rules and Restrictions
+- International Shipping and Landed Costs
+- Estimated Delivery Dates
+- In-Store Pickup
+- Volumetric Weight
+- Smart Packaging
+- Rate Shopping
+
+# Developed By Experts
+
+Calcurates is developed and supported by Amasty. After 10 years of success in developing and supporting e-commerce apps and extensions, the Amasty team is happy to introduce a multi-platform shipping SaaS, which is the perfect solution for shipping profitability.
+
+# Additional Benefits
+
+- Free consultations on e-commerce shipping
+- Qualified and careful support
+- Migration and configuration services
+
+== Installation ==
+
+1. Upload the plugin folder to the '/wp-content/plugins' directory.
+2. Activate the plugin through the 'Plugins' menu in WordPress.
+3. Sign up to [Calcurates](https://my.calcurates.com/) and go to "Websites". Add your WooCommerce website and copy Calcurates API Key from the step 3.
+4. Go to Woocommerce -> Settings -> Shipping -> Calcurates Shipping Method. Paste Calcurates API Key in the corresponding field.
+5. Copy Plugin Api Key. Go to Calcurates account -> Website Settings and paste it in the corresponding field on the step 4.
+6. Click "Sync". After succesfull syncronization press "Save".
+7. Go to Woocommerce -> Settings -> Shipping -> Shipping zones. Add Calcurates Shipping Method to your zones. We recommend to allow Calcurates shipping method to Worldwide zone and control shipping by zones in Calcurates usuing Shipping Areas functionality.
+8. Configure cost-effective shipping with Calcurates and get more happy customers.
+
+== Screenshots ==
+
+1. Calcurates integrations with top e-commerce platforms
+2. Calcurates shipping options and integrations with major shipping carriers
+3. Calcurates core shipping functionality
+4. Calcurates advanced shipping features
+
+== Changelog ==
+= 1.0.0 =
+
+- First release
