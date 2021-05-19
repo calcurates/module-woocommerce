@@ -13,6 +13,7 @@
 
 !.gitlab-ci.yml
 
+!readme.txt
 !README.md
 !.env.example
 
