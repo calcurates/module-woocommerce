@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Plugin Name:       WooCommerce Calcurates
+ * Plugin Name:       Calcurates for WooCommerce
  * Plugin URI:        https://github.com/calcurates/module-woocommerce
  * Description:       Connect your WooCommerce with Calcurates. Take full control of your shipping displayed at the checkout.
  * Version:           1.0.0

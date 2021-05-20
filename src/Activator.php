@@ -32,7 +32,7 @@ if (!\class_exists(Activator::class)) {
             // Check if WooCommerce is has been activated
             if (!\defined('WC_VERSION') || \version_compare(WC_VERSION, '4.3.0', '<')) {
                 \wp_die(
-                    \__('WooCommerce Calcurates requires WooCommerce 4.3 or later.', 'WC_Calcurates')
+                    \__('Calcurates for WooCommerce requires WooCommerce 4.3 or later.', 'WC_Calcurates')
                 );
             }
         }
