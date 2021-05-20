@@ -23,7 +23,7 @@ Go to http://localhost:8000
 #### Activate plugin
 
 - Go to http://localhost:8000/wp-admin/plugins.php
-- Activate WooCommerce Calcurates
+- Activate Calcurates for WooCommerce
 
 #### Configure plugin
 
