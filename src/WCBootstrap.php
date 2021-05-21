@@ -103,9 +103,7 @@ if (!\class_exists(WCBootstrap::class)) {
                 $text .= '<div class="calcurates-checkout__shipping-rate-dates">Estimated delivery date: '.\htmlspecialchars($estimated_delivery_date_text, \ENT_NOQUOTES).'</div>';
             }
 
-            if ($text) {
-                echo '<div class="calcurates-checkout__shipping-rate-description '.($meta['has_error'] ? 'calcurates-checkout__shipping-rate-description_has-error' : '').'">'.$text.'</div>';
-            }
+            echo '<div class="calcurates-checkout__shipping-rate-description '.($meta['has_error'] ? 'calcurates-checkout__shipping-rate-description_has-error' : '').''.(!$text ? 'calcurates-checkout__shipping-rate-description_empty' : '').'">'.$text.'</div>';
         }
 
         public function add_shipping_data_after_order_table_in_email(\WC_Order $order, bool $sent_to_admin, string $plain_text, \WC_Email $email): void
@@ -288,10 +286,8 @@ if (!\class_exists(WCBootstrap::class)) {
 
             $meta = $rate->get_meta_data();
 
-            return '<div class="calcurates-checkout__shipping-rate-label-wrap">
-            '.($meta['rate_image'] ? '<img src="'.\htmlspecialchars($meta['rate_image']).'" class="calcurates-checkout__shipping-rate-image"  />' : '').'
-            <span class="calcurates-checkout__shipping-rate-text">'.$label.'</span>
-            </div>';
+            return ($meta['rate_image'] ? '<img src="'.\htmlspecialchars($meta['rate_image']).'" class="calcurates-checkout__shipping-rate-image"  />' : '').'
+            <span class="calcurates-checkout__shipping-rate-text">'.$label.'</span>';
         }
     }
 }

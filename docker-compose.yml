@@ -20,26 +20,26 @@ services:
     volumes:
       - app_code:/var/www/wordpress
       - ./.docker/php/php.ini:/usr/local/etc/php/php.ini
-      - ./assets:/var/www/wordpress/wp-content/plugins/wc-calcurates/assets
-      - ./includes:/var/www/wordpress/wp-content/plugins/wc-calcurates/includes
-      - ./lib:/var/www/wordpress/wp-content/plugins/wc-calcurates/lib
-      - ./src:/var/www/wordpress/wp-content/plugins/wc-calcurates/src
-      - ./.editconfig:/var/www/wordpress/wp-content/plugins/wc-calcurates/.editconfig
-      - ./.env.example:/var/www/wordpress/wp-content/plugins/wc-calcurates/.env.example
-      - ./.gitattributes:/var/www/wordpress/wp-content/plugins/wc-calcurates/.gitattributes
-      - ./.gitignore:/var/www/wordpress/wp-content/plugins/wc-calcurates/.gitignore
-      - ./.gitlab-ci.yml:/var/www/wordpress/wp-content/plugins/wc-calcurates/.gitlab-ci.yml
-      - ./.php-cs-fixer.dist.php:/var/www/wordpress/wp-content/plugins/wc-calcurates/.php-cs-fixer.dist.php
-      - ./composer.json:/var/www/wordpress/wp-content/plugins/wc-calcurates/composer.json
-      - ./composer.lock:/var/www/wordpress/wp-content/plugins/wc-calcurates/composer.lock
-      - ./docker-compose.yml:/var/www/wordpress/wp-content/plugins/wc-calcurates/docker-compose.yml
-      - ./index.php:/var/www/wordpress/wp-content/plugins/wc-calcurates/index.php
-      - ./phpstan.neon.dist:/var/www/wordpress/wp-content/plugins/wc-calcurates/phpstan.neon.dist
-      - ./README.md:/var/www/wordpress/wp-content/plugins/wc-calcurates/README.md
-      - ./readme.txt:/var/www/wordpress/wp-content/plugins/wc-calcurates/readme.txt
-      - ./swagger.yaml:/var/www/wordpress/wp-content/plugins/wc-calcurates/swagger.yaml
-      - ./uninstall.php:/var/www/wordpress/wp-content/plugins/wc-calcurates/uninstall.php
-      - ./wc-calcurates.php:/var/www/wordpress/wp-content/plugins/wc-calcurates/wc-calcurates.php
+      - ./assets:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/assets
+      - ./includes:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/includes
+      - ./lib:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/lib
+      - ./src:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/src
+      - ./.editconfig:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/.editconfig
+      - ./.env.example:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/.env.example
+      - ./.gitattributes:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/.gitattributes
+      - ./.gitignore:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/.gitignore
+      - ./.gitlab-ci.yml:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/.gitlab-ci.yml
+      - ./.php-cs-fixer.dist.php:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/.php-cs-fixer.dist.php
+      - ./composer.json:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/composer.json
+      - ./composer.lock:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/composer.lock
+      - ./docker-compose.yml:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/docker-compose.yml
+      - ./index.php:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/index.php
+      - ./phpstan.neon.dist:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/phpstan.neon.dist
+      - ./README.md:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/README.md
+      - ./readme.txt:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/readme.txt
+      - ./swagger.yaml:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/swagger.yaml
+      - ./uninstall.php:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/uninstall.php
+      - ./wc-calcurates.php:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/wc-calcurates.php
     expose:
       - "9011" # xdebug
 
@@ -70,7 +70,7 @@ services:
     volumes:
       - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
       - app_code:/var/www/wordpress
-      - ./assets:/var/www/wordpress/wp-content/plugins/wc-calcurates/assets
+      - ./assets:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/assets
     depends_on:
       - php
     ports:
