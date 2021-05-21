@@ -62,6 +62,10 @@ Calcurates is developed and supported by Amasty. After 10 years of success in de
 4. Calcurates advanced shipping features
 
 == Changelog ==
-= 1.0.0 =
 
+= 1.1.0 =
+- fix: rename the plugin directory from `wc-calcurates` to `calcurates-for-woocommerce`
+- fix: improve shipping methods styles and structure
+
+= 1.0.0 =
 - First release
