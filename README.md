@@ -14,7 +14,7 @@ Copy `.env.example` to `.env`. Set env vars as you need.
 
 ```bash
 docker-compose up -d
-cd wp-content/plugins/wc-calcurates
+cd wp-content/plugins/calcurates-for-woocommerce
 /composer.phar install
 ```
 
@@ -47,11 +47,11 @@ Go to http://localhost:8000
 #### Dev tools
 
 ```bash
-cd wp-content/plugins/wc-calcurates
+cd wp-content/plugins/calcurates-for-woocommerce
 lib/bin/php-cs-fixer fix
 ```
 
 ```bash
-cd wp-content/plugins/wc-calcurates
+cd wp-content/plugins/calcurates-for-woocommerce
 php -d=memory_limit=-1 lib/bin/phpstan
 ```

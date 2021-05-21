@@ -36,11 +36,11 @@ build:
         - apk add unzip
         - curl -L -o /composer.phar https://github.com/composer/composer/releases/download/2.0.13/composer.phar && chmod 755 /composer.phar
         - php /composer.phar install --no-interaction --prefer-dist --no-progress --ansi --no-dev --optimize-autoloader
-        - mkdir wc-calcurates
-        - mv assets includes src lib wc-calcurates/
-        - mv composer.json index.php readme.txt uninstall.php wc-calcurates.php wc-calcurates/
+        - mkdir calcurates-for-woocommerce
+        - mv assets includes src lib calcurates-for-woocommerce/
+        - mv composer.json index.php readme.txt uninstall.php wc-calcurates.php calcurates-for-woocommerce/
     artifacts:
         paths:
-            - wc-calcurates
+            - calcurates-for-woocommerce
     only:
         - master
