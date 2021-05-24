@@ -47,12 +47,13 @@ Calcurates is developed and supported by Amasty. After 10 years of success in de
 
 1. Upload the plugin folder to the '/wp-content/plugins' directory.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
-3. Sign up to [Calcurates](https://my.calcurates.com/) and go to "Websites". Add your WooCommerce website and copy Calcurates API Key from the step 3.
-4. Go to Woocommerce -> Settings -> Shipping -> Calcurates Shipping Method. Paste Calcurates API Key in the corresponding field.
-5. Copy Plugin Api Key. Go to Calcurates account -> Website Settings and paste it in the corresponding field on the step 4.
-6. Click "Sync". After successful synchronization press "Save".
-7. Go to Woocommerce -> Settings -> Shipping -> Shipping zones. Add Calcurates Shipping Method to your zones. We recommend to allow Calcurates shipping method to Worldwide zone and control shipping by zones in Calcurates using Shipping Areas functionality.
-8. Configure cost-effective shipping with Calcurates and get more happy customers.
+3. Go to WordPress settings -> General -> set your Timezone. ATTENTION! Don not use any UTC option! 
+4. Sign up to [Calcurates](https://my.calcurates.com/) and go to "Websites". Add your WooCommerce website and copy Calcurates API Key from the step 3.
+5. Go to Woocommerce -> Settings -> Shipping -> Calcurates Shipping Method. Paste Calcurates API Key in the corresponding field.
+6. Copy Plugin Api Key. Go to Calcurates account -> Website Settings and paste it in the corresponding field on the step 4.
+7. Click "Sync". After successful synchronization press "Save".
+8. Go to Woocommerce -> Settings -> Shipping -> Shipping zones. Add Calcurates Shipping Method to your zones. We recommend to allow Calcurates shipping method to Worldwide zone and control shipping by zones in Calcurates using Shipping Areas functionality.
+9. Configure cost-effective shipping with Calcurates and get more happy customers.
 
 == Screenshots ==
 
