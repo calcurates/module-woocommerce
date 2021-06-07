@@ -34,7 +34,7 @@ build:
     script:
         - echo "Build"
         - apk add unzip
-        - curl -L -o /composer.phar https://github.com/composer/composer/releases/download/2.1.1/composer.phar && chmod 755 /composer.phar
+        - curl -L -o /composer.phar https://github.com/composer/composer/releases/download/2.1.2/composer.phar && chmod 755 /composer.phar
         - php /composer.phar install --no-interaction --prefer-dist --no-progress --ansi --no-dev --optimize-autoloader
         - mkdir calcurates-for-woocommerce
         - mv assets includes src lib calcurates-for-woocommerce/
