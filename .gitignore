@@ -15,6 +15,7 @@
 
 !readme.txt
 !README.md
+!LICENSE
 !.env.example
 
 !docker-compose.yml

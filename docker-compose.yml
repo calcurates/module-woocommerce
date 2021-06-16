@@ -24,7 +24,7 @@ services:
       - ./includes:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/includes
       - ./lib:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/lib
       - ./src:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/src
-      - ./.editconfig:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/.editconfig
+      - ./.editorconfig:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/.editorconfig
       - ./.env.example:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/.env.example
       - ./.gitattributes:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/.gitattributes
       - ./.gitignore:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/.gitignore
@@ -34,6 +34,7 @@ services:
       - ./composer.lock:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/composer.lock
       - ./docker-compose.yml:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/docker-compose.yml
       - ./index.php:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/index.php
+      - ./LICENSE:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/LICENSE
       - ./phpstan.neon.dist:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/phpstan.neon.dist
       - ./README.md:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/README.md
       - ./readme.txt:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/readme.txt
