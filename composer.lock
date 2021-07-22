@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3b26ab351d723f878639b6a496a639bb",
+    "content-hash": "4a4c0fe49fadd3b0a2b0b2b863585bee",
     "packages": [
         {
             "name": "psr/log",
@@ -525,16 +525,16 @@
         },
         {
             "name": "php-stubs/wordpress-stubs",
-            "version": "v5.7.2",
+            "version": "v5.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-stubs/wordpress-stubs.git",
-                "reference": "beda02c58f1c4689d42c8dde6a84f7f0c9c93f42"
+                "reference": "794e6eedfd5f2a334d581214c007fc398be588fe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-stubs/wordpress-stubs/zipball/beda02c58f1c4689d42c8dde6a84f7f0c9c93f42",
-                "reference": "beda02c58f1c4689d42c8dde6a84f7f0c9c93f42",
+                "url": "https://api.github.com/repos/php-stubs/wordpress-stubs/zipball/794e6eedfd5f2a334d581214c007fc398be588fe",
+                "reference": "794e6eedfd5f2a334d581214c007fc398be588fe",
                 "shasum": ""
             },
             "replace": {
@@ -563,22 +563,22 @@
             ],
             "support": {
                 "issues": "https://github.com/php-stubs/wordpress-stubs/issues",
-                "source": "https://github.com/php-stubs/wordpress-stubs/tree/v5.7.2"
+                "source": "https://github.com/php-stubs/wordpress-stubs/tree/v5.8.0"
             },
-            "time": "2021-05-13T07:54:04+00:00"
+            "time": "2021-07-21T02:34:37+00:00"
         },
         {
             "name": "phpstan/phpstan",
-            "version": "0.12.92",
+            "version": "0.12.93",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "64d4c5dc8ea96972bc18432d137a330239a5d2b2"
+                "reference": "7b7602f05d340ffa418c59299f8c053ac6c3e7ea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/64d4c5dc8ea96972bc18432d137a330239a5d2b2",
-                "reference": "64d4c5dc8ea96972bc18432d137a330239a5d2b2",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/7b7602f05d340ffa418c59299f8c053ac6c3e7ea",
+                "reference": "7b7602f05d340ffa418c59299f8c053ac6c3e7ea",
                 "shasum": ""
             },
             "require": {
@@ -609,7 +609,7 @@
             "description": "PHPStan - PHP Static Analysis Tool",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/0.12.92"
+                "source": "https://github.com/phpstan/phpstan/tree/0.12.93"
             },
             "funding": [
                 {
@@ -629,7 +629,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-07-10T13:53:49+00:00"
+            "time": "2021-07-20T10:49:53+00:00"
         },
         {
             "name": "psr/cache",

@@ -8,7 +8,7 @@
    color:brown;
 }
 .calcurates-checkout__shipping-rate-description_empty{
-   margin-bottom: 0px;
+   margin-bottom: 0;
 }
 .calcurates-checkout__shipping-rate-message{
    font-size: 13px;
@@ -20,7 +20,6 @@
 .calcurates-checkout__shipping-rate-text{
    display: flex;
    flex: 1;
-   
 }
 .calcurates-checkout__shipping-rate-label{
    display: flex !important;
@@ -36,7 +35,6 @@
    max-height: 30px;
    margin-right: 10px;
    flex: 0;
-   
 }
 .calcurates-checkout__shipping-rate_disabled input, .calcurates-checkout__shipping-rate_disabled .calcurates-checkout__shipping-rate-label-wrap{
    opacity: 0.5;
@@ -45,5 +43,4 @@
    display: flex;
    align-items: center;
    margin-bottom: 10px;
-
 }
