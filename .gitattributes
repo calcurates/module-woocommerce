@@ -7,7 +7,7 @@
 .php-cs-fixer.dist.php export-ignore
 composer.lock          export-ignore
 docker-compose.yml     export-ignore
+LICENSE                export-ignore
 phpstan.neon.dist      export-ignore
 README.md              export-ignore
 swagger.yaml           export-ignore
-

@@ -7,8 +7,7 @@
     ],
     "require": {
         "php": ">=7.1.3",
-        "ext-json": "*",
-        "psr/log": "^1.1"
+        "ext-json": "*"
     },
     "authors": [
         {
@@ -17,7 +16,7 @@
         }
     ],
     "type": "wordpress-plugin",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "config": {
         "vendor-dir": "lib",
         "optimize-autoloader": true,
@@ -33,7 +32,8 @@
     "require-dev": {
         "phpstan/phpstan": "^0.12",
         "szepeviktor/phpstan-wordpress": "^0.7",
-        "php-stubs/woocommerce-stubs": "^5.3",
+        "php-stubs/woocommerce-stubs": "^4.3 || ^5.0",
+        "php-stubs/wordpress-stubs": "^5.2",
         "friendsofphp/php-cs-fixer": "^3.0"
     }
 }

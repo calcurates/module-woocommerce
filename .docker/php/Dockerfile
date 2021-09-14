@@ -1,42 +1,62 @@
-FROM php:7.4-fpm-buster
+FROM php:8.0-fpm-alpine3.14
 
-# Install system dependencies
-RUN apt-get update && apt-get upgrade -y && apt-get install -y \
-  git \
-  curl \
-  dpkg-dev \
-  libpng-dev \
-  libjpeg-dev \
-  libonig-dev \
-  libxml2-dev \
-  libpq-dev \
-  libzip-dev \
-  zip \
-  unzip \
-  cron \
-  default-mysql-client \
-  mc \
-  htop
-
-
-# PHP
-RUN docker-php-ext-configure gd \
-  --enable-gd \
-  --with-jpeg && \
-  docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip mysqli && \
-  pecl install xdebug && \
-  docker-php-ext-enable mysqli xdebug
-
-
-# Composer & WP-Cli
+# Update repo and install some utilites
 RUN set -xe \
-    && curl -L -o /composer.phar https://github.com/composer/composer/releases/download/2.0.14/composer.phar \
-    && chmod 755 /composer.phar \
+    && apk update \
+    && apk upgrade \
+    && apk --no-cache add htop unzip gzip git curl mc dcron
+
+# Composer
+RUN set -xe \
+    && curl -L -o /composer.phar https://github.com/composer/composer/releases/download/2.1.6/composer.phar \
+    && chmod 755 /composer.phar
+
+# WP-Cli
+RUN set -xe \
     && curl -L -o /wp-cli.phar https://github.com/wp-cli/wp-cli/releases/download/v2.5.0/wp-cli-2.5.0.phar \
     && chmod 755 /wp-cli.phar
 
+# PHP
+RUN set -xe \
+    && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
+
+    # Opcache
+    && docker-php-ext-install opcache \
+    && docker-php-ext-enable opcache \
+
+    # Xdebug
+    && pecl install xdebug \
+    && docker-php-ext-enable xdebug \
+
+    # ZIP
+    && apk add --no-cache libzip libzip-dev \
+    && docker-php-ext-install zip \
+    && docker-php-ext-enable zip \
+
+    # Mysql
+    && apk add --no-cache mysql-client \
+    && docker-php-ext-install mysqli \
+    && docker-php-ext-enable mysqli \
+
+    # Imagick
+    && apk add --no-cache imagemagick libgomp imagemagick-dev \
+    && pecl install imagick \
+    && docker-php-ext-enable imagick \
+
+    # Exif
+    && docker-php-ext-install exif \
+    && docker-php-ext-enable exif \
+
+    # Bcmath
+    && docker-php-ext-install bcmath \
+    && docker-php-ext-enable bcmath
+
 # Cleanup
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/*
+RUN set -xe \
+    && apk del --no-cache .build-deps \
+    && apk del --no-cache libzip-dev \
+    && apk del --no-cache imagemagick-dev \
+    && rm -rf /tmp/* /var/cache/apk/*
 
 
 WORKDIR /var/www/wordpress

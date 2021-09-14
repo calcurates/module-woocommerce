@@ -1,7 +1,6 @@
-FROM nginx:stable
+FROM nginx:mainline-alpine
 
 RUN set -xe \
-    && apt-get update \
-    && apt-get upgrade -y \
-    && apt-get clean \
-    && rm -rf /tmp/*
+    && apk update \
+    && apk upgrade \
+    && rm -rf /tmp/* /var/cache/apk/*
