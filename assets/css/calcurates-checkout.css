@@ -1,46 +1,8 @@
-.calcurates-checkout__shipping-rate{
-
-}
-.calcurates-checkout__shipping-rate-description{
-    margin-bottom: 10px;
-}
-.calcurates-checkout__shipping-rate-description_has-error{
-   color:brown;
-}
-.calcurates-checkout__shipping-rate-description_empty{
-   margin-bottom: 0;
-}
-.calcurates-checkout__shipping-rate-message{
-   font-size: 13px;
-}
-.calcurates-checkout__shipping-rate-dates{
-   font-size: 13px;
+.calcurates-checkout__shipping-rate-text_has-error {
+    color: brown;
 }
 
-.calcurates-checkout__shipping-rate-text{
-   display: flex;
-   flex: 1;
-}
-.calcurates-checkout__shipping-rate-label{
-   display: flex !important;
-   align-items: center;
-   flex: 1;
-   margin-bottom: 0;
-}
-.calcurates-checkout__shipping-rate-label .amount{
-   margin-left: 10px;
-}
-.calcurates-checkout__shipping-rate-image{
-   max-width: 100px;
-   max-height: 30px;
-   margin-right: 10px;
-   flex: 0;
-}
-.calcurates-checkout__shipping-rate_disabled input, .calcurates-checkout__shipping-rate_disabled .calcurates-checkout__shipping-rate-label-wrap{
-   opacity: 0.5;
-}
-.calcurates-checkout__shipping-rate-control-layout{
-   display: flex;
-   align-items: center;
-   margin-bottom: 10px;
+.calcurates-checkout__shipping-rate-image {
+    height: 1em;
+    margin-right: 10px;
 }
