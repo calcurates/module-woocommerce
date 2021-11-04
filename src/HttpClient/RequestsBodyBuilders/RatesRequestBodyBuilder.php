@@ -38,6 +38,7 @@ class RatesRequestBodyBuilder
             'shipTo' => $this->prepare_ship_to_data(),
             'products' => $this->prepare_products_data(),
             'customerGroup' => \is_user_logged_in() ? 'customer' : 'guest',
+            'estimate' => is_checkout() ? false : true,
         ];
     }
 
