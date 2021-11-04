@@ -1,8 +1,8 @@
-jQuery(document).ready(function () {
+jQuery(document).ready(function() {
     // setup
     setup_shipping();
 
-    jQuery(document.body).on('updated_checkout updated_cart_totals', function () {
+    jQuery(document.body).on('updated_checkout updated_cart_totals', function() {
         // setup
         setup_shipping();
     });
@@ -11,25 +11,18 @@ jQuery(document).ready(function () {
         const $root = jQuery('.woocommerce-shipping-totals');
 
         // setup classes
-        $root.find('.calcurates-checkout__shipping-rate-description').each(function () {
+        $root.find('.calcurates-checkout__shipping-rate-text').each(function() {
             const $that = jQuery(this);
             const $liElem = $that.closest('li').addClass('calcurates-checkout__shipping-rate');
             const $input = $liElem.find('input[name^="shipping_method"]');
-            const $label = $liElem.find('label').addClass('calcurates-checkout__shipping-rate-label');
 
-            if ($that.hasClass('calcurates-checkout__shipping-rate-description_has-error')) {
+            if ($that.hasClass('calcurates-checkout__shipping-rate-text_has-error')) {
                 $liElem.addClass('calcurates-checkout__shipping-rate_disabled');
                 $input.prop('disabled', true);
             }
 
-            // create layout to wrap input and label with shipping cost
-            const $controlLayout = jQuery('<div/>', {
-                'class': 'calcurates-checkout__shipping-rate-control-layout'
-            }).prependTo($liElem);
-
-            // wrap
-            $label.prependTo($controlLayout);
-            $input.prependTo($controlLayout);
+            // set max-width exclude radio size
+            $that.closest('label').css('box-sizing', 'border-box').css('max-width', 'calc(100% - ' + $input.outerWidth() + 'px)')
 
         });
 
