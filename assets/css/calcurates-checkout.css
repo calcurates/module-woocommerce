@@ -3,6 +3,6 @@
 }
 
 .calcurates-checkout__shipping-rate-image {
-    height: 1em;
+    max-height: 2em;
     margin-right: 10px;
 }
