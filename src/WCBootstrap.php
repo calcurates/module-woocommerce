@@ -259,14 +259,14 @@ if (!\class_exists(WCBootstrap::class)) {
             $meta = $rate->get_meta_data();
 
             // rate image
-            $image = "";
+            $image = '';
 
-            if($meta['rate_image']){
+            if ($meta['rate_image']) {
                 $image .= '<img src="'.\htmlspecialchars($meta['rate_image']).'" class="calcurates-checkout__shipping-rate-image"  />';
             }
 
             // shipping rate description
-            $rate_description = "";
+            $rate_description = '';
 
             if ($meta['message']) {
                 $rate_description = '<span class="calcurates-checkout__shipping-rate-message">'.\htmlspecialchars($meta['message'], \ENT_NOQUOTES).'</span>';
