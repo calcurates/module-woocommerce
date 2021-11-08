@@ -259,14 +259,14 @@ if (!\class_exists(WCBootstrap::class)) {
             $meta = $rate->get_meta_data();
 
             // rate image
-            $image = "";
+            $image = '';
 
-            if($meta['rate_image']){
+            if ($meta['rate_image']) {
                 $image .= '<img src="'.\htmlspecialchars($meta['rate_image']).'" class="calcurates-checkout__shipping-rate-image"  />';
             }
 
             // shipping rate description
-            $rate_description = "";
+            $rate_description = '';
 
             if ($meta['message']) {
                 $rate_description = '<span class="calcurates-checkout__shipping-rate-message">'.\htmlspecialchars($meta['message'], \ENT_NOQUOTES).'</span>';
@@ -276,7 +276,7 @@ if (!\class_exists(WCBootstrap::class)) {
             $estimated_delivery_date_text = $this->get_estimated_delivery_date_text($meta['delivery_date_from'], $meta['delivery_date_to']);
 
             if ($estimated_delivery_date_text) {
-                $estimated_delivery_date_text = '<span class="calcurates-checkout__shipping-rate-dates">Estimated delivery date: '.\htmlspecialchars($estimated_delivery_date_text, \ENT_NOQUOTES).'</span>';
+                $estimated_delivery_date_text = '<span class="calcurates-checkout__shipping-rate-dates">, '.\htmlspecialchars($estimated_delivery_date_text, \ENT_NOQUOTES).'</span>';
             }
 
             return $image.'<span class="calcurates-checkout__shipping-rate-text '.($meta['has_error'] ? 'calcurates-checkout__shipping-rate-text_has-error' : '').'">'.$label.' '.$rate_description.' '.$estimated_delivery_date_text.'</span>';
