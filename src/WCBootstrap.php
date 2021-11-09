@@ -269,7 +269,7 @@ if (!\class_exists(WCBootstrap::class)) {
             $rate_description = "";
 
             if ($meta['message']) {
-                $rate_description = '<span class="calcurates-checkout__shipping-rate-message">'.\htmlspecialchars($meta['message'], \ENT_NOQUOTES).'</span>';
+                $rate_description = '<span class="calcurates-checkout__shipping-rate-message"> '.\htmlspecialchars($meta['message'], \ENT_NOQUOTES).'</span>';
             }
 
             // shipping rate dates, use \DateTime objects
@@ -279,7 +279,7 @@ if (!\class_exists(WCBootstrap::class)) {
                 $estimated_delivery_date_text = '<span class="calcurates-checkout__shipping-rate-dates">, '.\htmlspecialchars($estimated_delivery_date_text, \ENT_NOQUOTES).'</span>';
             }
 
-            return $image.'<span class="calcurates-checkout__shipping-rate-text '.($meta['has_error'] ? 'calcurates-checkout__shipping-rate-text_has-error' : '').'">'.$label.' '.$rate_description.$estimated_delivery_date_text.'</span>';
+            return $image.'<span class="calcurates-checkout__shipping-rate-text '.($meta['has_error'] ? 'calcurates-checkout__shipping-rate-text_has-error' : '').'">'.$label.$rate_description.$estimated_delivery_date_text.'</span>';
         }
     }
 }
