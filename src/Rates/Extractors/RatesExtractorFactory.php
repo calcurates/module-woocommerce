@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Calcurates\Rates\Extractors;
 
 use Calcurates\Contracts\Rates\RatesExtractorInterface;
-use Calcurates\Logger;
 
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
@@ -27,10 +26,6 @@ class RatesExtractorFactory
             }
         }
 
-        $error = "Class $extractor doesn't exists or it's not implementing RatesExtractorInterface interface";
-
-        Logger::getInstance()->critical($error);
-
-        throw new \RuntimeException($error);
+        throw new RatesExtractorException("Class $extractor doesn't exists or it's not implementing RatesExtractorInterface interface");
     }
 }
