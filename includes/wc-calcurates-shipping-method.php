@@ -149,9 +149,8 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
             'delivery_dates_display_mode' => [
                 'title' => \__('Delivery dates display mode', 'woocommerce'),
                 'type' => 'select',
-                'default' => 'tooltip',
+                'default' => 'description',
                 'options' => [
-                    'tooltip' => 'Show in the tooltip',
                     'description' => 'Show as a description',
                     'none' => 'Do not show',
                 ],
@@ -168,9 +167,8 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
             'info_messages_display_settings' => [
                 'title' => \__('Info messages display settings', 'woocommerce'),
                 'type' => 'select',
-                'default' => 'tooltip',
+                'default' => 'description',
                 'options' => [
-                    'tooltip' => 'Show in the tooltip',
                     'description' => 'Show as a description',
                     'none' => 'Do not show',
                 ],

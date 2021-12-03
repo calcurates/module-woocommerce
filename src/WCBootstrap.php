@@ -185,14 +185,15 @@ if (!\class_exists(WCBootstrap::class)) {
             // if has only 'from' date
             if ($from) {
                 $days = $this->difference_in_days_from_now($from);
-                return 'Estimated Delivery from: '.$days.' '.($days > 1 ? 'days' : 'day' );
+
+                return 'Estimated Delivery from: '.$days.' '.($days > 1 ? 'days' : 'day');
             }
 
             // if has only 'to' date
             if ($to) {
                 $days = $this->difference_in_days_from_now($to);
 
-                return 'Estimated Delivery to: '.$days.' '.($days > 1 ? 'days' : 'day' );
+                return 'Estimated Delivery to: '.$days.' '.($days > 1 ? 'days' : 'day');
             }
 
             return '';
@@ -295,7 +296,7 @@ if (!\class_exists(WCBootstrap::class)) {
                 return $label;
             }
 
-            $shipping_method_options = \get_option( 'woocommerce_'.\WC_Calcurates_Shipping_Method::CODE.'_settings', true );
+            $shipping_method_options = \get_option('woocommerce_'.\WC_Calcurates_Shipping_Method::CODE.'_settings', true);
             $meta = $rate->get_meta_data();
 
             // rate image
@@ -307,34 +308,30 @@ if (!\class_exists(WCBootstrap::class)) {
 
             // shipping rate html
             $rate_description_html = '';
-            if($meta['message'] && 'description' === $shipping_method_options['info_messages_display_settings']){
+            if ($meta['message'] && 'description' === $shipping_method_options['info_messages_display_settings']) {
                 $rate_description_html = '<div class="calcurates-checkout__shipping-rate-message '.($meta['has_error'] ? 'calcurates-checkout__shipping-rate-text_has-error' : '').'"> '.\htmlspecialchars($meta['message'], \ENT_NOQUOTES).'</div>';
-            } elseif($meta['message'] && 'tooltip' === $shipping_method_options['info_messages_display_settings']){
-                $rate_description_html = '<div class="calcurates-checkout__shipping-rate-message calcurates-checkout__shipping-rate-message_tooltip '.($meta['has_error'] ? 'calcurates-checkout__shipping-rate-text_has-error' : '').'"> '.\htmlspecialchars($meta['message'], \ENT_NOQUOTES).'</div>';
             }
 
             // shipping rate dates text, use \DateTime objects
-            if('quantity' === $shipping_method_options['delivery_dates_display_format']){
+            if ('quantity' === $shipping_method_options['delivery_dates_display_format']) {
                 $estimated_delivery_dates_text = $this->get_estimated_delivery_days_text($meta['delivery_date_from'], $meta['delivery_date_to']);
-            }
-            else{
+            } else {
                 $estimated_delivery_dates_text = $this->get_estimated_delivery_dates_text($meta['delivery_date_from'], $meta['delivery_date_to']);
             }
 
             // shipping rate dates html
             $estimated_delivery_dates_html = '';
-            if($meta['message'] && 'description' === $shipping_method_options['info_messages_display_settings']){
+            if ($meta['message'] && 'description' === $shipping_method_options['info_messages_display_settings']) {
                 $estimated_delivery_dates_html = '<div class="calcurates-checkout__shipping-rate-dates">'.\htmlspecialchars($estimated_delivery_dates_text, \ENT_NOQUOTES).'</div>';
-            } elseif($meta['message'] && 'tooltip' === $shipping_method_options['info_messages_display_settings']){
-                $estimated_delivery_dates_html = '<span class="calcurates-checkout__shipping-rate-dates calcurates-checkout__shipping-rate-dates_tooltip"> '.\htmlspecialchars($estimated_delivery_dates_text, \ENT_NOQUOTES).'</span>';
             }
 
             return $image.'<span class="calcurates-checkout__shipping-rate-text">'.$label.$rate_description_html.$estimated_delivery_dates_html.'</span>';
         }
 
-        function difference_in_days_from_now(\DateTime $date): string
-        {   
-            $interval = date_diff(new \DateTime( 'now', \wp_timezone()), $date);
+        public function difference_in_days_from_now(\DateTime $date): string
+        {
+            $interval = \date_diff(new \DateTime('now', \wp_timezone()), $date);
+
             return $interval->format('%a');
         }
     }
