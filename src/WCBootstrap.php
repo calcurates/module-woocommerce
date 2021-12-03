@@ -182,14 +182,14 @@ if (!\class_exists(WCBootstrap::class)) {
                 return 'Estimated Delivery: '.$this->difference_in_days_from_now($from).'-'.$this->difference_in_days_from_now($to).' days';
             }
 
-            // if has only 'from' date
+            // if only 'from' date
             if ($from) {
                 $days = $this->difference_in_days_from_now($from);
 
                 return 'Estimated Delivery from: '.$days.' '.($days > 1 ? 'days' : 'day');
             }
 
-            // if has only 'to' date
+            // if only 'to' date
             if ($to) {
                 $days = $this->difference_in_days_from_now($to);
 
@@ -330,7 +330,8 @@ if (!\class_exists(WCBootstrap::class)) {
 
         public function difference_in_days_from_now(\DateTime $date): string
         {
-            $interval = \date_diff(new \DateTime('now', \wp_timezone()), $date);
+            $now = new \DateTime('now', \wp_timezone());
+            $interval = $now->diff($date);
 
             return $interval->format('%a');
         }
