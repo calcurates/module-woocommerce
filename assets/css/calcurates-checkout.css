@@ -1,8 +1,19 @@
 .calcurates-checkout__shipping-rate-text_has-error {
     color: brown;
+    background-color: #efcfcf;
 }
 
 .calcurates-checkout__shipping-rate-image {
     max-height: 2em;
     margin-right: 10px;
+}
+
+.calcurates-checkout__shipping-rate-dates {
+    margin-top: 3px;
+    font-size: 0.80em;
+}
+
+.calcurates-checkout__shipping-rate-message {
+    margin-top: 3px;
+    font-size: 0.80em;
 }

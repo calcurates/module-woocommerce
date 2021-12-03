@@ -146,6 +146,33 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
                     'both' => 'Both',
                 ],
             ],
+            'delivery_dates_display_mode' => [
+                'title' => \__('Delivery dates display mode', 'woocommerce'),
+                'type' => 'select',
+                'default' => 'description',
+                'options' => [
+                    'description' => 'Show as a description',
+                    'none' => 'Do not show',
+                ],
+            ],
+            'delivery_dates_display_format' => [
+                'title' => \__('Delivery dates display format', 'woocommerce'),
+                'type' => 'select',
+                'default' => 'dates',
+                'options' => [
+                    'dates' => 'Dates',
+                    'quantity' => 'Qty of days in transit',
+                ],
+            ],
+            'info_messages_display_settings' => [
+                'title' => \__('Info messages display settings', 'woocommerce'),
+                'type' => 'select',
+                'default' => 'description',
+                'options' => [
+                    'description' => 'Show as a description',
+                    'none' => 'Do not show',
+                ],
+            ],
         ];
     }
 
