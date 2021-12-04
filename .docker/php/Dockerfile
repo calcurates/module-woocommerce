@@ -1,4 +1,4 @@
-FROM php:8.0-fpm-alpine3.14
+FROM php:8.0-fpm-alpine
 
 # Update repo and install some utilites
 RUN set -xe \
@@ -8,7 +8,7 @@ RUN set -xe \
 
 # Composer
 RUN set -xe \
-    && curl -L -o /composer.phar https://github.com/composer/composer/releases/download/2.1.12/composer.phar \
+    && curl -L -o /composer.phar https://github.com/composer/composer/releases/download/2.1.14/composer.phar \
     && chmod 755 /composer.phar
 
 # WP-Cli
