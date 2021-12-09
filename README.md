@@ -18,7 +18,7 @@ Copy `.env.example` to `.env`. Set env vars as you need.
 ```bash
 docker-compose up -d
 cd wp-content/plugins/calcurates-for-woocommerce
-/composer.phar install
+composer install
 ```
 Go to http://localhost:8000
 
