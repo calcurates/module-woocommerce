@@ -11,7 +11,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 # WP-Cli
 RUN set -xe \
-    && curl -L -o /wp-cli.phar https://github.com/wp-cli/wp-cli/releases/download/v2.5.0/wp-cli-2.5.0.phar \
+    && curl -L -o /wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && chmod 755 /wp-cli.phar
 
 # PHP
