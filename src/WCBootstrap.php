@@ -301,36 +301,32 @@ if (!\class_exists(WCBootstrap::class)) {
 
             // rate image
             $image = '';
-
             if ($meta['rate_image']) {
-                $image .= '<img src="'.\htmlspecialchars($meta['rate_image']).'" class="calcurates-checkout__shipping-rate-image"  />';
+                $image = '<img src="'.\htmlspecialchars($meta['rate_image']).'" class="calcurates-checkout__shipping-rate-image" />';
             }
 
-            // shipping rate html
-            $rate_description_html = '';
-            if ($meta['message'] && 'description' === $shipping_method_options['info_messages_display_settings']) {
-                $rate_description_html = '<div class="calcurates-checkout__shipping-rate-message '.($meta['has_error'] ? 'calcurates-checkout__shipping-rate-text_has-error' : '').'"> '.\htmlspecialchars($meta['message'], \ENT_NOQUOTES).'</div>';
+            // info message
+            $info_message = '';
+            if ('description' === $shipping_method_options['info_messages_display_settings'] && $meta['message']) {
+                $info_message = '<div class="calcurates-checkout__shipping-rate-message'.($meta['has_error'] ? ' calcurates-checkout__shipping-rate-text_has-error' : '').'">'.\htmlspecialchars($meta['message'], \ENT_NOQUOTES).'</div>';
             }
 
-            $estimated_delivery_dates_text = '';
-            if ('description' === $shipping_method_options['delivery_dates_display_mode']) {
+            // delivery dates
+            $delivery_dates = '';
+            if ('description' === $shipping_method_options['delivery_dates_display_mode'] && ($meta['delivery_date_from'] || $meta['delivery_date_to'])) {
                 if ('quantity' === $shipping_method_options['delivery_dates_display_format']) {
-                    $estimated_delivery_dates_text = $this->get_estimated_delivery_days_text($meta['delivery_date_from'], $meta['delivery_date_to']);
+                    $delivery_dates_text = $this->get_estimated_delivery_days_text($meta['delivery_date_from'], $meta['delivery_date_to']);
                 } else {
-                    $estimated_delivery_dates_text = $this->get_estimated_delivery_dates_text($meta['delivery_date_from'], $meta['delivery_date_to']);
+                    $delivery_dates_text = $this->get_estimated_delivery_dates_text($meta['delivery_date_from'], $meta['delivery_date_to']);
                 }
+
+                $delivery_dates = '<div class="calcurates-checkout__shipping-rate-dates">'.\htmlspecialchars($delivery_dates_text, \ENT_NOQUOTES).'</div>';
             }
 
-            // shipping rate dates html
-            $estimated_delivery_dates_html = '';
-            if ($meta['message'] && 'description' === $shipping_method_options['info_messages_display_settings']) {
-                $estimated_delivery_dates_html = '<div class="calcurates-checkout__shipping-rate-dates">'.\htmlspecialchars($estimated_delivery_dates_text, \ENT_NOQUOTES).'</div>';
-            }
-
-            return $image.'<span class="calcurates-checkout__shipping-rate-text">'.$label.$rate_description_html.$estimated_delivery_dates_html.'</span>';
+            return $image.'<span class="calcurates-checkout__shipping-rate-text">'.$label.$info_message.$delivery_dates.'</span>';
         }
 
-        public function difference_in_days_from_now(\DateTime $date): string
+        private function difference_in_days_from_now(\DateTime $date): string
         {
             $now = new \DateTime('now', \wp_timezone());
             $interval = $now->diff($date);
