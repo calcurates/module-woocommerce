@@ -312,11 +312,13 @@ if (!\class_exists(WCBootstrap::class)) {
                 $rate_description_html = '<div class="calcurates-checkout__shipping-rate-message '.($meta['has_error'] ? 'calcurates-checkout__shipping-rate-text_has-error' : '').'"> '.\htmlspecialchars($meta['message'], \ENT_NOQUOTES).'</div>';
             }
 
-            // shipping rate dates text, use \DateTime objects
-            if ('quantity' === $shipping_method_options['delivery_dates_display_format']) {
-                $estimated_delivery_dates_text = $this->get_estimated_delivery_days_text($meta['delivery_date_from'], $meta['delivery_date_to']);
-            } else {
-                $estimated_delivery_dates_text = $this->get_estimated_delivery_dates_text($meta['delivery_date_from'], $meta['delivery_date_to']);
+            $estimated_delivery_dates_text = '';
+            if ('description' === $shipping_method_options['delivery_dates_display_mode']) {
+                if ('quantity' === $shipping_method_options['delivery_dates_display_format']) {
+                    $estimated_delivery_dates_text = $this->get_estimated_delivery_days_text($meta['delivery_date_from'], $meta['delivery_date_to']);
+                } else {
+                    $estimated_delivery_dates_text = $this->get_estimated_delivery_dates_text($meta['delivery_date_from'], $meta['delivery_date_to']);
+                }
             }
 
             // shipping rate dates html
