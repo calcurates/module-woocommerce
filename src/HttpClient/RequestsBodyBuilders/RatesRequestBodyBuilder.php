@@ -50,7 +50,7 @@ class RatesRequestBodyBuilder
         $contact_name = null;
         $country_code = null;
         $customer_session_data = \WC()->session->get('customer');
-        $ship_to_different_address = \WC()->session->get('ship_to_different_address') ?? 0;
+        $ship_to_different_address = \WC()->session->get('ship_to_different_address', '0');
         $postcode = $ship_to_different_address ? ($customer_session_data['shipping_postcode'] ?: 'string') : ($customer_session_data['postcode'] ?: 'string'); // fixme: remove the "string"
         $first_name = $ship_to_different_address ? ($customer_session_data['shipping_first_name'] ?: null) : ($customer_session_data['first_name'] ?: null);
         $last_name = $ship_to_different_address ? ($customer_session_data['shipping_last_name'] ?: null) : ($customer_session_data['last_name'] ?: null);
