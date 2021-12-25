@@ -1,4 +1,4 @@
-FROM php:8.0-fpm-alpine3.14
+FROM php:8.0-fpm-alpine
 
 # Update repo and install some utilites
 RUN set -xe \
@@ -7,13 +7,11 @@ RUN set -xe \
     && apk --no-cache add htop unzip gzip git curl mc dcron
 
 # Composer
-RUN set -xe \
-    && curl -L -o /composer.phar https://github.com/composer/composer/releases/download/2.1.6/composer.phar \
-    && chmod 755 /composer.phar
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 # WP-Cli
 RUN set -xe \
-    && curl -L -o /wp-cli.phar https://github.com/wp-cli/wp-cli/releases/download/v2.5.0/wp-cli-2.5.0.phar \
+    && curl -L -o /wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && chmod 755 /wp-cli.phar
 
 # PHP

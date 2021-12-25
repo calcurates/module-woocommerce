@@ -26,9 +26,6 @@ if (!\class_exists(WCBootstrap::class)) {
             // Add feature to add to session ship_to_different_address checkbox status on checkout
             \add_action('woocommerce_checkout_update_order_review', [$this, 'ship_to_different_address_set_session']);
 
-            // add text after rate on checkout
-            \add_action('woocommerce_after_shipping_rate', [$this, 'add_data_after_shipping_rate'], 10, 2);
-
             // add text to order email
             \add_action('woocommerce_email_after_order_table', [$this, 'add_shipping_data_after_order_table_in_email'], 10, 4);
 
@@ -81,31 +78,6 @@ if (!\class_exists(WCBootstrap::class)) {
             return $data;
         }
 
-        public function add_data_after_shipping_rate(\WC_Shipping_Rate $rate, int $index): void
-        {
-            if (false === \strpos($rate->get_id(), 'calcurates:')) {
-                return;
-            }
-
-            $meta = $rate->get_meta_data();
-
-            $text = null;
-
-            // shipping rate description
-            if (isset($meta['message'])) {
-                $text .= '<div class="calcurates-checkout__shipping-rate-message">'.\htmlspecialchars($meta['message'], \ENT_NOQUOTES).'</div>';
-            }
-
-            // shipping rate dates, use \DateTime objects
-            $estimated_delivery_date_text = $this->get_estimated_delivery_date_text($meta['delivery_date_from'], $meta['delivery_date_to']);
-
-            if ($estimated_delivery_date_text) {
-                $text .= '<div class="calcurates-checkout__shipping-rate-dates">Estimated delivery date: '.\htmlspecialchars($estimated_delivery_date_text, \ENT_NOQUOTES).'</div>';
-            }
-
-            echo '<div class="calcurates-checkout__shipping-rate-description '.($meta['has_error'] ? 'calcurates-checkout__shipping-rate-description_has-error' : '').''.(!$text ? 'calcurates-checkout__shipping-rate-description_empty' : '').'">'.$text.'</div>';
-        }
-
         public function add_shipping_data_after_order_table_in_email(\WC_Order $order, bool $sent_to_admin, string $plain_text, \WC_Email $email): void
         {
             $message = null;
@@ -146,7 +118,7 @@ if (!\class_exists(WCBootstrap::class)) {
         /**
          * Get text string with delivery dates.
          */
-        private function get_estimated_delivery_date_text(?string $from_date, ?string $to_date): string
+        private function get_estimated_delivery_dates_text(?string $from_date, ?string $to_date): string
         {
             $from = null;
             $to = null;
@@ -182,6 +154,46 @@ if (!\class_exists(WCBootstrap::class)) {
             // if has only 'to' date
             if ($to) {
                 return 'To '.$to->format($this->wp_date_format());
+            }
+
+            return '';
+        }
+
+        /**
+         * Get text string with delivery days.
+         */
+        private function get_estimated_delivery_days_text(?string $from_date, ?string $to_date): string
+        {
+            $from = null;
+            $to = null;
+
+            // get \DateTime objects
+            try {
+                $from = $from_date ? (new \DateTime($from_date))->setTimezone(\wp_timezone()) : null;
+            } catch (\Exception $e) {
+            }
+
+            try {
+                $to = $to_date ? (new \DateTime($to_date))->setTimezone(\wp_timezone()) : null;
+            } catch (\Exception $e) {
+            }
+
+            if ($from && $to) {
+                return 'Estimated Delivery: '.$this->difference_in_days_from_now($from).'-'.$this->difference_in_days_from_now($to).' days';
+            }
+
+            // if only 'from' date
+            if ($from) {
+                $days = $this->difference_in_days_from_now($from);
+
+                return 'Estimated Delivery from: '.$days.' '.($days > 1 ? 'days' : 'day');
+            }
+
+            // if only 'to' date
+            if ($to) {
+                $days = $this->difference_in_days_from_now($to);
+
+                return 'Estimated Delivery to: '.$days.' '.($days > 1 ? 'days' : 'day');
             }
 
             return '';
@@ -280,14 +292,46 @@ if (!\class_exists(WCBootstrap::class)) {
          */
         public function filter_woocommerce_cart_shipping_method_full_label(string $label, \WC_Shipping_Rate $rate): string
         {
-            if (false === \strpos($rate->get_id(), 'calcurates:')) {
+            if (false === \strpos($rate->get_id(), \WC_Calcurates_Shipping_Method::CODE.':')) {
                 return $label;
             }
 
+            $shipping_method_options = \get_option('woocommerce_'.\WC_Calcurates_Shipping_Method::CODE.'_settings', true);
             $meta = $rate->get_meta_data();
 
-            return ($meta['rate_image'] ? '<img src="'.\htmlspecialchars($meta['rate_image']).'" class="calcurates-checkout__shipping-rate-image"  />' : '').'
-            <span class="calcurates-checkout__shipping-rate-text">'.$label.'</span>';
+            // rate image
+            $image = '';
+            if ($meta['rate_image']) {
+                $image = '<img src="'.\htmlspecialchars($meta['rate_image']).'" class="calcurates-checkout__shipping-rate-image" />';
+            }
+
+            // info message
+            $info_message = '';
+            if ('description' === $shipping_method_options['info_messages_display_settings'] && $meta['message']) {
+                $info_message = '<div class="calcurates-checkout__shipping-rate-message'.($meta['has_error'] ? ' calcurates-checkout__shipping-rate-text_has-error' : '').'">'.\htmlspecialchars($meta['message'], \ENT_NOQUOTES).'</div>';
+            }
+
+            // delivery dates
+            $delivery_dates = '';
+            if ('description' === $shipping_method_options['delivery_dates_display_mode'] && ($meta['delivery_date_from'] || $meta['delivery_date_to'])) {
+                if ('quantity' === $shipping_method_options['delivery_dates_display_format']) {
+                    $delivery_dates_text = $this->get_estimated_delivery_days_text($meta['delivery_date_from'], $meta['delivery_date_to']);
+                } else {
+                    $delivery_dates_text = $this->get_estimated_delivery_dates_text($meta['delivery_date_from'], $meta['delivery_date_to']);
+                }
+
+                $delivery_dates = '<div class="calcurates-checkout__shipping-rate-dates">'.\htmlspecialchars($delivery_dates_text, \ENT_NOQUOTES).'</div>';
+            }
+
+            return $image.'<span class="calcurates-checkout__shipping-rate-text">'.$label.$info_message.$delivery_dates.'</span>';
+        }
+
+        private function difference_in_days_from_now(\DateTime $date): string
+        {
+            $now = new \DateTime('now', \wp_timezone());
+            $interval = $now->diff($date);
+
+            return $interval->format('%a');
         }
     }
 }

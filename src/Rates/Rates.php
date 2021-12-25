@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Calcurates\Rates;
 
+use Calcurates\Logger;
 use Calcurates\Rates\Extractors\RatesExtractorFactory;
 
 // Stop direct HTTP access.
@@ -47,6 +48,14 @@ class Rates
             try {
                 $rate = $this->rates_extractor_factory->create($shipping_option_name);
             } catch (\Exception $e) {
+                Logger::getInstance()->error(
+                    "Can't create rate from Shipping Option $shipping_option_name",
+                    [
+                        'exception' => $e,
+                        'shipping_option_name' => $shipping_option_name,
+                        'shipping_option_data' => $shipping_option_data,
+                    ]
+                );
                 continue;
             }
 

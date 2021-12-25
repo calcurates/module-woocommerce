@@ -1,4 +1,4 @@
-image: php:8.0-cli-alpine3.14
+image: php:8.0-cli-alpine
 
 before_script:
     - apk add openssh-client
@@ -34,7 +34,7 @@ build:
     script:
         - echo "Build"
         - apk add unzip
-        - curl -L -o /composer.phar https://github.com/composer/composer/releases/download/2.1.6/composer.phar && chmod 755 /composer.phar
+        - curl -L -o /composer.phar https://getcomposer.org/download/latest-stable/composer.phar && chmod 755 /composer.phar
         - php /composer.phar install --no-interaction --prefer-dist --no-progress --ansi --no-dev --optimize-autoloader
         - mkdir calcurates-for-woocommerce
         - mv assets includes src lib calcurates-for-woocommerce/
