@@ -308,7 +308,7 @@ if (!\class_exists(WCBootstrap::class)) {
             // info message
             $info_message = '';
             if ('description' === $shipping_method_options['info_messages_display_settings'] && $meta['message']) {
-                $info_message = '<div class="calcurates-checkout__shipping-rate-message'.($meta['has_error'] ? ' calcurates-checkout__shipping-rate-text_has-error' : '').'">'.\htmlspecialchars($meta['message'], \ENT_NOQUOTES).'</div>';
+                $info_message = '<div class="calcurates-checkout__shipping-rate-message">'.\htmlspecialchars($meta['message'], \ENT_NOQUOTES).'</div>';
             }
 
             // delivery dates
@@ -323,7 +323,7 @@ if (!\class_exists(WCBootstrap::class)) {
                 $delivery_dates = '<div class="calcurates-checkout__shipping-rate-dates">'.\htmlspecialchars($delivery_dates_text, \ENT_NOQUOTES).'</div>';
             }
 
-            return $image.'<span class="calcurates-checkout__shipping-rate-text">'.$label.$info_message.$delivery_dates.'</span>';
+            return $image.'<span class="calcurates-checkout__shipping-rate-text'.($meta['has_error'] ? ' calcurates-checkout__shipping-rate-text_has-error' : '').'">'.$label.$info_message.$delivery_dates.'</span>';
         }
 
         private function difference_in_days_from_now(\DateTime $date): string
