@@ -11,9 +11,11 @@
 .calcurates-checkout__shipping-rate-dates {
     margin-top: 3px;
     font-size: 0.80em;
+    text-indent: 0px;
 }
 
 .calcurates-checkout__shipping-rate-message {
     margin-top: 3px;
     font-size: 0.80em;
+    text-indent: 0px;
 }
