@@ -35,7 +35,7 @@ jQuery(document).ready(function() {
             $currentMethod.prop('checked', false);
 
             // check first not disabled
-            $shippingMethods.not($currentMethod).first().prop('checked', true).trigger('change');
+            $shippingMethods.not(':disabled').first().prop('checked', true).trigger('change');
         }
     }
 });
