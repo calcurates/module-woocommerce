@@ -100,7 +100,7 @@ if (!\class_exists(WCBootstrap::class)) {
             }
 
             if ($delivery_date_from || $delivery_date_to) {
-                $estimated_delivery_date = $this->get_estimated_delivery_date_text(
+                $estimated_delivery_date = $this->get_estimated_delivery_dates_text(
                     $delivery_date_from,
                     $delivery_date_to
                 );
