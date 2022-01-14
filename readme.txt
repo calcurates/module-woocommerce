@@ -66,6 +66,8 @@ Calcurates is developed and supported by Amasty. After 10 years of success in de
 
 = 1.3.1 =
 - Fix: Error with delivery dates
+- Fix: Don't show empty rates
+- Fix: Correct disabled rates
 
 = 1.3.0 =
 - Add: "Packaging Rules" functionality has been added
