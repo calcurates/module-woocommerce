@@ -98,12 +98,11 @@ class RatesRequestBodyBuilder
     public function prepare_products_data(): array
     {
         $products = [];
-
         foreach ($this->package['contents'] as $cart_product) {
             /** @var \WC_Product $product */
             $product = $cart_product['data'];
 
-            $origin_code = OriginUtils::getInstance()->get_origin_code_from_product($cart_product['product_id']);
+            $origin_codes = OriginUtils::getInstance()->get_origin_codes_from_product($cart_product['product_id']);
 
             if ($product->is_virtual() || $product->is_downloadable()) {
                 continue;
@@ -115,7 +114,9 @@ class RatesRequestBodyBuilder
                 'price' => $cart_product['line_total'] / $cart_product['quantity'],
                 'quantity' => $cart_product['quantity'],
                 'weight' => (float) $product->get_weight(),
-                'origin' => $origin_code ?: null,
+                'origins' => $origin_codes ? \array_map(static function (string $code): array {
+                    return ['origin' => $code];
+                }, $origin_codes) : null,
                 'attributes' => [
                     'length' => (float) $product->get_length(),
                     'width' => (float) $product->get_width(),
