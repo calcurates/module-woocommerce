@@ -31,7 +31,7 @@ if (!\class_exists(WCBootstrap::class)) {
 
             // add origins select
             \add_action('woocommerce_product_options_shipping', [$this, 'add_origin_select']);
-            \add_action('woocommerce_process_product_meta', [$this, 'save_origin_select'], 10, 2);
+            \add_action('woocommerce_process_product_meta', [$this, 'save_origins_select'], 10, 2);
 
             // validate selected rate if has no error
             \add_action('woocommerce_after_checkout_validation', [$this, 'validate_selected_rate'], 10, 2);
@@ -230,10 +230,12 @@ if (!\class_exists(WCBootstrap::class)) {
             echo '<div class="options_group">';
 
             \woocommerce_wp_select([
-                'id' => 'origin',
-                'value' => OriginUtils::getInstance()->get_origin_term_id_from_product(\get_the_ID()) ?: '',
+                'id' => 'origins',
+                'name' => 'origins[]',
+                'value' => OriginUtils::getInstance()->get_origin_term_ids_from_product(\get_the_ID()),
                 'label' => 'Origin',
                 'options' => $origins,
+                'custom_attributes' => array('multiple' => 'multiple')
             ]);
 
             echo '</div>';
@@ -242,19 +244,19 @@ if (!\class_exists(WCBootstrap::class)) {
         /**
          * Save Origin.
          */
-        public function save_origin_select($id, $post): void
+        public function save_origins_select($id, $post): void
         {
-            $last_origin_id = OriginUtils::getInstance()->get_origin_term_id_from_product($id);
-            $new_origin_id = $_POST['origin'];
+            $old_origin_ids = OriginUtils::getInstance()->get_origin_term_ids_from_product($id);
+            $new_origins_ids = $_POST['origins'];
 
             // remove product from last origin
-            if ($last_origin_id) {
-                \wp_remove_object_terms($id, $last_origin_id, OriginsTaxonomy::TAXONOMY_SLUG);
+            if ($old_origin_ids) {
+                \wp_remove_object_terms($id, $old_origin_ids, OriginsTaxonomy::TAXONOMY_SLUG);
             }
 
             // append product to new origin
-            if ($new_origin_id) {
-                \wp_set_post_terms($id, [(int) $new_origin_id], OriginsTaxonomy::TAXONOMY_SLUG, true);
+            if ($new_origins_ids) {
+                \wp_set_post_terms($id, array_map('intval', $new_origins_ids), OriginsTaxonomy::TAXONOMY_SLUG, true);
             }
         }
 

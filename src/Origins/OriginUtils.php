@@ -33,29 +33,27 @@ if (!\class_exists(OriginUtils::class)) {
         /**
          * Extract Origin code from product.
          */
-        public function get_origin_code_from_product(int $product_id): ?string
+        public function get_origin_codes_from_product(int $product_id): array
         {
-            $origin_term_id = $this->get_origin_term_id_from_product($product_id);
+            $origin_term_ids = $this->get_origin_term_ids_from_product($product_id);
 
-            if ($origin_term_id) {
-                return \get_term_meta($origin_term_id, 'origin_code', true);
+            if (!$origin_term_ids) {
+                return [];
             }
 
-            return null;
+            return array_map(function($id){
+                return \get_term_meta($id, 'origin_code', true);
+            }, $origin_term_ids);
         }
 
         /**
          * Extract Origin term id from product.
          */
-        public function get_origin_term_id_from_product(int $product_id): ?int
+        public function get_origin_term_ids_from_product(int $product_id): array
         {
             $origin_terms = \wp_get_post_terms($product_id, OriginsTaxonomy::TAXONOMY_SLUG, ['fields' => 'ids']);
 
-            if ($origin_terms && \is_array($origin_terms)) {
-                return \reset($origin_terms);
-            }
-
-            return null;
+            return $origin_terms;
         }
 
         /**
