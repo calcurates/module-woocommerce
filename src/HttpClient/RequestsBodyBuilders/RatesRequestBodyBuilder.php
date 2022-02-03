@@ -114,9 +114,9 @@ class RatesRequestBodyBuilder
                 'price' => $cart_product['line_total'] / $cart_product['quantity'],
                 'quantity' => $cart_product['quantity'],
                 'weight' => (float) $product->get_weight(),
-                'origins' => $origin_codes ? array_map(function($code){
+                'origins' => $origin_codes ? \array_map(static function (string $code): array {
                     return ['origin' => $code];
-                }, $origin_codes): null,
+                }, $origin_codes) : null,
                 'attributes' => [
                     'length' => (float) $product->get_length(),
                     'width' => (float) $product->get_width(),

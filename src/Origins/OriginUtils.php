@@ -41,7 +41,7 @@ if (!\class_exists(OriginUtils::class)) {
                 return [];
             }
 
-            return array_map(function($id){
+            return \array_map(static function (int $id): string {
                 return \get_term_meta($id, 'origin_code', true);
             }, $origin_term_ids);
         }

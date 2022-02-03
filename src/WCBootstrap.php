@@ -235,7 +235,7 @@ if (!\class_exists(WCBootstrap::class)) {
                 'value' => OriginUtils::getInstance()->get_origin_term_ids_from_product(\get_the_ID()),
                 'label' => 'Origin',
                 'options' => $origins,
-                'custom_attributes' => array('multiple' => 'multiple')
+                'custom_attributes' => ['multiple' => 'multiple'],
             ]);
 
             echo '</div>';
@@ -256,7 +256,7 @@ if (!\class_exists(WCBootstrap::class)) {
 
             // append product to new origin
             if ($new_origins_ids) {
-                \wp_set_post_terms($id, array_map('intval', $new_origins_ids), OriginsTaxonomy::TAXONOMY_SLUG, true);
+                \wp_set_post_terms($id, \array_map('intval', $new_origins_ids), OriginsTaxonomy::TAXONOMY_SLUG, true);
             }
         }
 
