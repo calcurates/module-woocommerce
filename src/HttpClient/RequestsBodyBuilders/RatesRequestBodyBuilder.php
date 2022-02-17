@@ -51,15 +51,15 @@ class RatesRequestBodyBuilder
         $country_code = null;
         $customer_session_data = \WC()->session->get('customer');
         $ship_to_different_address = \WC()->session->get('ship_to_different_address', '0');
-        $postcode = $ship_to_different_address ? ($customer_session_data['shipping_postcode'] ?: 'string') : ($customer_session_data['postcode'] ?: 'string'); // fixme: remove the "string"
-        $first_name = $ship_to_different_address ? ($customer_session_data['shipping_first_name'] ?: null) : ($customer_session_data['first_name'] ?: null);
-        $last_name = $ship_to_different_address ? ($customer_session_data['shipping_last_name'] ?: null) : ($customer_session_data['last_name'] ?: null);
-        $company = $ship_to_different_address ? ($customer_session_data['shipping_company'] ?: null) : ($customer_session_data['company'] ?: null);
+        $postcode = $ship_to_different_address || (!\is_checkout() && $customer_session_data['shipping_postcode']) ? ($customer_session_data['shipping_postcode'] ?: 'string') : ($customer_session_data['postcode'] ?: 'string'); // fixme: remove the "string"
+        $first_name = $ship_to_different_address || (!\is_checkout() && $customer_session_data['shipping_first_name']) ? ($customer_session_data['shipping_first_name'] ?: null) : ($customer_session_data['first_name'] ?: null);
+        $last_name = $ship_to_different_address || (!\is_checkout() && $customer_session_data['shipping_last_name']) ? ($customer_session_data['shipping_last_name'] ?: null) : ($customer_session_data['last_name'] ?: null);
+        $company = $ship_to_different_address || (!\is_checkout() && $customer_session_data['shipping_company']) ? ($customer_session_data['shipping_company'] ?: null) : ($customer_session_data['company'] ?: null);
         $phone = $customer_session_data['phone'] ?: null;
-        $state = $ship_to_different_address ? ($customer_session_data['shipping_state'] ?: null) : ($customer_session_data['state'] ?: null);
-        $city = $ship_to_different_address ? ($customer_session_data['shipping_city'] ?: null) : ($customer_session_data['city'] ?: null);
-        $addr_1 = $ship_to_different_address ? ($customer_session_data['shipping_address_1'] ?: null) : ($customer_session_data['address_1'] ?: null);
-        $addr_2 = $ship_to_different_address ? ($customer_session_data['shipping_address_2'] ?: null) : ($customer_session_data['address_2'] ?: null);
+        $state = $ship_to_different_address || (!\is_checkout() && $customer_session_data['shipping_state']) ? ($customer_session_data['shipping_state'] ?: null) : ($customer_session_data['state'] ?: null);
+        $city = $ship_to_different_address || (!\is_checkout() && $customer_session_data['shipping_city']) ? ($customer_session_data['shipping_city'] ?: null) : ($customer_session_data['city'] ?: null);
+        $addr_1 = $ship_to_different_address || (!\is_checkout() && $customer_session_data['shipping_address_1']) ? ($customer_session_data['shipping_address_1'] ?: null) : ($customer_session_data['address_1'] ?: null);
+        $addr_2 = $ship_to_different_address || (!\is_checkout() && $customer_session_data['shipping_address_2']) ? ($customer_session_data['shipping_address_2'] ?: null) : ($customer_session_data['address_2'] ?: null);
 
         if ($first_name) {
             $contact_name .= $first_name;
