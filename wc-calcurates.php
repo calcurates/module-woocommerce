@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Description:       Connect your WooCommerce with Calcurates. Take full control of your shipping displayed at the checkout.
  * Version:           1.4.1
  * Requires at least: 5.2
- * Requires PHP:      7.1.3
+ * Requires PHP:      7.2.5
  * Author:            Calcurates s.r.o.
  * Author URI:        https://calcurates.com
  */

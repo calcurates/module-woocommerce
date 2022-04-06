@@ -3,7 +3,7 @@ Contributors: calcurates
 Tags: woocommerce, shipping rates, shipping methods, shipping carriers, shipping zones, shipping rules, delivery dates, international shipping, table rates, free shipping, in-store pickup, dimensional shipping, multi-origin shipping, dropshipping
 Requires at least: 5.2
 Tested up to: 5.9
-Requires PHP: 7.1.3
+Requires PHP: 7.2.5
 Stable tag: 1.4.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
