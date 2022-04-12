@@ -111,7 +111,7 @@ class RatesRequestBodyBuilder
 
             $data = [
                 'quoteItemId' => $cart_product['product_id'],
-                'sku' => $product->get_sku() ?: null,
+                'sku' => $product->get_sku(),
                 'price' => $cart_product['line_total'] / $cart_product['quantity'],
                 'quantity' => $cart_product['quantity'],
                 'weight' => (float) $product->get_weight(),
@@ -119,6 +119,7 @@ class RatesRequestBodyBuilder
                     return ['origin' => $code];
                 }, $origin_codes) : null,
                 'attributes' => [
+                    'sku' => $product->get_sku(),
                     'length' => (float) $product->get_length(),
                     'width' => (float) $product->get_width(),
                     'height' => (float) $product->get_height(),
