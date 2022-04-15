@@ -74,6 +74,12 @@ if (!\class_exists(WoocommerceSettingsRESTController::class)) {
             $product_attrs = $this->get_attrs();
             $data['attrs'] = \array_merge($data['attrs'], $product_attrs);
 
+            $data['attrs'][] = [
+                'title' => 'SKU',
+                'name' => 'sku',
+                'field_type' => 'string',
+            ];
+
             // date_created
             $data['attrs'][] = [
                 'title' => 'Date created',
