@@ -27,7 +27,7 @@ if (!\class_exists(WCBootstrap::class)) {
             \add_action('woocommerce_checkout_update_order_review', [$this, 'ship_to_different_address_set_session']);
 
             // add text to order email
-            \add_action('woocommerce_email_after_order_table', [$this, 'add_shipping_data_after_order_table_in_email'], 10, 4);
+            \add_action('woocommerce_email_after_order_table', [$this, 'add_shipping_data_after_order_table_in_email'], 10, 1);
 
             // add origins select
             \add_action('woocommerce_product_options_shipping', [$this, 'add_origin_select']);
@@ -78,7 +78,7 @@ if (!\class_exists(WCBootstrap::class)) {
             return $data;
         }
 
-        public function add_shipping_data_after_order_table_in_email(\WC_Order $order, bool $sent_to_admin, string $plain_text, \WC_Email $email): void
+        public function add_shipping_data_after_order_table_in_email(\WC_Order $order): void
         {
             $message = null;
             $delivery_date_from = null;
