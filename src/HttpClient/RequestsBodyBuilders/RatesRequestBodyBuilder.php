@@ -144,6 +144,7 @@ class RatesRequestBodyBuilder
                     'downloadable' => $product->is_downloadable(),
                     'categories' => $product->get_category_ids(),
                     'tags' => $product->get_tag_ids(),
+                    'shipping_class' => $product->get_shipping_class(),
                 ],
             ];
 
