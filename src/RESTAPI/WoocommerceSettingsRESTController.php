@@ -206,6 +206,13 @@ if (!\class_exists(WoocommerceSettingsRESTController::class)) {
                 'field_type' => 'number',
             ];
 
+            // shipping class
+            $data['attrs'][] = [
+                'title' => 'Shipping class',
+                'name' => 'shipping_class',
+                'field_type' => 'string',
+            ];
+
             return $data;
         }
 
