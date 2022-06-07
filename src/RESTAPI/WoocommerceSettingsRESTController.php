@@ -231,7 +231,7 @@ if (!\class_exists(WoocommerceSettingsRESTController::class)) {
 
             foreach ((array) $terms as $term) {
                 $data['values'][] = [
-                    'value' => $term->term_id,
+                    'value' => $term->slug,
                     'title' => $term->name,
                 ];
             }
