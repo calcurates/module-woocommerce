@@ -66,7 +66,7 @@ class Rates
         }
 
         $this->rates_sort();
-
+        
         return $this->rates;
     }
 
@@ -75,32 +75,29 @@ class Rates
      */
     private function rates_sort(): void
     {
-        $rates = [
-            'has_priority' => [],
-            'no_priority' => [],
-        ];
+        $rates = $this->rates;
 
-        foreach ($this->rates as $rate) {
-            $rates[$rate['priority'] ? 'has_priority' : 'no_priority'][] = $rate;
-        }
-
-        \usort($rates['has_priority'], static function ($a, $b): int {
+        \usort($rates, static function ($a, $b): int {
             if ($a['priority'] === $b['priority']) {
-                return 0;
+                $result = $a['cost']<=> $b['cost'];
+
+                if (0 === $result) {
+                    $result = $a['label'] <=> $b['label'];
+                }
+
+                return $result;
+            }
+            if (null === $a['priority']) {
+                return 1;
+            }
+            if (null === $b['priority']) {
+                return -1;
             }
 
-            return ($a['priority'] < $b['priority']) ? -1 : 1;
+            return $a['priority'] <=> $b['priority'];
         });
 
-        \usort($rates['no_priority'], static function ($a, $b): int {
-            if ($a['cost'] === $b['cost']) {
-                return 0;
-            }
-
-            return ($a['cost'] < $b['cost']) ? -1 : 1;
-        });
-
-        $this->rates = \array_merge($rates['has_priority'], $rates['no_priority']);
+        $this->rates = $rates;
     }
 
     /**
