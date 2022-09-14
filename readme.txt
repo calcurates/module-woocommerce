@@ -2,9 +2,9 @@
 Contributors: calcurates
 Tags: woocommerce, shipping rates, shipping methods, shipping carriers, shipping zones, shipping rules, delivery dates, international shipping, table rates, free shipping, in-store pickup, dimensional shipping, multi-origin shipping, dropshipping
 Requires at least: 5.2
-Tested up to: 5.9
+Tested up to: 6.0
 Requires PHP: 7.2.5
-Stable tag: 1.5.2
+Stable tag: 1.5.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -63,6 +63,10 @@ Calcurates is developed and supported by Amasty. After 10 years of success in de
 4. Calcurates advanced shipping features
 
 == Changelog ==
+
+= 1.5.3 =
+- Fix: support Shipping class attribute
+- Enhancement: better shipping rates sorting
 
 = 1.5.2 =
 - Fix: make order emails

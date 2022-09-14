@@ -206,6 +206,36 @@ if (!\class_exists(WoocommerceSettingsRESTController::class)) {
                 'field_type' => 'number',
             ];
 
+            // shipping class
+            $data['attrs'][] = $this->get_shipping_classes();
+
+            return $data;
+        }
+
+        /**
+         * Get shipping classes data.
+         */
+        private function get_shipping_classes(): array
+        {
+            $data = [
+                'title' => 'Shipping class',
+                'name' => 'shipping_class',
+                'field_type' => 'collection',
+                'can_multi' => false,
+                'values' => [],
+            ];
+
+            $terms = \get_terms('product_shipping_class', [
+                'hide_empty' => false,
+            ]);
+
+            foreach ((array) $terms as $term) {
+                $data['values'][] = [
+                    'value' => $term->slug,
+                    'title' => $term->name,
+                ];
+            }
+
             return $data;
         }
 
