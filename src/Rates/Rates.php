@@ -77,15 +77,25 @@ class Rates
     {
         $rates = $this->rates;
 
-        \usort($rates, static function ($a, $b): int {
+        \usort($rates, static function (array $a, array $b): int {
             if ($a['priority'] === $b['priority']) {
-                $result = $a['cost'] <=> $b['cost'];
+                if ($a['priority_item'] === $b['priority_item']) {
+                    $result = $a['cost'] <=> $b['cost'];
+                    if (0 === $result) {
+                        $result = $a['label'] <=> $b['label'];
+                    }
 
-                if (0 === $result) {
-                    $result = $a['label'] <=> $b['label'];
+                    return $result;
                 }
 
-                return $result;
+                if (null === $a['priority_item']) {
+                    return 1;
+                }
+                if (null === $b['priority_item']) {
+                    return -1;
+                }
+
+                return $a['priority_item'] <=> $b['priority_item'];
             }
             if (null === $a['priority']) {
                 return 1;

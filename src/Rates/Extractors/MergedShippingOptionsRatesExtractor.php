@@ -29,6 +29,7 @@ class MergedShippingOptionsRatesExtractor implements RatesExtractorInterface
                     'delivery_date_from' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['from'] : null,
                     'delivery_date_to' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['to'] : null,
                     'priority' => null,
+                    'priority_item' => null,
                     'rate_image' => null,
                 ];
             }

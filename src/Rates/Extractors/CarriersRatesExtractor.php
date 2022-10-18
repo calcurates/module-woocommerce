@@ -18,31 +18,31 @@ class CarriersRatesExtractor implements RatesExtractorInterface
         $ready_rates = [];
 
         foreach ($carriers as $carrier) {
-            if (!$carrier['success'] && $carrier['message']) {
-                // fake rate if current table rates conditions for all Shipping Option Item were not met
-                $ready_rates[] = [
-                    'has_error' => true,
-                    'id' => $carrier['id'],
-                    'label' => $carrier['name'],
-                    'cost' => 0,
-                    'tax' => 0,
-                    'message' => $carrier['message'],
-                    'delivery_date_from' => null,
-                    'delivery_date_to' => null,
-                    'priority' => $carrier['priority'],
-                    'rate_image' => $carrier['imageUri'],
-                ];
-            }
-
             if (!$carrier['success']) {
+                if ($carrier['message']) {
+                    $ready_rates[] = [
+                        'has_error' => true,
+                        'id' => $carrier['id'],
+                        'label' => $carrier['name'],
+                        'cost' => 0,
+                        'tax' => 0,
+                        'message' => $carrier['message'],
+                        'delivery_date_from' => null,
+                        'delivery_date_to' => null,
+                        'priority' => $carrier['priority'],
+                        'priority_item' => null,
+                        'rate_image' => $carrier['imageUri'],
+                    ];
+                }
                 continue;
             }
 
             foreach ($carrier['rates'] as $rate) {
-                if ($rate['success'] || (!$rate['success'] && $carrier['message'])) {
+                if ($rate['success'] || $carrier['message']) {
                     $services_names = [];
                     $services_messages = [];
                     $services_ids = [];
+                    $services_priority = null;
 
                     if ($rate['success']) {
                         foreach ($rate['services'] as $service) {
@@ -52,6 +52,9 @@ class CarriersRatesExtractor implements RatesExtractorInterface
 
                             $services_ids[] = $service['id'];
                             $services_names[] = $service['name'];
+                            if (null !== $service['priority']) {
+                                $services_priority += $service['priority'];
+                            }
                         }
                     }
 
@@ -69,6 +72,7 @@ class CarriersRatesExtractor implements RatesExtractorInterface
                         'delivery_date_from' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['from'] : null,
                         'delivery_date_to' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['to'] : null,
                         'priority' => $carrier['priority'],
+                        'priority_item' => $services_priority,
                         'rate_image' => $carrier['imageUri'],
                     ];
                 }

@@ -18,23 +18,22 @@ class RateShoppingRatesExtractor implements RatesExtractorInterface
         $ready_rates = [];
 
         foreach ($rate_shopping_rates as $rate_shopping) {
-            if (!$rate_shopping['success'] && $rate_shopping['message']) {
-                // fake rate if current table rates conditions for all Shipping Option Item were not met
-                $ready_rates[] = [
-                    'has_error' => true,
-                    'id' => $rate_shopping['id'],
-                    'label' => $rate_shopping['name'],
-                    'cost' => 0,
-                    'tax' => 0,
-                    'message' => $rate_shopping['message'],
-                    'delivery_date_from' => null,
-                    'delivery_date_to' => null,
-                    'priority' => $rate_shopping['priority'],
-                    'rate_image' => $rate_shopping['imageUri'],
-                ];
-            }
-
             if (!$rate_shopping['success']) {
+                if ($rate_shopping['message']) {
+                    $ready_rates[] = [
+                        'has_error' => true,
+                        'id' => $rate_shopping['id'],
+                        'label' => $rate_shopping['name'],
+                        'cost' => 0,
+                        'tax' => 0,
+                        'message' => $rate_shopping['message'],
+                        'delivery_date_from' => null,
+                        'delivery_date_to' => null,
+                        'priority' => $rate_shopping['priority'],
+                        'priority_item' => null,
+                        'rate_image' => $rate_shopping['imageUri'],
+                    ];
+                }
                 continue;
             }
 
@@ -50,6 +49,7 @@ class RateShoppingRatesExtractor implements RatesExtractorInterface
                     $services_names = [];
                     $services_messages = [];
                     $services_ids = [];
+                    $services_priority = null;
 
                     foreach ($rate['services'] as $service) {
                         if ($service['message']) {
@@ -58,6 +58,9 @@ class RateShoppingRatesExtractor implements RatesExtractorInterface
 
                         $services_ids[] = $service['id'];
                         $services_names[] = $service['name'];
+                        if (null !== $service['priority']) {
+                            $services_priority += $service['priority'];
+                        }
                     }
 
                     $services_messages = \implode('. ', $services_messages);
@@ -74,6 +77,7 @@ class RateShoppingRatesExtractor implements RatesExtractorInterface
                         'delivery_date_from' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['from'] : null,
                         'delivery_date_to' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['to'] : null,
                         'priority' => $rate_shopping['priority'],
+                        'priority_item' => $services_priority,
                         'rate_image' => $rate_shopping['imageUri'],
                     ];
                 }
