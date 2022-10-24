@@ -18,28 +18,27 @@ class InStorePickupsRatesExtractor implements RatesExtractorInterface
         $ready_rates = [];
 
         foreach ($in_store_rates as $in_store_rate) {
-            if (!$in_store_rate['success'] && $in_store_rate['message']) {
-                // fake rate if current table rates conditions for all Shipping Option Item were not met
-                $ready_rates[] = [
-                    'has_error' => true,
-                    'id' => $in_store_rate['id'],
-                    'label' => $in_store_rate['name'],
-                    'cost' => 0,
-                    'tax' => 0,
-                    'message' => $in_store_rate['message'],
-                    'delivery_date_from' => null,
-                    'delivery_date_to' => null,
-                    'priority' => $in_store_rate['priority'],
-                    'rate_image' => $in_store_rate['imageUri'],
-                ];
-            }
-
             if (!$in_store_rate['success']) {
+                if ($in_store_rate['message']) {
+                    $ready_rates[] = [
+                        'has_error' => true,
+                        'id' => $in_store_rate['id'],
+                        'label' => $in_store_rate['name'],
+                        'cost' => 0,
+                        'tax' => 0,
+                        'message' => $in_store_rate['message'],
+                        'delivery_date_from' => null,
+                        'delivery_date_to' => null,
+                        'priority' => $in_store_rate['priority'],
+                        'priority_item' => null,
+                        'rate_image' => $in_store_rate['imageUri'],
+                    ];
+                }
                 continue;
             }
 
             foreach ($in_store_rate['stores'] as $store) {
-                if ($store['success'] || (!$store['success'] && $store['message'])) {
+                if ($store['success'] || $store['message']) {
                     $ready_rates[] = [
                         'has_error' => !$store['success'],
                         'id' => $in_store_rate['id'].'_'.$store['id'],
@@ -50,6 +49,7 @@ class InStorePickupsRatesExtractor implements RatesExtractorInterface
                         'delivery_date_from' => isset($store['rate']['estimatedDeliveryDate']) ? $store['rate']['estimatedDeliveryDate']['from'] : null,
                         'delivery_date_to' => isset($store['rate']['estimatedDeliveryDate']) ? $store['rate']['estimatedDeliveryDate']['to'] : null,
                         'priority' => $in_store_rate['priority'],
+                        'priority_item' => $store['priority'],
                         'rate_image' => $store['imageUri'],
                     ];
                 }

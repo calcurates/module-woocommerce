@@ -18,7 +18,7 @@ class FreeShippingRatesExtractor implements RatesExtractorInterface
         $ready_rates = [];
 
         foreach ($rates as $rate) {
-            if ($rate['success'] || (!$rate['success'] && $rate['message'])) {
+            if ($rate['success'] || $rate['message']) {
                 $ready_rates[] = [
                     'has_error' => !$rate['success'],
                     'id' => $rate['id'],
@@ -29,6 +29,7 @@ class FreeShippingRatesExtractor implements RatesExtractorInterface
                     'delivery_date_from' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['from'] : null,
                     'delivery_date_to' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['to'] : null,
                     'priority' => $rate['priority'],
+                    'priority_item' => null,
                     'rate_image' => $rate['imageUri'],
                 ];
             }
