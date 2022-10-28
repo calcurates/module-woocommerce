@@ -4,7 +4,7 @@ Tags: woocommerce, shipping rates, shipping methods, shipping carriers, shipping
 Requires at least: 5.2
 Tested up to: 6.0
 Requires PHP: 7.2.5
-Stable tag: 1.5.4
+Stable tag: 1.5.5
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -63,6 +63,9 @@ Calcurates is developed and supported by Amasty. After 10 years of success in de
 4. Calcurates advanced shipping features
 
 == Changelog ==
+
+= 1.5.5 =
+- in progress
 
 = 1.5.4 =
 - Add: Shipping Segments - filtering by "Cost" has been added for "Custom Group" conditions
