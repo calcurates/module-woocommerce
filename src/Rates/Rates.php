@@ -19,9 +19,21 @@ class Rates
      */
     private $rates_extractor_factory;
     /**
-     * @var array
+     * @var array{
+     *     has_error: bool,
+     *     id: string,
+     *     label: string,
+     *     cost: float|int,
+     *     tax: float|int,
+     *     message: string|null,
+     *     delivery_date_from: string|null,
+     *     delivery_date_to: string|null,
+     *     priority: int|null,
+     *     priority_item: int|null,
+     *     rate_image: string|null,
+     * }[]
      */
-    private $rates;
+    private $rates = [];
     /**
      * @var string
      */
@@ -35,7 +47,6 @@ class Rates
     {
         $this->tax_mode = $tax_mode;
         $this->package = $package;
-        $this->rates = [];
         $this->rates_extractor_factory = new RatesExtractorFactory();
     }
 
@@ -61,7 +72,7 @@ class Rates
 
             $extracted_rates = $rate->extract($shipping_option_data);
             if ($extracted_rates) {
-                $this->rates = \array_merge($this->rates, $extracted_rates);
+                \array_push($this->rates, ...$extracted_rates);
             }
         }
 
@@ -75,9 +86,7 @@ class Rates
      */
     private function rates_sort(): void
     {
-        $rates = $this->rates;
-
-        \usort($rates, static function (array $a, array $b): int {
+        \usort($this->rates, static function (array $a, array $b): int {
             if ($a['priority'] === $b['priority']) {
                 if ($a['priority_item'] === $b['priority_item']) {
                     $result = $a['cost'] <=> $b['cost'];
@@ -106,8 +115,6 @@ class Rates
 
             return $a['priority'] <=> $b['priority'];
         });
-
-        $this->rates = $rates;
     }
 
     /**

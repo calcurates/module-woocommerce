@@ -4,26 +4,24 @@ declare(strict_types=1);
 
 namespace Calcurates\Rates\Extractors;
 
-use Calcurates\Contracts\Rates\RatesExtractorInterface;
-
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
     exit;
 }
 
-class InStorePickupsRatesExtractor implements RatesExtractorInterface
+class InStorePickupsRatesExtractor extends RatesExtractorAbstract
 {
-    public function extract(array $in_store_rates): array
+    public function extract(array $data): array
     {
         $ready_rates = [];
 
-        foreach ($in_store_rates as $in_store_rate) {
+        foreach ($data as $in_store_rate) {
             if (!$in_store_rate['success']) {
                 if ($in_store_rate['message']) {
                     $ready_rates[] = [
                         'has_error' => true,
                         'id' => $in_store_rate['id'],
-                        'label' => $in_store_rate['name'],
+                        'label' => $this->resolveLabel($in_store_rate),
                         'cost' => 0,
                         'tax' => 0,
                         'message' => $in_store_rate['message'],
@@ -42,7 +40,7 @@ class InStorePickupsRatesExtractor implements RatesExtractorInterface
                     $ready_rates[] = [
                         'has_error' => !$store['success'],
                         'id' => $in_store_rate['id'].'_'.$store['id'],
-                        'label' => $store['name'],
+                        'label' => $this->resolveLabel($store),
                         'cost' => $store['rate']['cost'] ?? 0,
                         'tax' => $store['rate']['tax'] ?? 0,
                         'message' => $store['message'],
