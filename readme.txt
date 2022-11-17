@@ -65,7 +65,7 @@ Calcurates is developed and supported by Amasty. After 10 years of success in de
 == Changelog ==
 
 = 1.5.5 =
-- in progress
+- Fix: Minor fixes and improvements
 
 = 1.5.4 =
 - Add: Shipping Segments - filtering by "Cost" has been added for "Custom Group" conditions
