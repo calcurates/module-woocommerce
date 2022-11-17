@@ -4,25 +4,23 @@ declare(strict_types=1);
 
 namespace Calcurates\Rates\Extractors;
 
-use Calcurates\Contracts\Rates\RatesExtractorInterface;
-
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
     exit;
 }
 
-class FlatRatesRatesExtractor implements RatesExtractorInterface
+class FlatRatesRatesExtractor extends RatesExtractorAbstract
 {
-    public function extract(array $rates): array
+    public function extract(array $data): array
     {
         $ready_rates = [];
 
-        foreach ($rates as $rate) {
+        foreach ($data as $rate) {
             if ($rate['success'] || $rate['message']) {
                 $ready_rates[] = [
                     'has_error' => !$rate['success'],
                     'id' => $rate['id'],
-                    'label' => $rate['name'],
+                    'label' => $this->resolveLabel($rate),
                     'cost' => $rate['rate']['cost'] ?? 0,
                     'tax' => $rate['rate']['tax'] ?? 0,
                     'message' => $rate['message'],

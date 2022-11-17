@@ -4,26 +4,24 @@ declare(strict_types=1);
 
 namespace Calcurates\Rates\Extractors;
 
-use Calcurates\Contracts\Rates\RatesExtractorInterface;
-
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
     exit;
 }
 
-class CarriersRatesExtractor implements RatesExtractorInterface
+class CarriersRatesExtractor extends RatesExtractorAbstract
 {
-    public function extract(array $carriers): array
+    public function extract(array $data): array
     {
         $ready_rates = [];
 
-        foreach ($carriers as $carrier) {
+        foreach ($data as $carrier) {
             if (!$carrier['success']) {
                 if ($carrier['message']) {
                     $ready_rates[] = [
                         'has_error' => true,
                         'id' => $carrier['id'],
-                        'label' => $carrier['name'],
+                        'label' => $this->resolveLabel($carrier),
                         'cost' => 0,
                         'tax' => 0,
                         'message' => $carrier['message'],
@@ -51,7 +49,7 @@ class CarriersRatesExtractor implements RatesExtractorInterface
                             }
 
                             $services_ids[] = $service['id'];
-                            $services_names[] = $service['name'];
+                            $services_names[] = $this->resolveLabel($service);
                             if (null !== $service['priority']) {
                                 $services_priority += $service['priority'];
                             }
@@ -65,7 +63,7 @@ class CarriersRatesExtractor implements RatesExtractorInterface
                     $ready_rates[] = [
                         'has_error' => !$rate['success'],
                         'id' => $carrier['id'].'_'.$services_ids,
-                        'label' => $carrier['name'].'. '.$services_names,
+                        'label' => $this->resolveLabel($carrier).'. '.$services_names,
                         'cost' => $rate['rate']['cost'] ?? 0,
                         'tax' => $rate['rate']['tax'] ?? 0,
                         'message' => $rate['success'] ? $carrier['message'].' '.$services_messages : $carrier['message'],

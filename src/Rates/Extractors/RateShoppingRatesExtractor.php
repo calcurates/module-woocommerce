@@ -4,26 +4,24 @@ declare(strict_types=1);
 
 namespace Calcurates\Rates\Extractors;
 
-use Calcurates\Contracts\Rates\RatesExtractorInterface;
-
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
     exit;
 }
 
-class RateShoppingRatesExtractor implements RatesExtractorInterface
+class RateShoppingRatesExtractor extends RatesExtractorAbstract
 {
-    public function extract(array $rate_shopping_rates): array
+    public function extract(array $data): array
     {
         $ready_rates = [];
 
-        foreach ($rate_shopping_rates as $rate_shopping) {
+        foreach ($data as $rate_shopping) {
             if (!$rate_shopping['success']) {
                 if ($rate_shopping['message']) {
                     $ready_rates[] = [
                         'has_error' => true,
                         'id' => $rate_shopping['id'],
-                        'label' => $rate_shopping['name'],
+                        'label' => $this->resolveLabel($rate_shopping),
                         'cost' => 0,
                         'tax' => 0,
                         'message' => $rate_shopping['message'],
@@ -57,7 +55,7 @@ class RateShoppingRatesExtractor implements RatesExtractorInterface
                         }
 
                         $services_ids[] = $service['id'];
-                        $services_names[] = $service['name'];
+                        $services_names[] = $this->resolveLabel($service);
                         if (null !== $service['priority']) {
                             $services_priority += $service['priority'];
                         }
@@ -70,7 +68,7 @@ class RateShoppingRatesExtractor implements RatesExtractorInterface
                     $ready_rates[] = [
                         'has_error' => false,
                         'id' => $rate_shopping['id'].'_'.$carrier['id'].'_'.$services_ids,
-                        'label' => $carrier['name'].'. '.$services_names,
+                        'label' => $this->resolveLabel($carrier).'. '.$services_names,
                         'cost' => $rate['rate']['cost'] ?? 0,
                         'tax' => $rate['rate']['tax'] ?? 0,
                         'message' => $rate_shopping['message'].' '.$services_messages,
