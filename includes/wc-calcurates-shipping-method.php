@@ -202,7 +202,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         }
 
         $rates_request_body_builder = new RatesRequestBodyBuilder($package);
-        // build body for request
+        // build body for the request
         $rates_request_body = $rates_request_body_builder->build();
 
         $calcurates_client = new CalcuratesHttpClient($this->calcurates_api_key, $this->calcurates_api_url, $this->debug_mode);
@@ -229,11 +229,12 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         parent::process_admin_options();
 
         // TODO: needs refactor
-        if (\array_key_exists('woocommerce_'.$this->id.'_generate_new_api_key', $_POST) && '1' === $_POST['woocommerce_'.$this->id.'_generate_new_api_key']) {
+        $key = 'woocommerce_'.$this->id.'_generate_new_api_key';
+        if (isset($_POST[$key]) && '1' === $_POST[$key]) {
             $this->update_option('generate_new_api_key', 'no');
-            $key = \wc_rand_hash();
-            \update_option(WCCalcurates::get_prefix().'key', $key);
-            $this->update_option('plugin_api_key', $key);
+            $hash = \wc_rand_hash();
+            \update_option(WCCalcurates::get_prefix().'key', $hash);
+            $this->update_option('plugin_api_key', $hash);
         }
 
         return true;

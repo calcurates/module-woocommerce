@@ -68,7 +68,7 @@ if (!\class_exists(WCBootstrap::class)) {
             if ($data) {
                 \parse_str($data, $data_array);
 
-                if (\array_key_exists('ship_to_different_address', $data_array) && $data_array['ship_to_different_address']) {
+                if (isset($data_array['ship_to_different_address']) && $data_array['ship_to_different_address']) {
                     \WC()->session->set('ship_to_different_address', 1);
                 } else {
                     \WC()->session->set('ship_to_different_address', 0);
