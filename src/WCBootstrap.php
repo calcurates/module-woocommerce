@@ -63,15 +63,14 @@ if (!\class_exists(WCBootstrap::class)) {
 
         public function ship_to_different_address_set_session(string $data): string
         {
-            $data_array = [];
-
             if ($data) {
+                $data_array = [];
                 \parse_str($data, $data_array);
 
                 if (isset($data_array['ship_to_different_address']) && $data_array['ship_to_different_address']) {
-                    \WC()->session->set('ship_to_different_address', 1);
+                    \WC()->session->set('ship_to_different_address', '1');
                 } else {
-                    \WC()->session->set('ship_to_different_address', 0);
+                    \WC()->session->set('ship_to_different_address', '0');
                 }
             }
 
@@ -265,15 +264,15 @@ if (!\class_exists(WCBootstrap::class)) {
          */
         public function validate_selected_rate(array $data, \WP_Error $errors): void
         {
-            $chosen_shipping_methods = \WC()->session->get('chosen_shipping_methods');
+            $chosen_shipping_methods = \WC()->session->get('chosen_shipping_methods', []);
 
-            if (!\is_array($chosen_shipping_methods)) {
+            if (!$chosen_shipping_methods || !\is_array($chosen_shipping_methods)) {
                 return;
             }
 
             foreach ($chosen_shipping_methods as $chosen_method) {
                 // The array of shipping methods enabled for the current shipping zone:
-                $shipping_methods = \WC()->session->get('shipping_for_package_0')['rates'];
+                $shipping_methods = \WC()->session->get('shipping_for_package_0', [])['rates'];
 
                 foreach ($shipping_methods as $shipping_rate) {
                     if ($shipping_rate->get_id() === $chosen_method) {
