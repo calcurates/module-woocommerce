@@ -56,9 +56,9 @@ class CarriersRatesExtractor extends RatesExtractorAbstract
                         }
                     }
 
-                    $services_messages = \implode('. ', $services_messages);
                     $services_ids = \implode('_', $services_ids);
-                    $services_names = \implode(', ', $services_names);
+                    $services_messages = \implode('. ', \array_unique($services_messages));
+                    $services_names = \implode(', ', \array_unique($services_names));
 
                     $ready_rates[] = [
                         'has_error' => !$rate['success'],
