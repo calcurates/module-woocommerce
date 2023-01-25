@@ -311,7 +311,7 @@ if (!\class_exists(WoocommerceSettingsRESTController::class)) {
 
                 if (\taxonomy_exists($taxonomy)) {
                     $data = [
-                        'title' => $attribute->attribute_label,
+                        'title' => $attribute->attribute_label ?: $attribute->attribute_name,
                         'name' => 'pa_'.$attribute->attribute_name,
                         'field_type' => 'collection',
                         'can_multi' => true,
