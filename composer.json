@@ -16,7 +16,7 @@
         }
     ],
     "type": "wordpress-plugin",
-    "version": "1.5.5",
+    "version": "1.5.6",
     "config": {
         "vendor-dir": "lib",
         "optimize-autoloader": true,

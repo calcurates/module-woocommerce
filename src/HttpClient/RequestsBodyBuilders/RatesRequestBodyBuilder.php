@@ -34,7 +34,7 @@ class RatesRequestBodyBuilder
         $coupon = \reset($coupons);
 
         return [
-            'promoCode' => $coupon ? $coupon->get_code() : null, // FIXME coud be few coupons
+            'promoCode' => $coupon ? $coupon->get_code() : null, // FIXME could be few coupons
             'shipTo' => $this->prepare_ship_to_data(),
             'products' => $this->prepare_products_data(),
             'customerGroup' => \is_user_logged_in() ? 'customer' : 'guest',
@@ -50,7 +50,7 @@ class RatesRequestBodyBuilder
         $is_checkout = \is_checkout();
         $contact_name = null;
         $country_code = null;
-        $customer_session_data = \WC()->session->get('customer');
+        $customer_session_data = \WC()->session->get('customer', []);
         $ship_to_different_address = \WC()->session->get('ship_to_different_address', '0');
         $postcode = $ship_to_different_address || (!$is_checkout && $customer_session_data['shipping_postcode']) ? ($customer_session_data['shipping_postcode'] ?: 'string') : ($customer_session_data['postcode'] ?: 'string'); // fixme: remove the "string"
         $first_name = $ship_to_different_address || (!$is_checkout && $customer_session_data['shipping_first_name']) ? ($customer_session_data['shipping_first_name'] ?: null) : ($customer_session_data['first_name'] ?: null);
@@ -66,7 +66,10 @@ class RatesRequestBodyBuilder
             $contact_name .= $first_name;
         }
         if ($last_name) {
-            $contact_name .= ' '.$last_name;
+            if ($contact_name) {
+                $contact_name .= ' ';
+            }
+            $contact_name .= $last_name;
         }
 
         if (isset($customer_session_data['shipping_country']) && $customer_session_data['shipping_country']) {
@@ -103,11 +106,11 @@ class RatesRequestBodyBuilder
             /** @var \WC_Product $product */
             $product = $cart_product['data'];
 
-            $origin_codes = OriginUtils::getInstance()->get_origin_codes_from_product($cart_product['product_id']);
-
             if ($product->is_virtual() || $product->is_downloadable()) {
                 continue;
             }
+
+            $origin_codes = OriginUtils::getInstance()->get_origin_codes_from_product($cart_product['product_id']);
 
             $data = [
                 'quoteItemId' => $cart_product['product_id'],
