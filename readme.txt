@@ -2,9 +2,9 @@
 Contributors: calcurates
 Tags: woocommerce, shipping rates, shipping methods, shipping carriers, shipping zones, shipping rules, delivery dates, international shipping, table rates, free shipping, in-store pickup, dimensional shipping, multi-origin shipping, dropshipping
 Requires at least: 5.2
-Tested up to: 6.1
+Tested up to: 6.2
 Requires PHP: 7.2.5
-Stable tag: 1.5.6
+Stable tag: 1.5.7
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -57,12 +57,16 @@ Calcurates is developed and supported by Amasty. After 10 years of success in de
 
 == Screenshots ==
 
-1. Calcurates integrations with top e-commerce platforms
-2. Calcurates shipping options and integrations with major shipping carriers
-3. Calcurates core shipping functionality
-4. Calcurates advanced shipping features
+1. Right shipping methods and accurate rates for WooCommerce
+2. Advanced Shipping Areas by postcodes for WooCommerce
+3. Shipping Rules and Restrictions for WooCommerce
+4. Dimensional Shipping for WooCommerce
+5. Accurate shipping and delivery dates for WooCommerce checkout
 
 == Changelog ==
+
+= 1.5.7 =
+- Fix: PHP Warning ing rate request
 
 = 1.5.6 =
 - Add: Display name for Merged Shipping Option has been added
