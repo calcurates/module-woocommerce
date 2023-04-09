@@ -66,7 +66,7 @@ Calcurates is developed and supported by Amasty. After 10 years of success in de
 == Changelog ==
 
 = 1.5.7 =
-- Fix: PHP Warning ing rate request
+- Fix: PHP Warning in rate request
 
 = 1.5.6 =
 - Add: Display name for Merged Shipping Option has been added
