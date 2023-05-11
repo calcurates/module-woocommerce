@@ -227,13 +227,13 @@ class RatesRequestBodyBuilder
      */
     private function wpml_set_default_language()
     {
-        if(!has_action('wpml_switch_language')){
+        if(!$this->is_wpml_available()){
             return;
         }
 
-        $this->prev_wpml_language = ICL_LANGUAGE_CODE;
+        $this->prev_wpml_language = apply_filters( 'wpml_current_language', null);
 
-        $default_lang = apply_filters('wpml_default_language', NULL);
+        $default_lang = apply_filters('wpml_default_language', null);
         do_action( 'wpml_switch_language', $default_lang);
     }
 
@@ -242,10 +242,14 @@ class RatesRequestBodyBuilder
      */
     private function wpml_restore_language()
     {
-        if(!has_action('wpml_switch_language')){
+        if(!$this->is_wpml_available()){
             return;
         }
 
         do_action( 'wpml_switch_language', $this->prev_wpml_language);
+    }
+
+    private function is_wpml_available(): bool {
+        return has_action('wpml_switch_language');
     }
 }
