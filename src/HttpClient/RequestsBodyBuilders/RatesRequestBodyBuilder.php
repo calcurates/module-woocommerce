@@ -16,16 +16,16 @@ class RatesRequestBodyBuilder
     /**
      * Package from basket.
      *
-     * @param array $package package array
+     * @var array package array
      */
     private $package;
 
     /**
-     * WPML previous active language
+     * Stored WPML language.
      *
-     * @param string
+     * @var string|null
      */
-    private $prev_wpml_language;
+    private $wpml_language;
 
     public function __construct(array $package)
     {
@@ -37,13 +37,15 @@ class RatesRequestBodyBuilder
      */
     public function build(): array
     {
-
-        $this->wpml_set_default_language();
+        $is_wpml_available = $this->is_wpml_available();
+        if ($is_wpml_available) {
+            $this->wpml_store_language();
+        }
 
         $coupons = \WC()->cart->get_coupons();
         $coupon = \reset($coupons);
 
-        $data =  [
+        $data = [
             'promoCode' => $coupon ? $coupon->get_code() : null, // FIXME could be few coupons
             'shipTo' => $this->prepare_ship_to_data(),
             'products' => $this->prepare_products_data(),
@@ -51,7 +53,9 @@ class RatesRequestBodyBuilder
             'estimate' => \is_checkout() ? false : true,
         ];
 
-        $this->wpml_restore_language();
+        if ($is_wpml_available) {
+            $this->wpml_restore_language();
+        }
 
         return $data;
     }
@@ -221,35 +225,27 @@ class RatesRequestBodyBuilder
         return null;
     }
 
-
     /**
-     * Set default language for WPML plugin
+     * Set default language for WPML plugin.
      */
-    private function wpml_set_default_language()
+    private function wpml_store_language(): void
     {
-        if(!$this->is_wpml_available()){
-            return;
-        }
+        $this->wpml_language = \apply_filters('wpml_current_language', null);
 
-        $this->prev_wpml_language = apply_filters( 'wpml_current_language', null);
-
-        $default_lang = apply_filters('wpml_default_language', null);
-        do_action( 'wpml_switch_language', $default_lang);
+        $default_lang = \apply_filters('wpml_default_language', null);
+        \do_action('wpml_switch_language', $default_lang);
     }
 
     /**
-     * Restore WPML plugin language
+     * Restore WPML plugin language.
      */
-    private function wpml_restore_language()
+    private function wpml_restore_language(): void
     {
-        if(!$this->is_wpml_available()){
-            return;
-        }
-
-        do_action( 'wpml_switch_language', $this->prev_wpml_language);
+        \do_action('wpml_switch_language', $this->wpml_language);
     }
 
-    private function is_wpml_available(): bool {
-        return has_action('wpml_switch_language');
+    private function is_wpml_available(): bool
+    {
+        return \has_action('wpml_switch_language');
     }
 }
