@@ -16,9 +16,16 @@ class RatesRequestBodyBuilder
     /**
      * Package from basket.
      *
-     * @param array $package package array
+     * @var array package array
      */
     private $package;
+
+    /**
+     * Stored WPML language.
+     *
+     * @var string|null
+     */
+    private $wpml_language;
 
     public function __construct(array $package)
     {
@@ -30,16 +37,27 @@ class RatesRequestBodyBuilder
      */
     public function build(): array
     {
+        $is_wpml_available = $this->is_wpml_available();
+        if ($is_wpml_available) {
+            $this->wpml_store_language();
+        }
+
         $coupons = \WC()->cart->get_coupons();
         $coupon = \reset($coupons);
 
-        return [
+        $data = [
             'promoCode' => $coupon ? $coupon->get_code() : null, // FIXME could be few coupons
             'shipTo' => $this->prepare_ship_to_data(),
             'products' => $this->prepare_products_data(),
             'customerGroup' => \is_user_logged_in() ? 'customer' : 'guest',
             'estimate' => \is_checkout() ? false : true,
         ];
+
+        if ($is_wpml_available) {
+            $this->wpml_restore_language();
+        }
+
+        return $data;
     }
 
     /**
@@ -205,5 +223,29 @@ class RatesRequestBodyBuilder
         }
 
         return null;
+    }
+
+    /**
+     * Set default language for WPML plugin.
+     */
+    private function wpml_store_language(): void
+    {
+        $this->wpml_language = \apply_filters('wpml_current_language', null);
+
+        $default_lang = \apply_filters('wpml_default_language', null);
+        \do_action('wpml_switch_language', $default_lang);
+    }
+
+    /**
+     * Restore WPML plugin language.
+     */
+    private function wpml_restore_language(): void
+    {
+        \do_action('wpml_switch_language', $this->wpml_language);
+    }
+
+    private function is_wpml_available(): bool
+    {
+        return \has_action('wpml_switch_language');
     }
 }

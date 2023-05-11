@@ -4,7 +4,7 @@ Tags: woocommerce, shipping rates, shipping methods, shipping carriers, shipping
 Requires at least: 5.2
 Tested up to: 6.2
 Requires PHP: 7.2.5
-Stable tag: 1.5.7
+Stable tag: 1.5.8
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -65,8 +65,11 @@ Calcurates is developed and supported by Amasty. After 10 years of success in de
 
 == Changelog ==
 
+= 1.5.8 =
+- Fix: Compatibility issues with WPML have been fixed
+
 = 1.5.7 =
-- Fix: PHP Warning ing rate request
+- Fix: PHP Warning in rate request
 
 = 1.5.6 =
 - Add: Display name for Merged Shipping Option has been added
