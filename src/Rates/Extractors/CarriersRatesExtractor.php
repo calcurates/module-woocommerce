@@ -16,27 +16,7 @@ class CarriersRatesExtractor extends RatesExtractorAbstract
         $ready_rates = [];
 
         foreach ($data as $carrier) {
-            if (!$carrier['success']) {
-                if ($carrier['message']) {
-                    $ready_rates[] = [
-                        'has_error' => true,
-                        'id' => $carrier['id'],
-                        'label' => $this->resolveLabel($carrier),
-                        'cost' => 0,
-                        'tax' => 0,
-                        'message' => $carrier['message'],
-                        'delivery_date_from' => null,
-                        'delivery_date_to' => null,
-                        'priority' => $carrier['priority'],
-                        'priority_item' => null,
-                        'rate_image' => $carrier['imageUri'],
-                    ];
-                }
-                continue;
-            }
-
             foreach ($carrier['rates'] as $rate) {
-                if ($rate['success'] || $carrier['message']) {
                     $services_names = [];
                     $services_messages = [];
                     $services_ids = [];
@@ -66,14 +46,13 @@ class CarriersRatesExtractor extends RatesExtractorAbstract
                         'label' => $this->resolveLabel($carrier).'. '.$services_names,
                         'cost' => $rate['rate']['cost'] ?? 0,
                         'tax' => $rate['rate']['tax'] ?? 0,
-                        'message' => $rate['success'] ? $carrier['message'].' '.$services_messages : $carrier['message'],
+                        'message' => $rate['success'] ? $carrier['message'].' '.$services_messages : $rate['message'],
                         'delivery_date_from' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['from'] : null,
                         'delivery_date_to' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['to'] : null,
                         'priority' => $carrier['priority'],
                         'priority_item' => $services_priority,
                         'rate_image' => $carrier['imageUri'],
                     ];
-                }
             }
         }
 
