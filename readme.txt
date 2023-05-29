@@ -4,7 +4,7 @@ Tags: woocommerce, shipping rates, shipping methods, shipping carriers, shipping
 Requires at least: 5.2
 Tested up to: 6.2
 Requires PHP: 7.2.5
-Stable tag: 1.5.8
+Stable tag: 1.5.9
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -64,6 +64,9 @@ Calcurates is developed and supported by Amasty. After 10 years of success in de
 5. Accurate shipping and delivery dates for WooCommerce checkout
 
 == Changelog ==
+
+= 1.5.9 =
+- Fix: Error message visibility issue for the carrier shipping option has been fixed
 
 = 1.5.8 =
 - Fix: Compatibility issues with WPML have been fixed
