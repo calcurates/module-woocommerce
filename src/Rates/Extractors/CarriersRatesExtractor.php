@@ -40,19 +40,21 @@ class CarriersRatesExtractor extends RatesExtractorAbstract
                 $services_messages = \implode('. ', \array_unique($services_messages));
                 $services_names = \implode(', ', \array_unique($services_names));
 
-                $ready_rates[] = [
-                        'has_error' => !$rate['success'],
-                        'id' => $carrier['id'].'_'.$services_ids,
-                        'label' => $this->resolveLabel($carrier).'. '.$services_names,
-                        'cost' => $rate['rate']['cost'] ?? 0,
-                        'tax' => $rate['rate']['tax'] ?? 0,
-                        'message' => $rate['success'] ? $carrier['message'].' '.$services_messages : $rate['message'],
-                        'delivery_date_from' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['from'] : null,
-                        'delivery_date_to' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['to'] : null,
-                        'priority' => $carrier['priority'],
-                        'priority_item' => $services_priority,
-                        'rate_image' => $carrier['imageUri'],
-                    ];
+                if ($rate['success'] || $rate['message']) {
+                    $ready_rates[] = [
+                            'has_error' => !$rate['success'],
+                            'id' => $carrier['id'].'_'.$services_ids,
+                            'label' => $this->resolveLabel($carrier).'. '.$services_names,
+                            'cost' => $rate['rate']['cost'] ?? 0,
+                            'tax' => $rate['rate']['tax'] ?? 0,
+                            'message' => $rate['success'] ? $carrier['message'].' '.$services_messages : $rate['message'],
+                            'delivery_date_from' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['from'] : null,
+                            'delivery_date_to' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['to'] : null,
+                            'priority' => $carrier['priority'],
+                            'priority_item' => $services_priority,
+                            'rate_image' => $carrier['imageUri'],
+                        ];
+                }
             }
         }
 
