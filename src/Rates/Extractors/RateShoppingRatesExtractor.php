@@ -16,9 +16,7 @@ class RateShoppingRatesExtractor extends RatesExtractorAbstract
         $ready_rates = [];
 
         foreach ($data as $rate_shopping) {
-
             foreach ($rate_shopping['carriers'] as $carrier) {
-
                 foreach ($carrier['rates'] as $rate) {
                     $services_names = [];
                     $services_messages = [];

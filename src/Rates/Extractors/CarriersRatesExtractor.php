@@ -17,30 +17,30 @@ class CarriersRatesExtractor extends RatesExtractorAbstract
 
         foreach ($data as $carrier) {
             foreach ($carrier['rates'] as $rate) {
-                    $services_names = [];
-                    $services_messages = [];
-                    $services_ids = [];
-                    $services_priority = null;
+                $services_names = [];
+                $services_messages = [];
+                $services_ids = [];
+                $services_priority = null;
 
-                    if ($rate['success']) {
-                        foreach ($rate['services'] as $service) {
-                            if ($service['message']) {
-                                $services_messages[] = $service['message'];
-                            }
+                if ($rate['success']) {
+                    foreach ($rate['services'] as $service) {
+                        if ($service['message']) {
+                            $services_messages[] = $service['message'];
+                        }
 
-                            $services_ids[] = $service['id'];
-                            $services_names[] = $this->resolveLabel($service);
-                            if (null !== $service['priority']) {
-                                $services_priority += $service['priority'];
-                            }
+                        $services_ids[] = $service['id'];
+                        $services_names[] = $this->resolveLabel($service);
+                        if (null !== $service['priority']) {
+                            $services_priority += $service['priority'];
                         }
                     }
+                }
 
-                    $services_ids = \implode('_', $services_ids);
-                    $services_messages = \implode('. ', \array_unique($services_messages));
-                    $services_names = \implode(', ', \array_unique($services_names));
+                $services_ids = \implode('_', $services_ids);
+                $services_messages = \implode('. ', \array_unique($services_messages));
+                $services_names = \implode(', ', \array_unique($services_names));
 
-                    $ready_rates[] = [
+                $ready_rates[] = [
                         'has_error' => !$rate['success'],
                         'id' => $carrier['id'].'_'.$services_ids,
                         'label' => $this->resolveLabel($carrier).'. '.$services_names,
