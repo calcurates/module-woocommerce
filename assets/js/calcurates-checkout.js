@@ -2,6 +2,8 @@ jQuery(document).ready(function() {
     // setup
     setup_shipping();
 
+    watchForCompanyInputChange();
+
     jQuery(document.body).on('updated_checkout updated_cart_totals', function() {
         // setup
         setup_shipping();
@@ -38,4 +40,17 @@ jQuery(document).ready(function() {
             $shippingMethods.not(':disabled').first().prop('checked', true).trigger('change');
         }
     }
+
+    function watchForCompanyInputChange() {
+        var debounce = null;
+
+        jQuery("#billing_company, #shipping_company").on('input', function(){
+            clearTimeout(debounce);
+
+            debounce = setTimeout(function(){
+                jQuery(document.body).trigger("update_checkout");
+            }, 300);
+        });
+    }
+
 });
