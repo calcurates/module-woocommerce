@@ -1,11 +1,8 @@
 jQuery(document).ready(function() {
-    // setup
     setup_shipping();
-
-    watchForCompanyInputChange();
+    watch_for_company_input_change();
 
     jQuery(document.body).on('updated_checkout updated_cart_totals', function() {
-        // setup
         setup_shipping();
     });
 
@@ -41,16 +38,15 @@ jQuery(document).ready(function() {
         }
     }
 
-    function watchForCompanyInputChange() {
-        var debounce = null;
+    function watch_for_company_input_change() {
+        let debounce = null;
 
-        jQuery("#billing_company, #shipping_company").on('input', function(){
-            clearTimeout(debounce);
+        jQuery("#billing_company, #shipping_company").on('input', function() {
+            window.clearTimeout(debounce);
 
-            debounce = setTimeout(function(){
+            debounce = window.setTimeout(function() {
                 jQuery(document.body).trigger("update_checkout");
             }, 300);
         });
     }
-
 });
