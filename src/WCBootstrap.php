@@ -37,6 +37,21 @@ if (!\class_exists(WCBootstrap::class)) {
             \add_action('woocommerce_after_checkout_validation', [$this, 'validate_selected_rate'], 10, 2);
 
             \add_filter('woocommerce_cart_shipping_method_full_label', [$this, 'filter_woocommerce_cart_shipping_method_full_label'], 10, 2);
+
+            \add_action( 'woocommerce_checkout_update_order_review', [$this, 'add_data_to_session'], 10, 1 );
+
+            \add_action('woocommerce_checkout_update_order_review', [$this,'checkout_update_refresh_shipping_methods'], 10, 1);
+        }
+
+        /**
+         * Always trigger shipping recalculation on update_checkout js trigger
+         */
+        public function checkout_update_refresh_shipping_methods( $post_data ) {
+            $packages = \WC()->cart->get_shipping_packages();
+
+            foreach ($packages as $package_key => $package ) {
+                \WC()->session->set( 'shipping_for_package_' . $package_key, true );
+            }
         }
 
         public function init_shipping(): void

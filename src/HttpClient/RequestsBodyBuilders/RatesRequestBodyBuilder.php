@@ -68,17 +68,24 @@ class RatesRequestBodyBuilder
         $is_checkout = \is_checkout();
         $contact_name = null;
         $country_code = null;
+        $post_data = [];
         $customer_session_data = \WC()->session->get('customer', []);
+
+
+        if($_POST['post_data']){
+            parse_str(urldecode($_POST['post_data']), $post_data);
+        }
+
         $ship_to_different_address = \WC()->session->get('ship_to_different_address', '0');
         $postcode = $ship_to_different_address || (!$is_checkout && \array_key_exists('shipping_postcode', $customer_session_data)) ? ($customer_session_data['shipping_postcode'] ?: 'string') : (\array_key_exists('postcode', $customer_session_data) ? $customer_session_data['postcode'] : 'string'); // fixme: remove the "string"
-        $first_name = $ship_to_different_address || (!$is_checkout && \array_key_exists('shipping_first_name', $customer_session_data)) ? ($customer_session_data['shipping_first_name'] ?: null) : (\array_key_exists('first_name', $customer_session_data) ? $customer_session_data['first_name'] : null);
-        $last_name = $ship_to_different_address || (!$is_checkout && \array_key_exists('shipping_last_name', $customer_session_data)) ? ($customer_session_data['shipping_last_name'] ?: null) : (\array_key_exists('last_name', $customer_session_data) ? $customer_session_data['last_name'] : null);
-        $company = $ship_to_different_address || (!$is_checkout && \array_key_exists('shipping_company', $customer_session_data)) ? ($customer_session_data['shipping_company'] ?: null) : (\array_key_exists('company', $customer_session_data) ? $customer_session_data['company'] : null);
-        $phone = \array_key_exists('phone', $customer_session_data) ? $customer_session_data['phone'] : null;
+        $first_name = $ship_to_different_address  ? (\array_key_exists('shipping_first_name', $post_data) ? $post_data['shipping_first_name'] : null) : (\array_key_exists('billing_first_name', $post_data) ? $post_data['billing_first_name'] : null);
+        $last_name = $ship_to_different_address  ? (\array_key_exists('shipping_last_name', $post_data) ? $post_data['shipping_last_name'] : null) : (\array_key_exists('billing_last_name', $post_data) ? $post_data['billing_last_name'] : null);
+        $company = $ship_to_different_address  ? (\array_key_exists('shipping_company', $post_data) ? $post_data['shipping_company'] : null) : (\array_key_exists('billing_company', $post_data) ? $post_data['billing_company'] : null);
+        $phone = \array_key_exists('billing_phone', $post_data) ? $post_data['billing_phone'] : null;
         $state = $ship_to_different_address || (!$is_checkout && \array_key_exists('shipping_state', $customer_session_data)) ? ($customer_session_data['shipping_state'] ?: null) : (\array_key_exists('state', $customer_session_data) ? $customer_session_data['state'] : null);
         $city = $ship_to_different_address || (!$is_checkout && \array_key_exists('shipping_city', $customer_session_data)) ? ($customer_session_data['shipping_city'] ?: null) : (\array_key_exists('city', $customer_session_data) ? $customer_session_data['city'] : null);
-        $addr_1 = $ship_to_different_address || (!$is_checkout && \array_key_exists('shipping_address_1', $customer_session_data)) ? ($customer_session_data['shipping_address_1'] ?: null) : (\array_key_exists('address_1', $customer_session_data) ? $customer_session_data['address_1'] : null);
-        $addr_2 = $ship_to_different_address || (!$is_checkout && \array_key_exists('shipping_address_2', $customer_session_data)) ? ($customer_session_data['shipping_address_2'] ?: null) : (\array_key_exists('address_2', $customer_session_data) ? $customer_session_data['address_2'] : null);
+        $addr_1 = $ship_to_different_address  ? (\array_key_exists('shipping_address_1', $post_data) ? $post_data['shipping_address_1'] : null) : (\array_key_exists('billing_address_1', $post_data) ? $post_data['billing_address_1'] : null);
+        $addr_2 = $ship_to_different_address  ? (\array_key_exists('shipping_address_2', $post_data) ? $post_data['shipping_address_2'] : null) : (\array_key_exists('billing_address_2', $post_data) ? $post_data['billing_address_2'] : null);
 
         if ($first_name) {
             $contact_name .= $first_name;
