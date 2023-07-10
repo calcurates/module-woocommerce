@@ -38,8 +38,6 @@ if (!\class_exists(WCBootstrap::class)) {
 
             \add_filter('woocommerce_cart_shipping_method_full_label', [$this, 'filter_woocommerce_cart_shipping_method_full_label'], 10, 2);
 
-            \add_action('woocommerce_checkout_update_order_review', [$this, 'add_data_to_session'], 10, 1);
-
             \add_action('woocommerce_checkout_update_order_review', [$this, 'checkout_update_refresh_shipping_methods'], 10, 1);
         }
 
