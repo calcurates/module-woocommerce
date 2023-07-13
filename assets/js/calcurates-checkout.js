@@ -20,6 +20,7 @@ function setupShipping() {
         const $liElem = $that.closest('li').addClass('calcurates-checkout__shipping-rate');
         const $input = $liElem.find('input[name^="shipping_method"]');
         const $datepicker = $liElem.find('.calcurates-checkout__shipping-rate-date-select');
+        const $originalUtcDate = $liElem.find('.calcurates-checkout__shipping-rate-date-original-utc');
 
         if ($that.hasClass('calcurates-checkout__shipping-rate-text_has-error')) {
             $liElem.addClass('calcurates-checkout__shipping-rate_disabled');
@@ -34,6 +35,7 @@ function setupShipping() {
         }
 
         $datepicker.prop('disabled', !$input.prop('checked'));
+        $originalUtcDate.prop('disabled', !$input.prop('checked'));
 
         if ($input.prop('checked')) {
             $datepicker.closest('.calcurates-checkout__shipping-rate-date-select-label').show();
@@ -74,6 +76,7 @@ function setupDatePicker() {
     jQuery.getScript( CALCURATES_GLOBAL.pluginDir + "/assets/lib/air-datepicker/locale/"+ CALCURATES_GLOBAL.lang +".js", function() {
         jQuery('input[id^="calcurates-datepicker"]').each(function() {
             const $datepicker = jQuery(this);
+            const $originalUtcDate = $datepicker.parent().find('.calcurates-checkout__shipping-rate-date-original-utc');
 
             const timeSlots = cloneFull($datepicker.data('time-slots'));
             if (!timeSlots || timeSlots.length === 0){
@@ -112,6 +115,8 @@ function setupDatePicker() {
                     const normalizedDate = normalizeDatepickerDateToZeroUTC(data.date);
                     //find time
                     const result = timeSlots.find(function(item) {
+                        $originalUtcDate.val(item['date']);
+                        
                         return item['date'].replace(timePattern, '00:00:00') === normalizedDate;
                     });
 

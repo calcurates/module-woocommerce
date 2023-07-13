@@ -380,7 +380,8 @@ if (!\class_exists(WCBootstrap::class)) {
                 $date_selector = '';
                 if ($meta['time_slots']) {
                     $date_selector = '<div class="calcurates-checkout__shipping-rate-date-select-label">Delivery date
-                    <input id="'.\htmlspecialchars($this->rate_id_to_css_id($rate->get_id())).'" class="calcurates-checkout__shipping-rate-date-select" name="'.\htmlspecialchars(self::$delivery_date_meta_name ?? '').'" placeholder="Select delivery date" data-delivery-date-from="'.\htmlspecialchars($meta['delivery_date_from'] ?? '').'" data-delivery-date-to="'.\htmlspecialchars($meta['delivery_date_to'] ?? '').'" data-time-slot-date-required="'.\htmlspecialchars($meta['time_slot_date_required'] ?? '').'" data-time-slot-time-required="'.\htmlspecialchars($meta['time_slot_time_required']).'" data-time-slots="'.\htmlspecialchars(\json_encode($meta['time_slots'])).'" readonly="readonly">
+                    <input id="'.\htmlspecialchars($this->rate_id_to_css_id($rate->get_id())).'" class="calcurates-checkout__shipping-rate-date-select" placeholder="Select delivery date" data-delivery-date-from="'.\htmlspecialchars($meta['delivery_date_from'] ?? '').'" data-delivery-date-to="'.\htmlspecialchars($meta['delivery_date_to'] ?? '').'" data-time-slot-date-required="'.\htmlspecialchars($meta['time_slot_date_required'] ?? '').'" data-time-slot-time-required="'.\htmlspecialchars($meta['time_slot_time_required']).'" data-time-slots="'.\htmlspecialchars(\json_encode($meta['time_slots'])).'" readonly="readonly">
+                    <input class="calcurates-checkout__shipping-rate-date-original-utc" name="'.\htmlspecialchars(self::$delivery_date_meta_name ?? '').'" hidden/>
                     </div>';
                 }
 
