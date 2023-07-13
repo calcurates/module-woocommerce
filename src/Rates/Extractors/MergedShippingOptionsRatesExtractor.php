@@ -29,6 +29,7 @@ class MergedShippingOptionsRatesExtractor extends RatesExtractorAbstract
                     'priority' => null,
                     'priority_item' => null,
                     'rate_image' => null,
+                    'time_slots' => isset($rate['rate']['estimatedDeliveryDate']) && isset($rate['rate']['estimatedDeliveryDate']['timeSlots']) ? $rate['rate']['estimatedDeliveryDate']['timeSlots'] : null,
                 ];
             }
         }

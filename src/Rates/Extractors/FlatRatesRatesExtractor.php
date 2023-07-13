@@ -29,6 +29,7 @@ class FlatRatesRatesExtractor extends RatesExtractorAbstract
                     'priority' => $rate['priority'],
                     'priority_item' => null,
                     'rate_image' => $rate['imageUri'],
+                    'time_slots' => isset($rate['rate']['estimatedDeliveryDate']) && isset($rate['rate']['estimatedDeliveryDate']['timeSlots']) ? $rate['rate']['estimatedDeliveryDate']['timeSlots'] : null,
                 ];
             }
         }

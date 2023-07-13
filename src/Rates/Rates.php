@@ -43,6 +43,8 @@ class Rates
      */
     private $package;
 
+    private $response;
+
     public function __construct(string $tax_mode, array $package)
     {
         $this->tax_mode = $tax_mode;
@@ -55,6 +57,8 @@ class Rates
      */
     public function extract(array $response): array
     {
+        $this->response = $response;
+
         foreach ($response['shippingOptions'] as $shipping_option_name => $shipping_option_data) {
             try {
                 $rate = $this->rates_extractor_factory->create($shipping_option_name);
@@ -137,6 +141,9 @@ class Rates
                     'tax' => $rate['tax'],
                     'has_error' => $rate['has_error'],
                     'rate_image' => $rate['rate_image'],
+                    'time_slot_date_required' => isset($this->response['metadata']) && isset($this->response['metadata']['deliveryDates']) && isset($this->response['metadata']['deliveryDates']['timeSlotDateRequired']) ?? $this->response['metadata']['deliveryDates']['timeSlotDateRequired'],
+                    'time_slot_time_required' => isset($this->response['metadata']) && isset($this->response['metadata']['deliveryDates']) && isset($this->response['metadata']['deliveryDates']['timeSlotTimeRequired']) ?? $this->response['metadata']['deliveryDates']['timeSlotTimeRequired'],
+                    'time_slots' => $rate['time_slots'],
                 ],
                 'priority' => $rate['priority'],
             ];

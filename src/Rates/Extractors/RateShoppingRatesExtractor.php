@@ -54,6 +54,7 @@ class RateShoppingRatesExtractor extends RatesExtractorAbstract
                             'priority' => $rate_shopping['priority'],
                             'priority_item' => $services_priority,
                             'rate_image' => $rate_shopping['imageUri'],
+                            'time_slots' => isset($rate['rate']['estimatedDeliveryDate']) && isset($rate['rate']['estimatedDeliveryDate']['timeSlots']) ? $rate['rate']['estimatedDeliveryDate']['timeSlots'] : null,
                         ];
                     }
                 }

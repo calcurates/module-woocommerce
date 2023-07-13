@@ -19,3 +19,18 @@
     font-size: 0.80em;
     text-indent: 0px;
 }
+
+.calcurates-checkout__shipping-rate-date-select-label, .calcurates-checkout__shipping-rate-time-select-label{
+    display: block;
+}
+
+.calcurates-checkout__shipping-rate-date-select, .calcurates-checkout__shipping-rate-time-select{
+    line-height: 1.5;
+    cursor: pointer;
+    font-size: 1em;
+    margin-top: 4px;
+}
+
+.cart_totals .calcurates-checkout__shipping-rate-dates{
+    display: none;
+}
