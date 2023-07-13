@@ -18,6 +18,9 @@ if (!\class_exists(WCBootstrap::class)) {
      */
     class WCBootstrap
     {
+        private static $delivery_date_meta_name = 'selected_delivery_date';
+        private static $delivery_time_meta_name = 'selected_delivery_time';
+
         public function run(): void
         {
             // Create Calcurates shipping method
@@ -39,12 +42,30 @@ if (!\class_exists(WCBootstrap::class)) {
             \add_filter('woocommerce_cart_shipping_method_full_label', [$this, 'filter_woocommerce_cart_shipping_method_full_label'], 10, 2);
 
             \add_action('woocommerce_checkout_update_order_review', [$this, 'checkout_update_refresh_shipping_methods'], 10, 1);
+
+            \add_action('woocommerce_checkout_create_order_shipping_item', [$this, 'action_checkout_create_order_shipping_item'], 20, 4);
+        }
+
+        // For new orders via checkout
+
+        public function action_checkout_create_order_shipping_item($item, $package_key, $package, $order): void
+        {
+            if (isset($_POST[self::$delivery_date_meta_name]) && $_POST[self::$delivery_date_meta_name]) {
+                $item->update_meta_data(self::$delivery_date_meta_name, $_POST[self::$delivery_date_meta_name]);
+            }
+
+            if (isset($_POST[self::$delivery_time_meta_name]) && $_POST[self::$delivery_time_meta_name]) {
+                $data = \json_decode(\stripslashes($_POST[self::$delivery_time_meta_name]), true);
+
+                $item->update_meta_data(self::$delivery_time_meta_name.'_from', $data['from']);
+                $item->update_meta_data(self::$delivery_time_meta_name.'_to', $data['to']);
+            }
         }
 
         /**
          * Always trigger shipping recalculation on update_checkout js trigger.
          */
-        public function checkout_update_refresh_shipping_methods($post_data)
+        public function checkout_update_refresh_shipping_methods($post_data): void
         {
             $packages = \WC()->cart->get_shipping_packages();
 
@@ -96,6 +117,10 @@ if (!\class_exists(WCBootstrap::class)) {
             $message = null;
             $delivery_date_from = null;
             $delivery_date_to = null;
+            $delivery_date = null;
+            $delivery_time_from = null;
+            $delivery_time_to = null;
+
             $text = '';
 
             /** @var \WC_Order_Item_Shipping $item */
@@ -104,6 +129,10 @@ if (!\class_exists(WCBootstrap::class)) {
                     $message = $item->get_meta('message');
                     $delivery_date_from = $item->get_meta('delivery_date_from');
                     $delivery_date_to = $item->get_meta('delivery_date_to');
+                    $delivery_date = $item->get_meta(self::$delivery_date_meta_name);
+                    $delivery_time_from = $item->get_meta(self::$delivery_time_meta_name.'_from');
+                    $delivery_time_to = $item->get_meta(self::$delivery_time_meta_name.'_to');
+
                     break;
                 }
             }
@@ -112,6 +141,12 @@ if (!\class_exists(WCBootstrap::class)) {
                 $text .= 'Shipping info: '.\htmlspecialchars($message, \ENT_NOQUOTES).'<br/>';
             }
 
+            if ($delivery_date) {
+                $time_slots = $this->get_time_slots_text($delivery_date, $delivery_time_from, $delivery_time_to);
+                if ($time_slots) {
+                    $text .= 'Delivery date: '.\htmlspecialchars($time_slots, \ENT_NOQUOTES);
+                }
+            }
             if ($delivery_date_from || $delivery_date_to) {
                 $estimated_delivery_date = $this->get_estimated_delivery_dates_text(
                     $delivery_date_from,
@@ -126,6 +161,57 @@ if (!\class_exists(WCBootstrap::class)) {
             if ($text) {
                 echo '<p>'.$text.'</p>';
             }
+        }
+
+        /**
+         * Get text string with delivery dates.
+         */
+        private function get_time_slots_text(string $delivery_date, ?string $delivery_time_from, ?string $delivery_time_to): string
+        {
+            $formatted_delivery_date = '';
+            try {
+                $delivery_date_obj = (new \DateTime($delivery_date))->setTimezone(\wp_timezone());
+                $formatted_delivery_date = $delivery_date_obj->format($this->wp_date_format());
+            } catch (\Exception $e) {
+            }
+
+            $text = $formatted_delivery_date;
+
+            if ($delivery_time_from || $delivery_time_to) {
+                $formatted_delivery_time_from = '';
+                $formatted_delivery_time_to = '';
+
+                if ($delivery_time_from) {
+                    try {
+                        $delivery_time_from_obj = (new \DateTime($delivery_time_from))->setTimezone(\wp_timezone());
+                        $formatted_delivery_time_from = $delivery_time_from_obj->format($this->wp_time_format());
+                    } catch (\Exception $e) {
+                    }
+                }
+
+                if ($delivery_time_to) {
+                    try {
+                        $delivery_time_to_obj = (new \DateTime($delivery_time_to))->setTimezone(\wp_timezone());
+                        $formatted_delivery_time_to = $delivery_time_to_obj->format($this->wp_time_format());
+                    } catch (\Exception $e) {
+                    }
+                }
+
+                if ($formatted_delivery_time_from || $formatted_delivery_time_to) {
+                    $text .= 'Delivery time: ';
+                    if ($formatted_delivery_time_from) {
+                        $text .= $formatted_delivery_time_from;
+                    }
+                    if ($formatted_delivery_time_from && $formatted_delivery_time_to) {
+                        $text .= ' - ';
+                    }
+                    if ($formatted_delivery_time_to) {
+                        $text .= $formatted_delivery_time_to;
+                    }
+                }
+            }
+
+            return $text;
         }
 
         /**
@@ -218,6 +304,14 @@ if (!\class_exists(WCBootstrap::class)) {
         private function wp_date_format(): string
         {
             return \get_option('date_format');
+        }
+
+        /**
+         * Get current store time format.
+         */
+        private function wp_time_format(): string
+        {
+            return \get_option('time_format');
         }
 
         /**
@@ -335,7 +429,17 @@ if (!\class_exists(WCBootstrap::class)) {
                     $delivery_dates_text = $this->get_estimated_delivery_dates_text($meta['delivery_date_from'], $meta['delivery_date_to']);
                 }
 
-                $delivery_dates = '<div class="calcurates-checkout__shipping-rate-dates">'.\htmlspecialchars($delivery_dates_text, \ENT_NOQUOTES).'</div>';
+                $date_selector = '';
+                if ($meta['time_slots']) {
+                    $date_selector = '<div class="calcurates-checkout__shipping-rate-date-select-label">Delivery date
+                    <input id="'.\htmlspecialchars($this->rate_id_to_css_id($rate->get_id())).'" class="calcurates-checkout__shipping-rate-date-select" placeholder="Select delivery date" data-delivery-date-from="'.\htmlspecialchars($meta['delivery_date_from'] ?? '').'" data-delivery-date-to="'.\htmlspecialchars($meta['delivery_date_to'] ?? '').'" data-time-slot-date-required="'.\htmlspecialchars($meta['time_slot_date_required'] ?? '0').'" data-time-slot-time-required="'.\htmlspecialchars($meta['time_slot_time_required'] ?? '0').'" data-time-slots="'.\htmlspecialchars(\json_encode($meta['time_slots'], \JSON_UNESCAPED_SLASHES)).'" type="text" readonly="readonly"/>
+                    <input class="calcurates-checkout__shipping-rate-date-original-utc" name="'.\htmlspecialchars(self::$delivery_date_meta_name).'" type="text" hidden="hidden"/>
+                    </div>';
+                }
+
+                $delivery_dates = '<div class="calcurates-checkout__shipping-rate-dates">
+                    '.\htmlspecialchars($delivery_dates_text, \ENT_NOQUOTES).$date_selector.'
+                </div>';
             }
 
             return $image.'<span class="calcurates-checkout__shipping-rate-text'.($meta['has_error'] ? ' calcurates-checkout__shipping-rate-text_has-error' : '').'">'.$label.' '.$info_message.' '.$delivery_dates.'</span>';
@@ -347,6 +451,15 @@ if (!\class_exists(WCBootstrap::class)) {
             $interval = $now->diff($date);
 
             return $interval->format('%a');
+        }
+
+        private function rate_id_to_css_id(string $rate_id): string
+        {
+            $data = \str_replace(':', '-', $rate_id);
+            $data = \str_replace('_', '-', $data);
+            $data = \str_replace('calcurates', 'calcurates-datepicker', $data);
+
+            return $data;
         }
     }
 }

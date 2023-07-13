@@ -29,6 +29,7 @@ class FreeShippingRatesExtractor extends RatesExtractorAbstract
                     'priority' => $rate['priority'],
                     'priority_item' => null,
                     'rate_image' => $rate['imageUri'],
+                    'time_slots' => $rate['rate']['estimatedDeliveryDate']['timeSlots'] ?? null,
                 ];
             }
         }
