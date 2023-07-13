@@ -49,7 +49,7 @@ class TableRatesRatesExtractor extends RatesExtractorAbstract
                         'priority' => $table_rate['priority'],
                         'priority_item' => $method['priority'],
                         'rate_image' => $method['imageUri'],
-                        'time_slots' => isset($method['rate']['estimatedDeliveryDate']) && isset($method['rate']['estimatedDeliveryDate']['timeSlots']) ? $method['rate']['estimatedDeliveryDate']['timeSlots'] : null,
+                        'time_slots' => $method['rate']['estimatedDeliveryDate']['timeSlots'] ?? null,
                     ];
                 }
             }

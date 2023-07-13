@@ -53,7 +53,7 @@ class CarriersRatesExtractor extends RatesExtractorAbstract
                             'priority' => $carrier['priority'],
                             'priority_item' => $services_priority,
                             'rate_image' => $carrier['imageUri'],
-                            'time_slots' => isset($rate['rate']['estimatedDeliveryDate']) && isset($rate['rate']['estimatedDeliveryDate']['timeSlots']) ? $rate['rate']['estimatedDeliveryDate']['timeSlots'] : null,
+                            'time_slots' => $rate['rate']['estimatedDeliveryDate']['timeSlots'] ?? null,
                         ];
                 }
             }

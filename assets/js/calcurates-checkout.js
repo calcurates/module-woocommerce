@@ -27,19 +27,18 @@ function setupShipping() {
         }
 
         // set max-width exclude radio size
-        $that.closest('label').css('box-sizing', 'border-box').css('max-width', 'calc(100% - ' + $input.outerWidth() + 'px)')
+        $that.closest('label').css('box-sizing', 'border-box').css('max-width', 'calc(100% - ' + $input.outerWidth() + 'px)');
 
-        if(!$datepicker){
+        if (!$datepicker) {
             return;
         }
 
-        $datepicker.prop('disabled', !$input.is(':checked'));
+        $datepicker.prop('disabled', !$input.prop('checked'));
 
-        if($input.is(':checked')){
+        if ($input.prop('checked')) {
             $datepicker.closest('.calcurates-checkout__shipping-rate-date-select-label').show();
         } else {
             $datepicker.closest('.calcurates-checkout__shipping-rate-date-select-label').hide();
-
         }
     });
 
@@ -69,34 +68,33 @@ function watchForCompanyInputChange() {
 }
 
 // datepicker setup
-function setupDatePicker(setupResult) {
-    jQuery.getScript( CALCURATES_GLOBAL.pluginDir + "/assets/lib/air-datepicker/locale/"+ CALCURATES_GLOBAL.lang +".js", function( ) {
-
-        jQuery('input[id^="calcurates-datepicker"]').each(function () {
-            const  $datepicker = jQuery(this);
-            const id = "#" + $datepicker.attr('id');
-
-            const timeSlotDateRequired = $datepicker.data('time-slot-date-required') ? $datepicker.data('time-slot-date-required') : false;
-            const timeSlotTimeRequired = $datepicker.data('time-slot-time-required') ? $datepicker.data('time-slot-time-required') : false;
+function setupDatePicker() {
+    jQuery.getScript( CALCURATES_GLOBAL.pluginDir + "/assets/lib/air-datepicker/locale/"+ CALCURATES_GLOBAL.lang +".js", function() {
+        jQuery('input[id^="calcurates-datepicker"]').each(function() {
+            const $datepicker = jQuery(this);
 
             const timeSlots = cloneFull($datepicker.data('time-slots'));
-
-            if(!timeSlots || timeSlots.length === 0){
+            if (!timeSlots || timeSlots.length === 0){
                 return;
             }
 
+            const timeSlotDateRequired = $datepicker.hasData('time-slot-date-required') ? $datepicker.data('time-slot-date-required') : false;
+            const timeSlotTimeRequired = $datepicker.hasData('time-slot-time-required') ? $datepicker.data('time-slot-time-required') : false;
+            const id = "#" + $datepicker.attr('id');
+
+
             // normalize
-            timeSlots.forEach(function(item, index){
+            timeSlots.forEach(function(item, index) {
                 const baseDate = item['date'];
 
                 timeSlots[index]['date'] = new Date(baseDate).toISOString();
 
-                timeSlots[index]['time'].forEach(function(time, timeIndex){
-                    if(time.from){
+                timeSlots[index]['time'].forEach(function(time, timeIndex) {
+                    if (time.from) {
                         time.from = new Date(baseDate.replace(/\d\d:\d\d:\d\d/, time.from)).toISOString();
                     }
 
-                    if(time.to){
+                    if (time.to) {
                         time.to = new Date(baseDate.replace(/\d\d:\d\d:\d\d/, time.to)).toISOString();
                     }
 
@@ -105,27 +103,28 @@ function setupDatePicker(setupResult) {
             });
 
             const deliveryDatFrom = new Date(new Date(timeSlots[0]['date']).toISOString().replace(/\d\d:\d\d:\d\d/, '00:00:00'));
-            const deliveryDatTo = new Date(timeSlots[timeSlots.length-1]['date'].replace(/\d\d:\d\d:\d\d/, '00:00:00'));
+            const deliveryDatTo = new Date(timeSlots[timeSlots.length - 1]['date'].replace(/\d\d:\d\d:\d\d/, '00:00:00'));
 
             const options = {
                 locale: exports.default,
                 onSelect(data) {
+                    const normalizedDate = normalizeDatepickerDate(data.date);
                     //find time
-                    const result = timeSlots.find(function(item){
-                        return item['date'].replace(/\d\d:\d\d:\d\d/, '00:00:00') ===  normalizeDatepickerDate(data.date);
+                    const result = timeSlots.find(function(item) {
+                        return item['date'].replace(/\d\d:\d\d:\d\d/, '00:00:00') === normalizedDate;
                     });
 
-                    if(result){
-                        time = result['time'];
-                        createTimeSlotSelect($datepicker, time, timeSlotTimeRequired);
+                    if (result) {
+                        createTimeSlotSelect($datepicker, result['time'], timeSlotTimeRequired);
                     } else {
                         removeTimeSelect($datepicker);
                     }
                 },
-                onRenderCell: function (data) {
-                    if (data.cellType == 'day') {
-                        const isDisabled = timeSlots.find(function(item){
-                            return item['date'].replace(/\d\d:\d\d:\d\d/, '00:00:00') === normalizeDatepickerDate(data.date);
+                onRenderCell: function(data) {
+                    if (data.cellType === 'day') {
+                        const normalizedDate = normalizeDatepickerDate(data.date);
+                        const isDisabled = timeSlots.find(function(item) {
+                            return item['date'].replace(/\d\d:\d\d:\d\d/, '00:00:00') === normalizedDate;
                         }) === undefined;
 
                         return {
@@ -135,57 +134,51 @@ function setupDatePicker(setupResult) {
                 }
             };
 
-            if(deliveryDatFrom){
+            if (deliveryDatFrom) {
                 options['minDate'] = deliveryDatFrom
             }
-
-            if(deliveryDatTo){
+            if (deliveryDatTo) {
                 options['maxDate'] = deliveryDatTo;
             }
-
-            if(timeSlotDateRequired){
-                options['toggleSelected'] = timeSlotDateRequired != '1';
+            if (timeSlotDateRequired) {
+                options['toggleSelected'] = (timeSlotDateRequired === '' || timeSlotDateRequired === '0' || timeSlotDateRequired === 0);
             }
 
             const picker = new AirDatepicker(id, options);
 
-            if(timeSlotDateRequired && timeSlots.length > 0){
+            if (timeSlotDateRequired && timeSlots.length > 0) {
                 picker.selectDate(new Date(deliveryDatFrom));
             }
         });
-
-
     });
 }
 
 function createTimeSlotSelect($datepicker, time, required) {
     removeTimeSelect($datepicker);
 
-    if(time.length === 0){
+    if (time.length === 0) {
+        return;
+    }
+    if ($datepicker.prop('disabled')) {
         return;
     }
 
-    if($datepicker.prop('disabled')){
-        return;
-    }
-
-    const arr = time.map(function(item){
-        return {val : JSON.stringify(item), text: new Date(item['from']).toLocaleTimeString() + ' - ' + new Date(item['to']).toLocaleTimeString()};
+    const $select = jQuery('<select class="calcurates-checkout__shipping-rate-time-select" name="selected_delivery_time">').appendTo($datepicker);
+    time.forEach(function(item) {
+        $select.append(new Option(
+            new Date(item['from']).toLocaleTimeString() + ' - ' + new Date(item['to']).toLocaleTimeString(),
+            JSON.stringify(item)
+        ));
     });
 
-    const select = jQuery('<select class="calcurates-checkout__shipping-rate-time-select" name="selected_delivery_time">').appendTo($datepicker);
-    jQuery(arr).each(function() {
-    select.append(jQuery("<option>").attr('value',this.val).text(this.text));
-    });
-
-    if(!required){
-        select.prepend(jQuery('<option selected>Select time slot</option>'));
+    if (!required) {
+        $select.prepend(jQuery('<option selected="selected">Select time slot</option>'));
      }
 
-    $datepicker.closest('.calcurates-checkout__shipping-rate-date-select-label').after(jQuery('<div class="calcurates-checkout__shipping-rate-time-select-label">').append('Delivery time ').append(select));
+    $datepicker.closest('.calcurates-checkout__shipping-rate-date-select-label').after(jQuery('<div class="calcurates-checkout__shipping-rate-time-select-label">').append('Delivery time ').append($select));
 }
 
-function removeTimeSelect($elem){
+function removeTimeSelect($elem) {
     $elem.closest('.calcurates-checkout__shipping-rate-dates').find('.calcurates-checkout__shipping-rate-time-select-label').remove();
 }
 
@@ -201,7 +194,7 @@ function normalizeDatepickerDate(date) {
     if (day < 10) {
         day = '0' + day;
     }
-    
+
     if (month < 10) {
         month = '0' + month;
     }

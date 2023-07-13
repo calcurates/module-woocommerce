@@ -15,10 +15,6 @@ if (!\defined('ABSPATH')) {
 class Rates
 {
     /**
-     * @var RatesExtractorFactory
-     */
-    private $rates_extractor_factory;
-    /**
      * @var array{
      *     has_error: bool,
      *     id: string,
@@ -31,6 +27,7 @@ class Rates
      *     priority: int|null,
      *     priority_item: int|null,
      *     rate_image: string|null,
+     *     time_slots: array|null,
      * }[]
      */
     private $rates = [];
@@ -42,26 +39,29 @@ class Rates
      * @var array
      */
     private $package;
-
+    /**
+     * @var array
+     */
     private $response;
 
-    public function __construct(string $tax_mode, array $package)
+    public function __construct(array $response, string $tax_mode, array $package)
     {
+        $this->response = $response;
         $this->tax_mode = $tax_mode;
         $this->package = $package;
-        $this->rates_extractor_factory = new RatesExtractorFactory();
+
+        $this->extract_rates();
     }
 
     /**
      * Extract rates from Calcurates response.
      */
-    public function extract(array $response): array
+    private function extract_rates(): void
     {
-        $this->response = $response;
-
-        foreach ($response['shippingOptions'] as $shipping_option_name => $shipping_option_data) {
+        $rates_extractor_factory = new RatesExtractorFactory();
+        foreach ($this->response['shippingOptions'] as $shipping_option_name => $shipping_option_data) {
             try {
-                $rate = $this->rates_extractor_factory->create($shipping_option_name);
+                $rate = $rates_extractor_factory->create($shipping_option_name);
             } catch (\Exception $e) {
                 Logger::getInstance()->error(
                     "Can't create rate from Shipping Option $shipping_option_name",
@@ -81,8 +81,6 @@ class Rates
         }
 
         $this->rates_sort();
-
-        return $this->rates;
     }
 
     /**
@@ -141,8 +139,8 @@ class Rates
                     'tax' => $rate['tax'],
                     'has_error' => $rate['has_error'],
                     'rate_image' => $rate['rate_image'],
-                    'time_slot_date_required' => isset($this->response['metadata']) && isset($this->response['metadata']['deliveryDates']) && isset($this->response['metadata']['deliveryDates']['timeSlotDateRequired']) ?? $this->response['metadata']['deliveryDates']['timeSlotDateRequired'],
-                    'time_slot_time_required' => isset($this->response['metadata']) && isset($this->response['metadata']['deliveryDates']) && isset($this->response['metadata']['deliveryDates']['timeSlotTimeRequired']) ?? $this->response['metadata']['deliveryDates']['timeSlotTimeRequired'],
+                    'time_slot_date_required' => $this->response['metadata']['deliveryDates']['timeSlotDateRequired'] ?? null,
+                    'time_slot_time_required' => $this->response['metadata']['deliveryDates']['timeSlotTimeRequired'] ?? null,
                     'time_slots' => $rate['time_slots'],
                 ],
                 'priority' => $rate['priority'],

@@ -34,10 +34,10 @@ if (!\class_exists(Assets::class)) {
          */
         private function register_js(string $script_name, string $src, array $deps = []): bool
         {
-            $js_url =  \plugins_url($src, __DIR__);
-            
+            $js_url = \plugins_url($src, __DIR__);
+
             $js_url = \apply_filters('wc_calcurates_load_js', $js_url);
-            
+
             return \wp_register_script($script_name, $js_url, $deps);
         }
 
@@ -61,23 +61,20 @@ if (!\class_exists(Assets::class)) {
         public function enqueue_js(): void
         {
             if ($this->register_js(WCCalcurates::get_plugin_text_domain(), '/assets/js/calcurates-checkout.js', ['jquery', 'wc-cart', 'wc-checkout', self::$date_picker_script_name]) && (\is_cart() || \is_checkout())) {
-                
-
-
                 // provide global vars
-                \wp_add_inline_script(WCCalcurates::get_plugin_text_domain(), 'var exports = {};' );
+                \wp_add_inline_script(WCCalcurates::get_plugin_text_domain(), 'var exports = {};');
 
-                \wp_add_inline_script(WCCalcurates::get_plugin_text_domain(), 'var CALCURATES_GLOBAL = '.json_encode(
-                    array(
+                \wp_add_inline_script(WCCalcurates::get_plugin_text_domain(), 'var CALCURATES_GLOBAL = '.\json_encode(
+                    [
                         'pluginDir' => \plugin_dir_url(__DIR__),
-                        'lang' => substr( \get_locale(), 0, 2 ),
-                    )
-                ) .';' );
+                        'lang' => \substr(\get_locale(), 0, 2),
+                    ]
+                ).';');
 
                 \wp_enqueue_script(WCCalcurates::get_plugin_text_domain());
             }
 
-            if ($this->register_js(self::$date_picker_script_name, '/assets/lib/air-datepicker/air-datepicker.js', [], '3.3.5') && (\is_cart() || \is_checkout())) {
+            if ($this->register_js(self::$date_picker_script_name, '/assets/lib/air-datepicker/air-datepicker.js') && (\is_cart() || \is_checkout())) {
                 \wp_enqueue_script(self::$date_picker_script_name);
             }
         }

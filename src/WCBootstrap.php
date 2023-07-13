@@ -21,7 +21,6 @@ if (!\class_exists(WCBootstrap::class)) {
         private static $delivery_date_meta_name = 'selected_delivery_date';
         private static $delivery_time_meta_name = 'selected_delivery_time';
 
-
         public function run(): void
         {
             // Create Calcurates shipping method
@@ -44,39 +43,39 @@ if (!\class_exists(WCBootstrap::class)) {
 
             \add_action('woocommerce_checkout_update_order_review', [$this, 'checkout_update_refresh_shipping_methods'], 10, 1);
 
-            add_action('woocommerce_checkout_create_order_shipping_item', [$this, 'action_checkout_create_order_shipping_item'], 20, 4);
-
+            \add_action('woocommerce_checkout_create_order_shipping_item', [$this, 'action_checkout_create_order_shipping_item'], 20, 4);
         }
 
         // For new orders via checkout
 
-        public function action_checkout_create_order_shipping_item ( $item, $package_key, $package, $order ){
-            if($_POST[self::$delivery_date_meta_name]){
+        public function action_checkout_create_order_shipping_item($item, $package_key, $package, $order): void
+        {
+            if (isset($_POST[self::$delivery_date_meta_name]) && $_POST[self::$delivery_date_meta_name]) {
                 $item->update_meta_data(self::$delivery_date_meta_name, $_POST[self::$delivery_date_meta_name]);
             }
 
-            if($_POST[self::$delivery_time_meta_name]){
-     
+            if (isset($_POST[self::$delivery_time_meta_name]) && $_POST[self::$delivery_time_meta_name]) {
                 $from = '';
                 $to = '';
-                $data = \json_decode(stripslashes($_POST[self::$delivery_time_meta_name]), true);
+                // todo: replace stripslashes to anything others?
+                $data = \json_decode(\stripslashes($_POST[self::$delivery_time_meta_name]), true);
 
-                if($data['from']){
-                    $from = $this->get_human_time($data['from']);
+                if ($data['from']) {
+                    $from = $this->get_human_datetime($data['from']);
                 }
 
-                if($data['to']){
-                    $to = $this->get_human_time($data['to']);
+                if ($data['to']) {
+                    $to = $this->get_human_datetime($data['to']);
                 }
 
                 $item->update_meta_data(self::$delivery_time_meta_name, ($from.' - '.$to));
             }
-        }    
+        }
 
         /**
          * Always trigger shipping recalculation on update_checkout js trigger.
          */
-        public function checkout_update_refresh_shipping_methods($post_data)
+        public function checkout_update_refresh_shipping_methods($post_data): void
         {
             $packages = \WC()->cart->get_shipping_packages();
 
@@ -141,7 +140,7 @@ if (!\class_exists(WCBootstrap::class)) {
                     $delivery_date_to = $item->get_meta('delivery_date_to');
                     $delivery_date = $item->get_meta(self::$delivery_date_meta_name);
                     $delivery_time = $item->get_meta(self::$delivery_time_meta_name);
-                    
+
                     break;
                 }
             }
@@ -150,14 +149,13 @@ if (!\class_exists(WCBootstrap::class)) {
                 $text .= 'Shipping info: '.\htmlspecialchars($message, \ENT_NOQUOTES).'<br/>';
             }
 
-            if($delivery_date){
+            if ($delivery_date) {
                 $text .= 'Delivery date: '.\htmlspecialchars($delivery_date, \ENT_NOQUOTES).'<br/>';
 
-                if($delivery_time){
+                if ($delivery_time) {
                     $text .= 'Delivery time UTC: '.\htmlspecialchars($delivery_time, \ENT_NOQUOTES);
                 }
-            }
-            elseif ($delivery_date_from || $delivery_date_to) {
+            } elseif ($delivery_date_from || $delivery_date_to) {
                 $estimated_delivery_date = $this->get_estimated_delivery_dates_text(
                     $delivery_date_from,
                     $delivery_date_to
@@ -380,14 +378,15 @@ if (!\class_exists(WCBootstrap::class)) {
                     $delivery_dates_text = $this->get_estimated_delivery_dates_text($meta['delivery_date_from'], $meta['delivery_date_to']);
                 }
 
-                if($meta['time_slots']){
+                $date_selector = '';
+                if ($meta['time_slots']) {
                     $date_selector = '<div class="calcurates-checkout__shipping-rate-date-select-label">Delivery date
-                    <input id="'.$this->rate_id_to_css_id($rate->get_id()).'" class="calcurates-checkout__shipping-rate-date-select" name="'.self::$delivery_date_meta_name.'" placeholder="Select delivery date" data-delivery-date-from="'.$meta['delivery_date_from'].'" data-delivery-date-to="'.$meta['delivery_date_to'].'" data-time-slot-date-required="'.$meta['time_slot_date_required'].'" data-time-slot-time-required="'.$meta['time_slot_time_required'].'" data-time-slots="'.htmlspecialchars(json_encode($meta['time_slots']), ENT_QUOTES).'" readonly>
+                    <input id="'.\htmlspecialchars($this->rate_id_to_css_id($rate->get_id())).'" class="calcurates-checkout__shipping-rate-date-select" name="'.\htmlspecialchars(self::$delivery_date_meta_name).'" placeholder="Select delivery date" data-delivery-date-from="'.\htmlspecialchars($meta['delivery_date_from']).'" data-delivery-date-to="'.\htmlspecialchars($meta['delivery_date_to']).'" data-time-slot-date-required="'.\htmlspecialchars($meta['time_slot_date_required']).'" data-time-slot-time-required="'.\htmlspecialchars($meta['time_slot_time_required']).'" data-time-slots="'.\htmlspecialchars(\json_encode($meta['time_slots'])).'" readonly="readonly">
                     </div>';
                 }
 
                 $delivery_dates = '<div class="calcurates-checkout__shipping-rate-dates">
-                    '.\htmlspecialchars($delivery_dates_text, \ENT_NOQUOTES).''.$date_selector.'
+                    '.\htmlspecialchars($delivery_dates_text, \ENT_NOQUOTES).$date_selector.'
                 </div>';
             }
 
@@ -402,17 +401,21 @@ if (!\class_exists(WCBootstrap::class)) {
             return $interval->format('%a');
         }
 
-        private function rate_id_to_css_id(string $rate_id): string {
-            $data = str_replace(":", "-", $rate_id);
-            $data = str_replace("_", "-", $data);
-            $data = str_replace("calcurates", "calcurates-datepicker", $data);
+        private function rate_id_to_css_id(string $rate_id): string
+        {
+            $data = \str_replace(':', '-', $rate_id);
+            $data = \str_replace('_', '-', $data);
+            $data = \str_replace('calcurates', 'calcurates-datepicker', $data);
 
             return $data;
         }
 
-        private function get_human_time(string $value): string {
-            $date_array = date_parse($value);
-            return date('Y-m-d H:i:s', mktime($date_array['hour'], $date_array['minute'], $date_array['second'], $date_array['month'], $date_array['day'], $date_array['year'])); 
+        private function get_human_datetime(string $value): string
+        {
+            // todo: use https://developer.wordpress.org/reference/functions/wp_date/ ?
+            $date_array = \date_parse($value);
+
+            return \date('Y-m-d H:i:s', \mktime($date_array['hour'], $date_array['minute'], $date_array['second'], $date_array['month'], $date_array['day'], $date_array['year']));
         }
     }
 }

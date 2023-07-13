@@ -49,7 +49,7 @@ class InStorePickupsRatesExtractor extends RatesExtractorAbstract
                         'priority' => $in_store_rate['priority'],
                         'priority_item' => $store['priority'],
                         'rate_image' => $store['imageUri'],
-                        'time_slots' => isset($store['rate']['estimatedDeliveryDate']) && isset($store['rate']['estimatedDeliveryDate']['timeSlots']) ? $store['rate']['estimatedDeliveryDate']['timeSlots'] : null,
+                        'time_slots' => $store['rate']['estimatedDeliveryDate']['timeSlots'] ?? null,
                     ];
                 }
             }
