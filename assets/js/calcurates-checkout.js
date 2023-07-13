@@ -69,6 +69,8 @@ function watchForCompanyInputChange() {
 
 // datepicker setup
 function setupDatePicker() {
+    const timePattern = /\d\d:\d\d:\d\d/;
+
     jQuery.getScript( CALCURATES_GLOBAL.pluginDir + "/assets/lib/air-datepicker/locale/"+ CALCURATES_GLOBAL.lang +".js", function() {
         jQuery('input[id^="calcurates-datepicker"]').each(function() {
             const $datepicker = jQuery(this);
@@ -90,27 +92,27 @@ function setupDatePicker() {
 
                 timeSlots[index]['time'].forEach(function(time, timeIndex) {
                     if (time.from) {
-                        time.from = new Date(baseDate.replace(/\d\d:\d\d:\d\d/, time.from)).toISOString();
+                        time.from = new Date(baseDate.replace(timePattern, time.from)).toISOString();
                     }
 
                     if (time.to) {
-                        time.to = new Date(baseDate.replace(/\d\d:\d\d:\d\d/, time.to)).toISOString();
+                        time.to = new Date(baseDate.replace(timePattern, time.to)).toISOString();
                     }
 
                     timeSlots[index]['time'][timeIndex] = time;
                 })
             });
 
-            const deliveryDatFrom = new Date(new Date(timeSlots[0]['date']).toISOString().replace(/\d\d:\d\d:\d\d/, '00:00:00'));
-            const deliveryDatTo = new Date(timeSlots[timeSlots.length - 1]['date'].replace(/\d\d:\d\d:\d\d/, '00:00:00'));
+            const deliveryDatFrom = new Date(new Date(timeSlots[0]['date']).toISOString().replace(timePattern, '00:00:00'));
+            const deliveryDatTo = new Date(timeSlots[timeSlots.length - 1]['date'].replace(timePattern, '00:00:00'));
 
             const options = {
                 locale: exports.default,
                 onSelect(data) {
-                    const normalizedDate = normalizeDatepickerDate(data.date);
+                    const normalizedDate = normalizeDatepickerDateToZeroUTC(data.date);
                     //find time
                     const result = timeSlots.find(function(item) {
-                        return item['date'].replace(/\d\d:\d\d:\d\d/, '00:00:00') === normalizedDate;
+                        return item['date'].replace(timePattern, '00:00:00') === normalizedDate;
                     });
 
                     if (result) {
@@ -121,9 +123,9 @@ function setupDatePicker() {
                 },
                 onRenderCell: function(data) {
                     if (data.cellType === 'day') {
-                        const normalizedDate = normalizeDatepickerDate(data.date);
+                        const normalizedDate = normalizeDatepickerDateToZeroUTC(data.date);
                         const isDisabled = timeSlots.find(function(item) {
-                            return item['date'].replace(/\d\d:\d\d:\d\d/, '00:00:00') === normalizedDate;
+                            return item['date'].replace(timePattern, '00:00:00') === normalizedDate;
                         }) === undefined;
 
                         return {
@@ -185,9 +187,9 @@ function cloneFull(obj) {
     return JSON.parse(JSON.stringify(obj));
 }
 
-function normalizeDatepickerDate(date) {
+function normalizeDatepickerDateToZeroUTC(date) {
     let day = date.getDate();
-    let month = date.getMonth()+1;
+    let month = date.getMonth() + 1;
     const year = date.getFullYear();
 
     if (day < 10) {

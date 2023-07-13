@@ -55,20 +55,10 @@ if (!\class_exists(WCBootstrap::class)) {
             }
 
             if (isset($_POST[self::$delivery_time_meta_name]) && $_POST[self::$delivery_time_meta_name]) {
-                $from = '';
-                $to = '';
                 // todo: replace stripslashes to anything others?
                 $data = \json_decode(\stripslashes($_POST[self::$delivery_time_meta_name]), true);
 
-                if ($data['from']) {
-                    $from = $this->get_human_datetime($data['from']);
-                }
-
-                if ($data['to']) {
-                    $to = $this->get_human_datetime($data['to']);
-                }
-
-                $item->update_meta_data(self::$delivery_time_meta_name, ($from.' - '.$to));
+                $item->update_meta_data(self::$delivery_time_meta_name, ['from' => $data['from'], 'to' => $data['to']]);
             }
         }
 
@@ -150,10 +140,19 @@ if (!\class_exists(WCBootstrap::class)) {
             }
 
             if ($delivery_date) {
-                $text .= 'Delivery date: '.\htmlspecialchars($delivery_date, \ENT_NOQUOTES).'<br/>';
+                $text .= 'Delivery date UTC: '.\htmlspecialchars($this->get_human_date_utc($delivery_date), \ENT_NOQUOTES).'<br/>';
 
                 if ($delivery_time) {
-                    $text .= 'Delivery time UTC: '.\htmlspecialchars($delivery_time, \ENT_NOQUOTES);
+                    $text .= 'Delivery time UTC: ';
+                    if ($delivery_time['from']) {
+                        $text .= \htmlspecialchars($this->get_human_datetime_utc($delivery_time['from']), \ENT_NOQUOTES);
+                    }
+                    if ($delivery_time['from'] && $delivery_time['to']) {
+                        $text .= ' - ';
+                    }
+                    if ($delivery_time['to']) {
+                        $text .= \htmlspecialchars($this->get_human_datetime_utc($delivery_time['to']), \ENT_NOQUOTES);
+                    }
                 }
             } elseif ($delivery_date_from || $delivery_date_to) {
                 $estimated_delivery_date = $this->get_estimated_delivery_dates_text(
@@ -410,12 +409,18 @@ if (!\class_exists(WCBootstrap::class)) {
             return $data;
         }
 
-        private function get_human_datetime(string $value): string
+        private function get_human_datetime_utc(string $value): string
         {
-            // todo: use https://developer.wordpress.org/reference/functions/wp_date/ ?
-            $date_array = \date_parse($value);
+            $datetime = new \DateTime($value, new \DateTimeZone('UTC'));
 
-            return \date('Y-m-d H:i:s', \mktime($date_array['hour'], $date_array['minute'], $date_array['second'], $date_array['month'], $date_array['day'], $date_array['year']));
+            return $datetime->format('Y-m-d H:i:s');
+        }
+
+        private function get_human_date_utc(string $value): string
+        {
+            $datetime = new \DateTime($value, new \DateTimeZone('UTC'));
+
+            return $datetime->format('Y-m-d');
         }
     }
 }
