@@ -55,10 +55,10 @@ if (!\class_exists(WCBootstrap::class)) {
             }
 
             if (isset($_POST[self::$delivery_time_meta_name]) && $_POST[self::$delivery_time_meta_name]) {
-                // todo: replace stripslashes to anything others?
                 $data = \json_decode(\stripslashes($_POST[self::$delivery_time_meta_name]), true);
 
-                $item->update_meta_data(self::$delivery_time_meta_name, ['from' => $data['from'], 'to' => $data['to']]);
+                $item->update_meta_data(self::$delivery_time_meta_name.'_from', $data['from']);
+                $item->update_meta_data(self::$delivery_time_meta_name.'_to', $data['to']);
             }
         }
 
@@ -118,7 +118,8 @@ if (!\class_exists(WCBootstrap::class)) {
             $delivery_date_from = null;
             $delivery_date_to = null;
             $delivery_date = null;
-            $delivery_time = null;
+            $delivery_time_from = null;
+            $delivery_time_to = null;
 
             $text = '';
 
@@ -129,7 +130,8 @@ if (!\class_exists(WCBootstrap::class)) {
                     $delivery_date_from = $item->get_meta('delivery_date_from');
                     $delivery_date_to = $item->get_meta('delivery_date_to');
                     $delivery_date = $item->get_meta(self::$delivery_date_meta_name);
-                    $delivery_time = $item->get_meta(self::$delivery_time_meta_name);
+                    $delivery_time_from = $item->get_meta(self::$delivery_time_meta_name.'_from');
+                    $delivery_time_to = $item->get_meta(self::$delivery_time_meta_name.'_to');
 
                     break;
                 }
@@ -140,21 +142,12 @@ if (!\class_exists(WCBootstrap::class)) {
             }
 
             if ($delivery_date) {
-                $text .= 'Delivery date UTC: '.\htmlspecialchars($this->get_human_date_utc($delivery_date), \ENT_NOQUOTES).'<br/>';
-
-                if ($delivery_time) {
-                    $text .= 'Delivery time UTC: ';
-                    if ($delivery_time['from']) {
-                        $text .= \htmlspecialchars($this->get_human_datetime_utc($delivery_time['from']), \ENT_NOQUOTES);
-                    }
-                    if ($delivery_time['from'] && $delivery_time['to']) {
-                        $text .= ' - ';
-                    }
-                    if ($delivery_time['to']) {
-                        $text .= \htmlspecialchars($this->get_human_datetime_utc($delivery_time['to']), \ENT_NOQUOTES);
-                    }
+                $time_slots = $this->get_time_slots_text($delivery_date, $delivery_time_from, $delivery_time_to);
+                if ($time_slots) {
+                    $text .= 'Delivery date: '.\htmlspecialchars($time_slots, \ENT_NOQUOTES);
                 }
-            } elseif ($delivery_date_from || $delivery_date_to) {
+            }
+            if ($delivery_date_from || $delivery_date_to) {
                 $estimated_delivery_date = $this->get_estimated_delivery_dates_text(
                     $delivery_date_from,
                     $delivery_date_to
@@ -168,6 +161,57 @@ if (!\class_exists(WCBootstrap::class)) {
             if ($text) {
                 echo '<p>'.$text.'</p>';
             }
+        }
+
+        /**
+         * Get text string with delivery dates.
+         */
+        private function get_time_slots_text(string $delivery_date, ?string $delivery_time_from, ?string $delivery_time_to): string
+        {
+            $formatted_delivery_date = '';
+            try {
+                $delivery_date_obj = (new \DateTime($delivery_date))->setTimezone(\wp_timezone());
+                $formatted_delivery_date = $delivery_date_obj->format($this->wp_date_format());
+            } catch (\Exception $e) {
+            }
+
+            $text = $formatted_delivery_date;
+
+            if ($delivery_time_from || $delivery_time_to) {
+                $formatted_delivery_time_from = '';
+                $formatted_delivery_time_to = '';
+
+                if ($delivery_time_from) {
+                    try {
+                        $delivery_time_from_obj = (new \DateTime($delivery_time_from))->setTimezone(\wp_timezone());
+                        $formatted_delivery_time_from = $delivery_time_from_obj->format($this->wp_time_format());
+                    } catch (\Exception $e) {
+                    }
+                }
+
+                if ($delivery_time_to) {
+                    try {
+                        $delivery_time_to_obj = (new \DateTime($delivery_time_to))->setTimezone(\wp_timezone());
+                        $formatted_delivery_time_to = $delivery_time_to_obj->format($this->wp_time_format());
+                    } catch (\Exception $e) {
+                    }
+                }
+
+                if ($formatted_delivery_time_from || $formatted_delivery_time_to) {
+                    $text .= 'Delivery time: ';
+                    if ($formatted_delivery_time_from) {
+                        $text .= $formatted_delivery_time_from;
+                    }
+                    if ($formatted_delivery_time_from && $formatted_delivery_time_to) {
+                        $text .= ' - ';
+                    }
+                    if ($formatted_delivery_time_to) {
+                        $text .= $formatted_delivery_time_to;
+                    }
+                }
+            }
+
+            return $text;
         }
 
         /**
@@ -260,6 +304,14 @@ if (!\class_exists(WCBootstrap::class)) {
         private function wp_date_format(): string
         {
             return \get_option('date_format');
+        }
+
+        /**
+         * Get current store time format.
+         */
+        private function wp_time_format(): string
+        {
+            return \get_option('time_format');
         }
 
         /**
@@ -380,8 +432,8 @@ if (!\class_exists(WCBootstrap::class)) {
                 $date_selector = '';
                 if ($meta['time_slots']) {
                     $date_selector = '<div class="calcurates-checkout__shipping-rate-date-select-label">Delivery date
-                    <input id="'.\htmlspecialchars($this->rate_id_to_css_id($rate->get_id())).'" class="calcurates-checkout__shipping-rate-date-select" placeholder="Select delivery date" data-delivery-date-from="'.\htmlspecialchars($meta['delivery_date_from'] ?? '').'" data-delivery-date-to="'.\htmlspecialchars($meta['delivery_date_to'] ?? '').'" data-time-slot-date-required="'.\htmlspecialchars($meta['time_slot_date_required'] ?? '').'" data-time-slot-time-required="'.\htmlspecialchars($meta['time_slot_time_required']).'" data-time-slots="'.\htmlspecialchars(\json_encode($meta['time_slots'])).'" readonly="readonly">
-                    <input class="calcurates-checkout__shipping-rate-date-original-utc" name="'.\htmlspecialchars(self::$delivery_date_meta_name ?? '').'" hidden/>
+                    <input id="'.\htmlspecialchars($this->rate_id_to_css_id($rate->get_id())).'" class="calcurates-checkout__shipping-rate-date-select" placeholder="Select delivery date" data-delivery-date-from="'.\htmlspecialchars($meta['delivery_date_from'] ?? '').'" data-delivery-date-to="'.\htmlspecialchars($meta['delivery_date_to'] ?? '').'" data-time-slot-date-required="'.\htmlspecialchars($meta['time_slot_date_required'] ?? '0').'" data-time-slot-time-required="'.\htmlspecialchars($meta['time_slot_time_required'] ?? '0').'" data-time-slots="'.\htmlspecialchars(\json_encode($meta['time_slots'], \JSON_UNESCAPED_SLASHES)).'" type="text" readonly="readonly"/>
+                    <input class="calcurates-checkout__shipping-rate-date-original-utc" name="'.\htmlspecialchars(self::$delivery_date_meta_name).'" type="text" hidden="hidden"/>
                     </div>';
                 }
 
@@ -408,20 +460,6 @@ if (!\class_exists(WCBootstrap::class)) {
             $data = \str_replace('calcurates', 'calcurates-datepicker', $data);
 
             return $data;
-        }
-
-        private function get_human_datetime_utc(string $value): string
-        {
-            $datetime = new \DateTime($value, new \DateTimeZone('UTC'));
-
-            return $datetime->format('Y-m-d H:i:s');
-        }
-
-        private function get_human_date_utc(string $value): string
-        {
-            $datetime = new \DateTime($value, new \DateTimeZone('UTC'));
-
-            return $datetime->format('Y-m-d');
         }
     }
 }
