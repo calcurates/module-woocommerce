@@ -78,10 +78,9 @@ function setupDatePicker() {
                 return;
             }
 
-            const timeSlotDateRequired = $datepicker.hasData('time-slot-date-required') ? $datepicker.data('time-slot-date-required') : false;
-            const timeSlotTimeRequired = $datepicker.hasData('time-slot-time-required') ? $datepicker.data('time-slot-time-required') : false;
+            const timeSlotDateRequired = $datepicker.data('time-slot-date-required') ? $datepicker.data('time-slot-date-required') : false;
+            const timeSlotTimeRequired = $datepicker.data('time-slot-time-required') ? $datepicker.data('time-slot-time-required') : false;
             const id = "#" + $datepicker.attr('id');
-
 
             // normalize
             timeSlots.forEach(function(item, index) {
