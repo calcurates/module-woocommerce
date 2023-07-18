@@ -171,8 +171,11 @@ function createTimeSlotSelect($datepicker, time, required) {
 
     const $select = jQuery('<select class="calcurates-checkout__shipping-rate-time-select" name="selected_delivery_time">').appendTo($datepicker);
     time.forEach(function (item) {
+        const fromLocalDate = new Date(item['from']);
+        const toLocalDate = new Date(item['to']);
+
         $select.append(new Option(
-            new Date(item['from']).toLocaleTimeString() + ' - ' + new Date(item['to']).toLocaleTimeString(),
+            fromLocalDate.toLocaleTimeString().slice(0, -3) + ' - ' + toLocalDate.toLocaleTimeString().slice(0, -3),
             JSON.stringify({from: item['from'], to: item['to']})
         ));
     });
