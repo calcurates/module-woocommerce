@@ -203,7 +203,7 @@ if (!\class_exists(WCBootstrap::class)) {
             } catch (\Exception $e) {
             }
 
-            $text = $formatted_delivery_date;
+            $text = $formatted_delivery_date." ";
 
             if ($delivery_time_from || $delivery_time_to) {
                 $formatted_delivery_time_from = '';
