@@ -78,7 +78,7 @@ if (!\class_exists(WCBootstrap::class)) {
                 $time_slots = $this->get_time_slots_text($delivery_date, $delivery_time_from, $delivery_time_to);
                 if ($time_slots) {
                     $total_rows['time_slots'] = array(
-                        'label' => __( 'UTC delivery date:', 'woocommerce' ),
+                        'label' => __( 'Delivery date:', 'woocommerce' ),
                         'value' =>\htmlspecialchars($time_slots, \ENT_NOQUOTES),
                     );
                 }
@@ -198,7 +198,7 @@ if (!\class_exists(WCBootstrap::class)) {
         {
             $formatted_delivery_date = '';
             try {
-                $delivery_date_obj = (new \DateTime($delivery_date))->setTimezone(\wp_timezone());
+                $delivery_date_obj = (new \DateTime($delivery_date))->setTimezone(new \DateTimeZone('UTC'));
                 $formatted_delivery_date = $delivery_date_obj->format($this->wp_date_format());
             } catch (\Exception $e) {
             }
@@ -211,7 +211,7 @@ if (!\class_exists(WCBootstrap::class)) {
 
                 if ($delivery_time_from) {
                     try {
-                        $delivery_time_from_obj = (new \DateTime($delivery_time_from))->setTimezone(\wp_timezone());
+                        $delivery_time_from_obj = (new \DateTime($delivery_time_from))->setTimezone(new \DateTimeZone('UTC'));
                         $formatted_delivery_time_from = $delivery_time_from_obj->format($this->wp_time_format());
                     } catch (\Exception $e) {
                     }
@@ -219,7 +219,7 @@ if (!\class_exists(WCBootstrap::class)) {
 
                 if ($delivery_time_to) {
                     try {
-                        $delivery_time_to_obj = (new \DateTime($delivery_time_to))->setTimezone(\wp_timezone());
+                        $delivery_time_to_obj = (new \DateTime($delivery_time_to))->setTimezone(new \DateTimeZone('UTC'));
                         $formatted_delivery_time_to = $delivery_time_to_obj->format($this->wp_time_format());
                     } catch (\Exception $e) {
                     }
@@ -239,7 +239,7 @@ if (!\class_exists(WCBootstrap::class)) {
                 }
             }
 
-            return $text;
+            return $text.' (UTC)';
         }
 
         /**
@@ -252,12 +252,12 @@ if (!\class_exists(WCBootstrap::class)) {
 
             // get \DateTime objects
             try {
-                $from = $from_date ? (new \DateTime($from_date))->setTimezone(\wp_timezone()) : null;
+                $from = $from_date ? (new \DateTime($from_date))->setTimezone(new \DateTimeZone('UTC')) : null;
             } catch (\Exception $e) {
             }
 
             try {
-                $to = $to_date ? (new \DateTime($to_date))->setTimezone(\wp_timezone()) : null;
+                $to = $to_date ? (new \DateTime($to_date))->setTimezone(new \DateTimeZone('UTC')) : null;
             } catch (\Exception $e) {
             }
 
@@ -270,17 +270,17 @@ if (!\class_exists(WCBootstrap::class)) {
                     return $formatted_from;
                 }
 
-                return $formatted_from.' - '.$formatted_to;
+                return $formatted_from.' - '.$formatted_to.' (UTC)';
             }
 
             // if has only 'from' date
             if ($from) {
-                return 'From '.$from->format($this->wp_date_format());
+                return 'From '.$from->format($this->wp_date_format()).' (UTC)';
             }
 
             // if has only 'to' date
             if ($to) {
-                return 'To '.$to->format($this->wp_date_format());
+                return 'To '.$to->format($this->wp_date_format()).' (UTC)';
             }
 
             return '';
@@ -296,12 +296,12 @@ if (!\class_exists(WCBootstrap::class)) {
 
             // get \DateTime objects
             try {
-                $from = $from_date ? (new \DateTime($from_date))->setTimezone(\wp_timezone()) : null;
+                $from = $from_date ? (new \DateTime($from_date))->setTimezone(new \DateTimeZone('UTC')) : null;
             } catch (\Exception $e) {
             }
 
             try {
-                $to = $to_date ? (new \DateTime($to_date))->setTimezone(\wp_timezone()) : null;
+                $to = $to_date ? (new \DateTime($to_date))->setTimezone(new \DateTimeZone('UTC')) : null;
             } catch (\Exception $e) {
             }
 
@@ -472,7 +472,7 @@ if (!\class_exists(WCBootstrap::class)) {
 
         private function difference_in_days_from_now(\DateTime $date): string
         {
-            $now = new \DateTime('now', \wp_timezone());
+            $now = new \DateTime('now', new \DateTimeZone("UTC"));
             $interval = $now->diff($date);
 
             return $interval->format('%a');
