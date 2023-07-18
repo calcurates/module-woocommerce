@@ -171,23 +171,12 @@ if (!\class_exists(WCBootstrap::class)) {
         public function add_shipping_data_after_order_table_in_email(\WC_Order $order): void
         {
             $message = null;
-            $delivery_date_from = null;
-            $delivery_date_to = null;
-            $delivery_date = null;
-            $delivery_time_from = null;
-            $delivery_time_to = null;
-
             $text = '';
 
             /** @var \WC_Order_Item_Shipping $item */
             foreach ($order->get_items('shipping') as $item) {
                 if (\WC_Calcurates_Shipping_Method::CODE === $item->get_method_id()) {
                     $message = $item->get_meta('message');
-                    $delivery_date_from = $item->get_meta('delivery_date_from');
-                    $delivery_date_to = $item->get_meta('delivery_date_to');
-                    $delivery_date = $item->get_meta(self::$delivery_date_meta_name);
-                    $delivery_time_from = $item->get_meta(self::$delivery_time_meta_name.'_from');
-                    $delivery_time_to = $item->get_meta(self::$delivery_time_meta_name.'_to');
 
                     break;
                 }
@@ -195,23 +184,6 @@ if (!\class_exists(WCBootstrap::class)) {
 
             if ($message) {
                 $text .= 'Shipping info: '.\htmlspecialchars($message, \ENT_NOQUOTES).'<br/>';
-            }
-
-            if ($delivery_date) {
-                $time_slots = $this->get_time_slots_text($delivery_date, $delivery_time_from, $delivery_time_to);
-                if ($time_slots) {
-                    $text .= 'Delivery date: '.\htmlspecialchars($time_slots, \ENT_NOQUOTES);
-                }
-            }
-            if ($delivery_date_from || $delivery_date_to) {
-                $estimated_delivery_date = $this->get_estimated_delivery_dates_text(
-                    $delivery_date_from,
-                    $delivery_date_to
-                );
-
-                if ($estimated_delivery_date) {
-                    $text .= 'Estimated delivery date: '.\htmlspecialchars($estimated_delivery_date, \ENT_NOQUOTES);
-                }
             }
 
             if ($text) {
