@@ -44,10 +44,66 @@ if (!\class_exists(WCBootstrap::class)) {
             \add_action('woocommerce_checkout_update_order_review', [$this, 'checkout_update_refresh_shipping_methods'], 10, 1);
 
             \add_action('woocommerce_checkout_create_order_shipping_item', [$this, 'action_checkout_create_order_shipping_item'], 20, 4);
+
+            // add some data to thankyou page
+            \add_filter( 'woocommerce_get_order_item_totals', [$this, 'add_custom_order_totals_row'], 30, 3 );
+
+        }
+
+        public function add_custom_order_totals_row( $total_rows, $order, $tax_display ) {
+            $delivery_date_from = null;
+            $delivery_date_to = null;
+            $delivery_date = null;
+            $delivery_time_from = null;
+            $delivery_time_to = null;
+
+            // Set last total row in a variable and remove it.
+            $gran_total = $total_rows['order_total'];
+            unset( $total_rows['order_total'] );
+
+            /** @var \WC_Order_Item_Shipping $item */
+            foreach ($order->get_items('shipping') as $item) {
+                if (\WC_Calcurates_Shipping_Method::CODE === $item->get_method_id()) {
+                    $delivery_date_from = $item->get_meta('delivery_date_from');
+                    $delivery_date_to = $item->get_meta('delivery_date_to');
+                    $delivery_date = $item->get_meta(self::$delivery_date_meta_name);
+                    $delivery_time_from = $item->get_meta(self::$delivery_time_meta_name.'_from');
+                    $delivery_time_to = $item->get_meta(self::$delivery_time_meta_name.'_to');
+
+                    break;
+                }
+            }
+
+            if ($delivery_date) {
+                $time_slots = $this->get_time_slots_text($delivery_date, $delivery_time_from, $delivery_time_to);
+                if ($time_slots) {
+                    $total_rows['time_slots'] = array(
+                        'label' => __( 'UTC delivery date:', 'woocommerce' ),
+                        'value' =>\htmlspecialchars($time_slots, \ENT_NOQUOTES),
+                    );
+                }
+            }
+            if (($delivery_date_from || $delivery_date_to) && !$time_slots) {
+                $estimated_delivery_date = $this->get_estimated_delivery_dates_text(
+                    $delivery_date_from,
+                    $delivery_date_to
+                );
+
+                if ($estimated_delivery_date) {
+                    $total_rows['estimated_delivery_date'] = array(
+                        'label' => __( 'Estimated delivery date:', 'woocommerce' ),
+                        'value' =>\htmlspecialchars($estimated_delivery_date, \ENT_NOQUOTES),
+                    );                
+                }
+            }
+
+            // Set back last total row
+            $total_rows['order_total'] = $gran_total;
+
+            return $total_rows;
         }
 
         // For new orders via checkout
-
         public function action_checkout_create_order_shipping_item($item, $package_key, $package, $order): void
         {
             if (isset($_POST[self::$delivery_date_meta_name]) && $_POST[self::$delivery_date_meta_name]) {
@@ -115,23 +171,12 @@ if (!\class_exists(WCBootstrap::class)) {
         public function add_shipping_data_after_order_table_in_email(\WC_Order $order): void
         {
             $message = null;
-            $delivery_date_from = null;
-            $delivery_date_to = null;
-            $delivery_date = null;
-            $delivery_time_from = null;
-            $delivery_time_to = null;
-
             $text = '';
 
             /** @var \WC_Order_Item_Shipping $item */
             foreach ($order->get_items('shipping') as $item) {
                 if (\WC_Calcurates_Shipping_Method::CODE === $item->get_method_id()) {
                     $message = $item->get_meta('message');
-                    $delivery_date_from = $item->get_meta('delivery_date_from');
-                    $delivery_date_to = $item->get_meta('delivery_date_to');
-                    $delivery_date = $item->get_meta(self::$delivery_date_meta_name);
-                    $delivery_time_from = $item->get_meta(self::$delivery_time_meta_name.'_from');
-                    $delivery_time_to = $item->get_meta(self::$delivery_time_meta_name.'_to');
 
                     break;
                 }
@@ -139,23 +184,6 @@ if (!\class_exists(WCBootstrap::class)) {
 
             if ($message) {
                 $text .= 'Shipping info: '.\htmlspecialchars($message, \ENT_NOQUOTES).'<br/>';
-            }
-
-            if ($delivery_date) {
-                $time_slots = $this->get_time_slots_text($delivery_date, $delivery_time_from, $delivery_time_to);
-                if ($time_slots) {
-                    $text .= 'Delivery date: '.\htmlspecialchars($time_slots, \ENT_NOQUOTES);
-                }
-            }
-            if ($delivery_date_from || $delivery_date_to) {
-                $estimated_delivery_date = $this->get_estimated_delivery_dates_text(
-                    $delivery_date_from,
-                    $delivery_date_to
-                );
-
-                if ($estimated_delivery_date) {
-                    $text .= 'Estimated delivery date: '.\htmlspecialchars($estimated_delivery_date, \ENT_NOQUOTES);
-                }
             }
 
             if ($text) {
