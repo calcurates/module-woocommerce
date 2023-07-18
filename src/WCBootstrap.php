@@ -170,12 +170,12 @@ if (!\class_exists(WCBootstrap::class)) {
         {
             $formatted_delivery_date = '';
             try {
-                $delivery_date_obj = (new \DateTime($delivery_date))->setTimezone(\wp_timezone());
+                $delivery_date_obj = new \DateTime($delivery_date);
                 $formatted_delivery_date = $delivery_date_obj->format($this->wp_date_format());
             } catch (\Exception $e) {
             }
 
-            $text = $formatted_delivery_date;
+            $text = $formatted_delivery_date." ";
 
             if ($delivery_time_from || $delivery_time_to) {
                 $formatted_delivery_time_from = '';
@@ -183,7 +183,7 @@ if (!\class_exists(WCBootstrap::class)) {
 
                 if ($delivery_time_from) {
                     try {
-                        $delivery_time_from_obj = (new \DateTime($delivery_time_from))->setTimezone(\wp_timezone());
+                        $delivery_time_from_obj = new \DateTime($delivery_time_from);
                         $formatted_delivery_time_from = $delivery_time_from_obj->format($this->wp_time_format());
                     } catch (\Exception $e) {
                     }
@@ -191,7 +191,7 @@ if (!\class_exists(WCBootstrap::class)) {
 
                 if ($delivery_time_to) {
                     try {
-                        $delivery_time_to_obj = (new \DateTime($delivery_time_to))->setTimezone(\wp_timezone());
+                        $delivery_time_to_obj = new \DateTime($delivery_time_to);
                         $formatted_delivery_time_to = $delivery_time_to_obj->format($this->wp_time_format());
                     } catch (\Exception $e) {
                     }
