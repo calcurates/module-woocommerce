@@ -175,7 +175,7 @@ function createTimeSlotSelect($datepicker, time, required) {
         const toLocalDate = new Date(item['to']);
 
         $select.append(new Option(
-            fromLocalDate.toLocaleTimeString().slice(0,-3) + ' - ' + toLocalDate.toLocaleTimeString().slice(0,-3),
+            fromLocalDate.toLocaleTimeString().slice(0, -3) + ' - ' + toLocalDate.toLocaleTimeString().slice(0, -3),
             JSON.stringify({from: item['from'], to: item['to']})
         ));
     });
