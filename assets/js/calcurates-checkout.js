@@ -111,6 +111,7 @@ function setupDatePicker() {
 
             const options = {
                 locale: exports.default,
+                autoClose: true,
                 onSelect(data) {
                     const normalizedDate = normalizeDatepickerDateToZeroUTC(data.date);
                     //find time
