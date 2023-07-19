@@ -49,84 +49,81 @@ if (!\class_exists(WCBootstrap::class)) {
             \add_filter('woocommerce_get_order_item_totals', [$this, 'add_custom_order_totals_row'], 30, 3);
 
             // format order meta in admin panel
-            add_filter('woocommerce_order_item_display_meta_key', [$this, 'filter_wc_order_item_display_meta_key'], 20, 3 );
-            add_filter('woocommerce_order_item_display_meta_value', [$this, 'filter_wc_order_item_display_meta_value'], 20, 3 );
+            \add_filter('woocommerce_order_item_display_meta_key', [$this, 'filter_wc_order_item_display_meta_key'], 20, 3);
+            \add_filter('woocommerce_order_item_display_meta_value', [$this, 'filter_wc_order_item_display_meta_value'], 20, 3);
 
             // hide meta fields in admin panel
-            add_filter('woocommerce_order_item_get_formatted_meta_data', [$this, 'filter_wc_order_item_get_formatted_meta_data'] , 10, 2);
+            \add_filter('woocommerce_order_item_get_formatted_meta_data', [$this, 'filter_wc_order_item_get_formatted_meta_data'], 10, 2);
         }
 
-        public function filter_wc_order_item_display_meta_key( $display_key, $meta, $item ) {
-            if( $meta->key === 'delivery_date_from' && is_admin()){
-                $display_key = __("Delivery date from", "woocommerce" );
+        public function filter_wc_order_item_display_meta_key($display_key, $meta, $item)
+        {
+            if ('delivery_date_from' === $meta->key && \is_admin()) {
+                $display_key = \__('Delivery date from', 'woocommerce');
             }
 
-            if( $meta->key === 'delivery_date_to' && is_admin()){
-                $display_key = __("Delivery date to", "woocommerce" );
+            if ('delivery_date_to' === $meta->key && \is_admin()) {
+                $display_key = \__('Delivery date to', 'woocommerce');
             }
 
-            if( $meta->key === 'tax' && is_admin()){
-                $display_key = __("Tax", "woocommerce" );
+            if ('tax' === $meta->key && \is_admin()) {
+                $display_key = \__('Tax', 'woocommerce');
             }
 
-            if( $meta->key === 'selected_delivery_date' && is_admin()){
-                $display_key = __("Selected delivery date", "woocommerce" );
+            if ('selected_delivery_date' === $meta->key && \is_admin()) {
+                $display_key = \__('Selected delivery date', 'woocommerce');
             }
 
-            if( $meta->key === 'selected_delivery_time_from' && is_admin()){
-                $display_key = __("Selected delivery time", "woocommerce" );
-            }
-        
-        
-            return $display_key;    
-        }
-        
-        public function filter_wc_order_item_display_meta_value($display_key, $meta, $item) {
-            if( $meta->key === 'delivery_date_from' && is_admin() )
-            {
-                $display_key =  (new \DateTime($meta->value))->setTimezone(\wp_timezone())->format($this->wp_date_format()); 
+            if ('selected_delivery_time_from' === $meta->key && \is_admin()) {
+                $display_key = \__('Selected delivery time', 'woocommerce');
             }
 
-            if( $meta->key === 'delivery_date_to' && is_admin() )
-            {
-                $display_key =  (new \DateTime($meta->value))->setTimezone(\wp_timezone())->format($this->wp_date_format()); 
-            }
-
-            if( $meta->key === 'selected_delivery_date' && is_admin() )
-            {
-                $display_key =  (new \DateTime($meta->value))->setTimezone(\wp_timezone())->format($this->wp_date_format()); 
-            }
-
-            if( $meta->key === 'selected_delivery_time_from' && is_admin() )
-            {
-                $time_from =  (new \DateTime($meta->value))->setTimezone(\wp_timezone())->format($this->wp_time_format());
-                $time_to =  (new \DateTime($item->get_meta('selected_delivery_time_to')))->setTimezone(\wp_timezone())->format($this->wp_time_format());
-                $display_key =  $time_from.' - '.$time_to;
-            }
-        
-            return $display_key;    
+            return $display_key;
         }
 
-        public function filter_wc_order_item_get_formatted_meta_data($formatted_meta, $item) {
-            if (is_wc_endpoint_url()) {
+        public function filter_wc_order_item_display_meta_value($display_key, $meta, $item)
+        {
+            if ('delivery_date_from' === $meta->key && \is_admin()) {
+                $display_key = (new \DateTime($meta->value))->setTimezone(\wp_timezone())->format($this->wp_date_format());
+            }
+
+            if ('delivery_date_to' === $meta->key && \is_admin()) {
+                $display_key = (new \DateTime($meta->value))->setTimezone(\wp_timezone())->format($this->wp_date_format());
+            }
+
+            if ('selected_delivery_date' === $meta->key && \is_admin()) {
+                $display_key = (new \DateTime($meta->value))->setTimezone(\wp_timezone())->format($this->wp_date_format());
+            }
+
+            if ('selected_delivery_time_from' === $meta->key && \is_admin()) {
+                $time_from = (new \DateTime($meta->value))->setTimezone(\wp_timezone())->format($this->wp_time_format());
+                $time_to = (new \DateTime($item->get_meta('selected_delivery_time_to')))->setTimezone(\wp_timezone())->format($this->wp_time_format());
+                $display_key = $time_from.' - '.$time_to;
+            }
+
+            return $display_key;
+        }
+
+        public function filter_wc_order_item_get_formatted_meta_data($formatted_meta, $item)
+        {
+            if (\is_wc_endpoint_url()) {
                 return $formatted_meta;
             }
 
             $can_show_delivery_date_period = !$item->get_meta('selected_delivery_time_from') && !$item->get_meta('selected_delivery_date');
-        
-            foreach ($formatted_meta as $key => $meta){
-                if(in_array($meta->key, array('selected_delivery_time_to', 'time_slot_date_required', 'time_slot_time_required', 'rate_image'))) {
+
+            foreach ($formatted_meta as $key => $meta) {
+                if (\in_array($meta->key, ['selected_delivery_time_to', 'time_slot_date_required', 'time_slot_time_required', 'rate_image'])) {
                     unset($formatted_meta[$key]);
                 }
 
-                if(in_array($meta->key, array('delivery_date_from', 'delivery_date_to')) && !$can_show_delivery_date_period){
+                if (!$can_show_delivery_date_period && \in_array($meta->key, ['delivery_date_from', 'delivery_date_to'])) {
                     unset($formatted_meta[$key]);
                 }
             }
-       
+
             return $formatted_meta;
         }
-
 
         public function add_custom_order_totals_row($total_rows, $order, $tax_display)
         {
