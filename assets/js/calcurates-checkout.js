@@ -160,6 +160,11 @@ function setupDatePicker() {
     });
 }
 
+/**
+ * @param {jQuery} $datepicker
+ * @param {Array} time
+ * @param {boolean} required
+ */
 function createTimeSlotSelect($datepicker, time, required) {
     removeTimeSelect($datepicker);
 
@@ -172,11 +177,8 @@ function createTimeSlotSelect($datepicker, time, required) {
 
     const $select = jQuery('<select class="calcurates-checkout__shipping-rate-time-select" name="selected_delivery_time">').appendTo($datepicker);
     time.forEach(function (item) {
-        const fromLocalDate = new Date(item['from']);
-        const toLocalDate = new Date(item['to']);
-
         $select.append(new Option(
-            convertSlotsToWpTime(fromLocalDate) + ' - ' + convertSlotsToWpTime(toLocalDate),
+            formatToWordpressTime(item['from']) + ' - ' + formatToWordpressTime(item['to']),
             JSON.stringify({from: item['from'], to: item['to']})
         ));
     });
@@ -188,6 +190,9 @@ function createTimeSlotSelect($datepicker, time, required) {
     $datepicker.closest('.calcurates-checkout__shipping-rate-date-select-label').after(jQuery('<div class="calcurates-checkout__shipping-rate-time-select-label">').append('Delivery time ').append($select));
 }
 
+/**
+ * @param {jQuery} $elem
+ */
 function removeTimeSelect($elem) {
     $elem.closest('.calcurates-checkout__shipping-rate-dates').find('.calcurates-checkout__shipping-rate-time-select-label').remove();
 }
@@ -196,6 +201,10 @@ function cloneFull(obj) {
     return JSON.parse(JSON.stringify(obj));
 }
 
+/**
+ * @param {Date} date
+ * @return {string}
+ */
 function normalizeDatepickerDateToZeroUTC(date) {
     let day = date.getDate();
     let month = date.getMonth() + 1;
@@ -212,11 +221,16 @@ function normalizeDatepickerDateToZeroUTC(date) {
     return year + '-' + month + '-' + day + 'T00:00:00.000Z';
 }
 
-function convertSlotsToWpTime(date) {
-    const localTime = date.getTime();
-    const localOffset = date.getTimezoneOffset() * 60000;
+/**
+ * @param {string} dateTime
+ * @return {string}
+ */
+function formatToWordpressTime(dateTime) {
+    const localDate = new Date(dateTime);
+    const localTime = localDate.getTime();
+    const localOffset = localDate.getTimezoneOffset() * 60000;
     const utc = localTime + localOffset;
-    const wpTime = utc + (1000* +CALCURATES_GLOBAL.wpTimeZoneOffsetSeconds);
+    const wpTime = utc + (1000 * +CALCURATES_GLOBAL.wpTimeZoneOffsetSeconds);
     const newDate = new Date(wpTime);
 
     return newDate.toLocaleTimeString().slice(0, -3);
