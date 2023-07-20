@@ -176,7 +176,7 @@ function createTimeSlotSelect($datepicker, time, required) {
         const toLocalDate = new Date(item['to']);
 
         $select.append(new Option(
-            fromLocalDate.toLocaleTimeString().slice(0, -3) + ' - ' + toLocalDate.toLocaleTimeString().slice(0, -3),
+            convertSlotsToWpTime(fromLocalDate) + ' - ' + convertSlotsToWpTime(toLocalDate),
             JSON.stringify({from: item['from'], to: item['to']})
         ));
     });
@@ -210,4 +210,14 @@ function normalizeDatepickerDateToZeroUTC(date) {
     }
 
     return year + '-' + month + '-' + day + 'T00:00:00.000Z';
+}
+
+function convertSlotsToWpTime(date) {
+    const localTime = date.getTime();
+    const localOffset = date.getTimezoneOffset() * 60000;
+    const utc = localTime + localOffset;
+    const wpTime = utc + (1000* +CALCURATES_GLOBAL.wpTimeZoneOffsetSeconds);
+    const newDate = new Date(wpTime);
+
+    return newDate.toLocaleTimeString().slice(0, -3);
 }
