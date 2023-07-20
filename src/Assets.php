@@ -64,10 +64,14 @@ if (!\class_exists(Assets::class)) {
                 // provide global vars
                 \wp_add_inline_script(WCCalcurates::get_plugin_text_domain(), 'var exports = {};');
 
+                $date = \current_datetime();
+                $utcOffset = $date->format('Z');
+
                 \wp_add_inline_script(WCCalcurates::get_plugin_text_domain(), 'var CALCURATES_GLOBAL = '.\json_encode(
                     [
                         'pluginDir' => \plugin_dir_url(__DIR__),
                         'lang' => \substr(\get_locale(), 0, 2),
+                        'wpTimeZoneOffsetSeconds' => $utcOffset,
                     ]
                 ).';');
 
