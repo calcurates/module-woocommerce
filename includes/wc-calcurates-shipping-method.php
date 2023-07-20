@@ -212,13 +212,10 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
             return [];
         }
 
-        $rates_tools = new Rates($this->tax_mode, $package);
+        $rates = new Rates($response, $this->tax_mode, $package);
+        $rates->apply_tax_mode();
 
-        // extract rates from response
-        $rates_tools->extract($response);
-        $rates_tools->apply_tax_mode();
-
-        return $rates_tools->convert_rates_to_wc_rates();
+        return $rates->convert_rates_to_wc_rates();
     }
 
     /**

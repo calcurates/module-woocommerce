@@ -24,6 +24,7 @@ abstract class RatesExtractorAbstract
      *     priority: int|null,
      *     priority_item: int|null,
      *     rate_image: string|null,
+     *     time_slots: array|null,
      * }[]
      */
     abstract public function extract(array $data): array;

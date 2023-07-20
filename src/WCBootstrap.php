@@ -18,6 +18,9 @@ if (!\class_exists(WCBootstrap::class)) {
      */
     class WCBootstrap
     {
+        private static $delivery_date_meta_name = 'selected_delivery_date';
+        private static $delivery_time_meta_name = 'selected_delivery_time';
+
         public function run(): void
         {
             // Create Calcurates shipping method
@@ -37,6 +40,171 @@ if (!\class_exists(WCBootstrap::class)) {
             \add_action('woocommerce_after_checkout_validation', [$this, 'validate_selected_rate'], 10, 2);
 
             \add_filter('woocommerce_cart_shipping_method_full_label', [$this, 'filter_woocommerce_cart_shipping_method_full_label'], 10, 2);
+
+            \add_action('woocommerce_checkout_update_order_review', [$this, 'checkout_update_refresh_shipping_methods'], 10, 1);
+
+            \add_action('woocommerce_checkout_create_order_shipping_item', [$this, 'action_checkout_create_order_shipping_item'], 20, 4);
+
+            // add some data to thankyou page
+            \add_filter('woocommerce_get_order_item_totals', [$this, 'add_custom_order_totals_row'], 30, 3);
+
+            // format order meta in admin panel
+            \add_filter('woocommerce_order_item_display_meta_key', [$this, 'filter_wc_order_item_display_meta_key'], 20, 3);
+            \add_filter('woocommerce_order_item_display_meta_value', [$this, 'filter_wc_order_item_display_meta_value'], 20, 3);
+
+            // hide meta fields in admin panel
+            \add_filter('woocommerce_order_item_get_formatted_meta_data', [$this, 'filter_wc_order_item_get_formatted_meta_data'], 10, 2);
+        }
+
+        public function filter_wc_order_item_display_meta_key($display_key, $meta, $item)
+        {
+            if ('delivery_date_from' === $meta->key && \is_admin()) {
+                $display_key = \__('Delivery date from', 'woocommerce');
+            }
+
+            if ('delivery_date_to' === $meta->key && \is_admin()) {
+                $display_key = \__('Delivery date to', 'woocommerce');
+            }
+
+            if ('tax' === $meta->key && \is_admin()) {
+                $display_key = \__('Tax', 'woocommerce');
+            }
+
+            if ('selected_delivery_date' === $meta->key && \is_admin()) {
+                $display_key = \__('Selected delivery date', 'woocommerce');
+            }
+
+            if ('selected_delivery_time_from' === $meta->key && \is_admin()) {
+                $display_key = \__('Selected delivery time', 'woocommerce');
+            }
+
+            return $display_key;
+        }
+
+        public function filter_wc_order_item_display_meta_value($display_key, $meta, $item)
+        {
+            if ('delivery_date_from' === $meta->key && \is_admin()) {
+                $display_key = (new \DateTime($meta->value))->setTimezone(\wp_timezone())->format($this->wp_date_format());
+            }
+
+            if ('delivery_date_to' === $meta->key && \is_admin()) {
+                $display_key = (new \DateTime($meta->value))->setTimezone(\wp_timezone())->format($this->wp_date_format());
+            }
+
+            if ('selected_delivery_date' === $meta->key && \is_admin()) {
+                $display_key = (new \DateTime($meta->value))->setTimezone(\wp_timezone())->format($this->wp_date_format());
+            }
+
+            if ('selected_delivery_time_from' === $meta->key && \is_admin()) {
+                $time_from = (new \DateTime($meta->value))->setTimezone(\wp_timezone())->format($this->wp_time_format());
+                $time_to = (new \DateTime($item->get_meta('selected_delivery_time_to')))->setTimezone(\wp_timezone())->format($this->wp_time_format());
+                $display_key = $time_from.' - '.$time_to;
+            }
+
+            return $display_key;
+        }
+
+        public function filter_wc_order_item_get_formatted_meta_data($formatted_meta, $item)
+        {
+            if (\is_wc_endpoint_url()) {
+                return $formatted_meta;
+            }
+
+            $can_show_delivery_date_period = !$item->get_meta('selected_delivery_time_from') && !$item->get_meta('selected_delivery_date');
+
+            foreach ($formatted_meta as $key => $meta) {
+                if (\in_array($meta->key, ['selected_delivery_time_to', 'time_slot_date_required', 'time_slot_time_required', 'rate_image'])) {
+                    unset($formatted_meta[$key]);
+                }
+
+                if (!$can_show_delivery_date_period && \in_array($meta->key, ['delivery_date_from', 'delivery_date_to'])) {
+                    unset($formatted_meta[$key]);
+                }
+            }
+
+            return $formatted_meta;
+        }
+
+        public function add_custom_order_totals_row($total_rows, $order, $tax_display)
+        {
+            $delivery_date_from = null;
+            $delivery_date_to = null;
+            $delivery_date = null;
+            $delivery_time_from = null;
+            $delivery_time_to = null;
+
+            // Set last total row in a variable and remove it.
+            $order_total = $total_rows['order_total'];
+            unset($total_rows['order_total']);
+
+            /** @var \WC_Order_Item_Shipping $item */
+            foreach ($order->get_items('shipping') as $item) {
+                if (\WC_Calcurates_Shipping_Method::CODE === $item->get_method_id()) {
+                    $delivery_date_from = $item->get_meta('delivery_date_from');
+                    $delivery_date_to = $item->get_meta('delivery_date_to');
+                    $delivery_date = $item->get_meta(self::$delivery_date_meta_name);
+                    $delivery_time_from = $item->get_meta(self::$delivery_time_meta_name.'_from');
+                    $delivery_time_to = $item->get_meta(self::$delivery_time_meta_name.'_to');
+
+                    break;
+                }
+            }
+
+            $time_slots = null;
+            if ($delivery_date) {
+                $time_slots = $this->get_time_slots_text($delivery_date, $delivery_time_from, $delivery_time_to);
+                if ($time_slots) {
+                    $total_rows['time_slots'] = [
+                        'label' => \__('Delivery date:', 'woocommerce'),
+                        'value' => \htmlspecialchars($time_slots, \ENT_NOQUOTES),
+                    ];
+                }
+            }
+            if (!$time_slots && ($delivery_date_from || $delivery_date_to)) {
+                $estimated_delivery_date = $this->get_estimated_delivery_dates_text(
+                    $delivery_date_from,
+                    $delivery_date_to
+                );
+
+                if ($estimated_delivery_date) {
+                    $total_rows['estimated_delivery_date'] = [
+                        'label' => \__('Estimated delivery date:', 'woocommerce'),
+                        'value' => \htmlspecialchars($estimated_delivery_date, \ENT_NOQUOTES),
+                    ];
+                }
+            }
+
+            // Set back last total row
+            $total_rows['order_total'] = $order_total;
+
+            return $total_rows;
+        }
+
+        // For new orders via checkout
+        public function action_checkout_create_order_shipping_item($item, $package_key, $package, $order): void
+        {
+            if (isset($_POST[self::$delivery_date_meta_name]) && $_POST[self::$delivery_date_meta_name]) {
+                $item->update_meta_data(self::$delivery_date_meta_name, $_POST[self::$delivery_date_meta_name]);
+            }
+
+            if (isset($_POST[self::$delivery_time_meta_name]) && $_POST[self::$delivery_time_meta_name]) {
+                $data = \json_decode(\stripslashes($_POST[self::$delivery_time_meta_name]), true);
+
+                $item->update_meta_data(self::$delivery_time_meta_name.'_from', $data['from']);
+                $item->update_meta_data(self::$delivery_time_meta_name.'_to', $data['to']);
+            }
+        }
+
+        /**
+         * Always trigger shipping recalculation on update_checkout js trigger.
+         */
+        public function checkout_update_refresh_shipping_methods($post_data): void
+        {
+            $packages = \WC()->cart->get_shipping_packages();
+
+            foreach ($packages as $package_key => $package) {
+                \WC()->session->set('shipping_for_package_'.$package_key, true);
+            }
         }
 
         public function init_shipping(): void
@@ -61,7 +229,7 @@ if (!\class_exists(WCBootstrap::class)) {
             return $methods;
         }
 
-        public function ship_to_different_address_set_session(string $data): string
+        public function ship_to_different_address_set_session(string $data): void
         {
             if ($data) {
                 $data_array = [];
@@ -73,40 +241,24 @@ if (!\class_exists(WCBootstrap::class)) {
                     \WC()->session->set('ship_to_different_address', '0');
                 }
             }
-
-            return $data;
         }
 
         public function add_shipping_data_after_order_table_in_email(\WC_Order $order): void
         {
             $message = null;
-            $delivery_date_from = null;
-            $delivery_date_to = null;
             $text = '';
 
             /** @var \WC_Order_Item_Shipping $item */
             foreach ($order->get_items('shipping') as $item) {
                 if (\WC_Calcurates_Shipping_Method::CODE === $item->get_method_id()) {
                     $message = $item->get_meta('message');
-                    $delivery_date_from = $item->get_meta('delivery_date_from');
-                    $delivery_date_to = $item->get_meta('delivery_date_to');
+
                     break;
                 }
             }
 
             if ($message) {
                 $text .= 'Shipping info: '.\htmlspecialchars($message, \ENT_NOQUOTES).'<br/>';
-            }
-
-            if ($delivery_date_from || $delivery_date_to) {
-                $estimated_delivery_date = $this->get_estimated_delivery_dates_text(
-                    $delivery_date_from,
-                    $delivery_date_to
-                );
-
-                if ($estimated_delivery_date) {
-                    $text .= 'Estimated delivery date: '.\htmlspecialchars($estimated_delivery_date, \ENT_NOQUOTES);
-                }
             }
 
             if ($text) {
@@ -117,19 +269,71 @@ if (!\class_exists(WCBootstrap::class)) {
         /**
          * Get text string with delivery dates.
          */
+        private function get_time_slots_text(string $delivery_date, ?string $delivery_time_from, ?string $delivery_time_to): string
+        {
+            $wp_timezone_string = \wp_timezone_string();
+            try {
+                $delivery_date_obj = (new \DateTime($delivery_date))->setTimezone(new \DateTimeZone($wp_timezone_string));
+                $text = $delivery_date_obj->format($this->wp_date_format());
+            } catch (\Exception $e) {
+                $text = '';
+            }
+
+            if ($delivery_time_from || $delivery_time_to) {
+                $formatted_delivery_time_from = '';
+                $formatted_delivery_time_to = '';
+
+                if ($delivery_time_from) {
+                    try {
+                        $delivery_time_from_obj = (new \DateTime($delivery_time_from))->setTimezone(new \DateTimeZone($wp_timezone_string));
+                        $formatted_delivery_time_from = $delivery_time_from_obj->format($this->wp_time_format());
+                    } catch (\Exception $e) {
+                    }
+                }
+
+                if ($delivery_time_to) {
+                    try {
+                        $delivery_time_to_obj = (new \DateTime($delivery_time_to))->setTimezone(new \DateTimeZone($wp_timezone_string));
+                        $formatted_delivery_time_to = $delivery_time_to_obj->format($this->wp_time_format());
+                    } catch (\Exception $e) {
+                    }
+                }
+
+                if ($formatted_delivery_time_from || $formatted_delivery_time_to) {
+                    $text .= ' Delivery time: ';
+                    if ($formatted_delivery_time_from) {
+                        $text .= $formatted_delivery_time_from;
+                    }
+                    if ($formatted_delivery_time_from && $formatted_delivery_time_to) {
+                        $text .= ' - ';
+                    }
+                    if ($formatted_delivery_time_to) {
+                        $text .= $formatted_delivery_time_to;
+                    }
+                }
+            }
+            $text = \trim($text);
+
+            return $text ? $text.' ('.$wp_timezone_string.')' : '';
+        }
+
+        /**
+         * Get text string with delivery dates.
+         */
         private function get_estimated_delivery_dates_text(?string $from_date, ?string $to_date): string
         {
+            $wp_timezone_string = \wp_timezone_string();
             $from = null;
             $to = null;
 
             // get \DateTime objects
             try {
-                $from = $from_date ? (new \DateTime($from_date))->setTimezone(\wp_timezone()) : null;
+                $from = $from_date ? (new \DateTime($from_date))->setTimezone(new \DateTimeZone($wp_timezone_string)) : null;
             } catch (\Exception $e) {
             }
 
             try {
-                $to = $to_date ? (new \DateTime($to_date))->setTimezone(\wp_timezone()) : null;
+                $to = $to_date ? (new \DateTime($to_date))->setTimezone(new \DateTimeZone($wp_timezone_string)) : null;
             } catch (\Exception $e) {
             }
 
@@ -142,17 +346,17 @@ if (!\class_exists(WCBootstrap::class)) {
                     return $formatted_from;
                 }
 
-                return $formatted_from.' - '.$formatted_to;
+                return $formatted_from.' - '.$formatted_to.' ('.$wp_timezone_string.')';
             }
 
             // if has only 'from' date
             if ($from) {
-                return 'From '.$from->format($this->wp_date_format());
+                return 'From '.$from->format($this->wp_date_format()).' ('.$wp_timezone_string.')';
             }
 
             // if has only 'to' date
             if ($to) {
-                return 'To '.$to->format($this->wp_date_format());
+                return 'To '.$to->format($this->wp_date_format()).' ('.$wp_timezone_string.')';
             }
 
             return '';
@@ -163,17 +367,18 @@ if (!\class_exists(WCBootstrap::class)) {
          */
         private function get_estimated_delivery_days_text(?string $from_date, ?string $to_date): string
         {
+            $wp_timezone_string = \wp_timezone_string();
             $from = null;
             $to = null;
 
             // get \DateTime objects
             try {
-                $from = $from_date ? (new \DateTime($from_date))->setTimezone(\wp_timezone()) : null;
+                $from = $from_date ? (new \DateTime($from_date))->setTimezone(new \DateTimeZone($wp_timezone_string)) : null;
             } catch (\Exception $e) {
             }
 
             try {
-                $to = $to_date ? (new \DateTime($to_date))->setTimezone(\wp_timezone()) : null;
+                $to = $to_date ? (new \DateTime($to_date))->setTimezone(new \DateTimeZone($wp_timezone_string)) : null;
             } catch (\Exception $e) {
             }
 
@@ -204,6 +409,14 @@ if (!\class_exists(WCBootstrap::class)) {
         private function wp_date_format(): string
         {
             return \get_option('date_format');
+        }
+
+        /**
+         * Get current store time format.
+         */
+        private function wp_time_format(): string
+        {
+            return \get_option('time_format');
         }
 
         /**
@@ -315,13 +528,20 @@ if (!\class_exists(WCBootstrap::class)) {
             // delivery dates
             $delivery_dates = '';
             if ('description' === $shipping_method_options['delivery_dates_display_mode'] && ($meta['delivery_date_from'] || $meta['delivery_date_to'])) {
-                if ('quantity' === $shipping_method_options['delivery_dates_display_format']) {
-                    $delivery_dates_text = $this->get_estimated_delivery_days_text($meta['delivery_date_from'], $meta['delivery_date_to']);
+                if ($meta['time_slots']) {
+                    $date_text = '<div class="calcurates-checkout__shipping-rate-date-select-label">Delivery date
+                    <input id="'.\htmlspecialchars($this->rate_id_to_css_id($rate->get_id())).'" class="calcurates-checkout__shipping-rate-date-select" placeholder="Select delivery date" data-delivery-date-from="'.\htmlspecialchars($meta['delivery_date_from'] ?? '').'" data-delivery-date-to="'.\htmlspecialchars($meta['delivery_date_to'] ?? '').'" data-time-slot-date-required="'.\htmlspecialchars($meta['time_slot_date_required'] ?? '0').'" data-time-slot-time-required="'.\htmlspecialchars($meta['time_slot_time_required'] ?? '0').'" data-time-slots="'.\htmlspecialchars(\json_encode($meta['time_slots'], \JSON_UNESCAPED_SLASHES)).'" type="text" readonly="readonly"/>
+                    <input class="calcurates-checkout__shipping-rate-date-original-utc" name="'.\htmlspecialchars(self::$delivery_date_meta_name).'" type="text" hidden="hidden"/>
+                    </div>';
                 } else {
-                    $delivery_dates_text = $this->get_estimated_delivery_dates_text($meta['delivery_date_from'], $meta['delivery_date_to']);
+                    if ('quantity' === $shipping_method_options['delivery_dates_display_format']) {
+                        $date_text = \htmlspecialchars($this->get_estimated_delivery_days_text($meta['delivery_date_from'], $meta['delivery_date_to']), \ENT_NOQUOTES);
+                    } else {
+                        $date_text = \htmlspecialchars($this->get_estimated_delivery_dates_text($meta['delivery_date_from'], $meta['delivery_date_to']), \ENT_NOQUOTES);
+                    }
                 }
 
-                $delivery_dates = '<div class="calcurates-checkout__shipping-rate-dates">'.\htmlspecialchars($delivery_dates_text, \ENT_NOQUOTES).'</div>';
+                $delivery_dates = '<div class="calcurates-checkout__shipping-rate-dates">'.$date_text.'</div>';
             }
 
             return $image.'<span class="calcurates-checkout__shipping-rate-text'.($meta['has_error'] ? ' calcurates-checkout__shipping-rate-text_has-error' : '').'">'.$label.' '.$info_message.' '.$delivery_dates.'</span>';
@@ -329,10 +549,19 @@ if (!\class_exists(WCBootstrap::class)) {
 
         private function difference_in_days_from_now(\DateTime $date): string
         {
-            $now = new \DateTime('now', \wp_timezone());
+            $now = new \DateTime('now', $date->getTimezone());
             $interval = $now->diff($date);
 
             return $interval->format('%a');
+        }
+
+        private function rate_id_to_css_id(string $rate_id): string
+        {
+            $data = \str_replace(':', '-', $rate_id);
+            $data = \str_replace('_', '-', $data);
+            $data = \str_replace('calcurates', 'calcurates-datepicker', $data);
+
+            return $data;
         }
     }
 }

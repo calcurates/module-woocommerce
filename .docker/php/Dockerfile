@@ -17,34 +17,34 @@ RUN set -xe \
 # PHP
 RUN set -xe \
     && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
-
+\
     # Opcache
     && docker-php-ext-install opcache \
     && docker-php-ext-enable opcache \
-
+\
     # Xdebug
     && pecl install xdebug \
     && docker-php-ext-enable xdebug \
-
+\
     # ZIP
     && apk add --no-cache libzip libzip-dev \
     && docker-php-ext-install zip \
     && docker-php-ext-enable zip \
-
+\
     # Mysql
     && apk add --no-cache mysql-client \
     && docker-php-ext-install mysqli \
     && docker-php-ext-enable mysqli \
-
+\
     # Imagick
     && apk add --no-cache imagemagick libgomp imagemagick-dev \
     && pecl install imagick \
     && docker-php-ext-enable imagick \
-
+\
     # Exif
     && docker-php-ext-install exif \
     && docker-php-ext-enable exif \
-
+\
     # Bcmath
     && docker-php-ext-install bcmath \
     && docker-php-ext-enable bcmath
