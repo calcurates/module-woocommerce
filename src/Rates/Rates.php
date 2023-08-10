@@ -133,7 +133,7 @@ class Rates
                 'cost' => $rate['cost'],
                 'package' => $this->package,
                 'meta_data' => [
-                    'message' => $rate['message'],
+                    'message' => $this->prepare_message($rate), 
                     'delivery_date_from' => $rate['delivery_date_from'],
                     'delivery_date_to' => $rate['delivery_date_to'],
                     'tax' => $rate['tax'],
@@ -186,5 +186,16 @@ class Rates
         }
 
         $this->rates = $rates;
+    }
+
+    private function prepare_message($rate): string
+    {
+        $message = $rate['message'] ? $rate['message'] : '';
+
+        if ($message) {
+            $message = \str_replace('{tax_amount}', ($rate['tax']." ".\get_woocommerce_currency()), $message);
+        } 
+
+        return $message;
     }
 }
