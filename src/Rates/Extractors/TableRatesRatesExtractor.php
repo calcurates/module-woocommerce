@@ -37,15 +37,12 @@ class TableRatesRatesExtractor extends RatesExtractorAbstract
 
             foreach ($table_rate['methods'] as $method) {
                 if ($method['success'] || $method['message']) {
-                    $cost = $method['rate']['cost'] ?? 0;
-                    $tax = $method['rate']['tax'] ?? 0;
-
                     $ready_rates[] = [
                         'has_error' => !$method['success'],
                         'id' => $table_rate['id'].'_'.$method['id'],
                         'label' => $this->resolveLabel($method),
-                        'cost' => $method['splitTaxAndCost'] ? $cost : $cost + $tax,
-                        'tax' => $method['splitTaxAndCost'] ? $tax : 0,
+                        'cost' => $method['rate']['cost'] ?? 0,
+                        'tax' => $method['rate']['tax'] ?? 0,
                         'message' => $method['message'],
                         'delivery_date_from' => isset($method['rate']['estimatedDeliveryDate']) ? $method['rate']['estimatedDeliveryDate']['from'] : null,
                         'delivery_date_to' => isset($method['rate']['estimatedDeliveryDate']) ? $method['rate']['estimatedDeliveryDate']['to'] : null,

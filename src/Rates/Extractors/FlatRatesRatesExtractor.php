@@ -17,15 +17,12 @@ class FlatRatesRatesExtractor extends RatesExtractorAbstract
 
         foreach ($data as $rate) {
             if ($rate['success'] || $rate['message']) {
-                $cost = $rate['rate']['cost'] ?? 0;
-                $tax = $rate['rate']['tax'] ?? 0;
-
                 $ready_rates[] = [
                     'has_error' => !$rate['success'],
                     'id' => $rate['id'],
                     'label' => $this->resolveLabel($rate),
-                    'cost' => $rate['splitTaxAndCost'] ? $cost : $cost + $tax,
-                    'tax' => $rate['splitTaxAndCost'] ? $tax : 0,
+                    'cost' => $rate['rate']['cost'] ?? 0,
+                    'tax' => $rate['rate']['tax'] ?? 0,
                     'message' => $rate['message'],
                     'delivery_date_from' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['from'] : null,
                     'delivery_date_to' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['to'] : null,
