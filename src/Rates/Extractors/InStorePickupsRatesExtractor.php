@@ -37,15 +37,12 @@ class InStorePickupsRatesExtractor extends RatesExtractorAbstract
 
             foreach ($in_store_rate['stores'] as $store) {
                 if ($store['success'] || $store['message']) {
-                    $cost = $store['rate']['cost'] ?? 0;
-                    $tax = $store['rate']['tax'] ?? 0;
-
                     $ready_rates[] = [
                         'has_error' => !$store['success'],
                         'id' => $in_store_rate['id'].'_'.$store['id'],
                         'label' => $this->resolveLabel($store),
-                        'cost' => $store['splitTaxAndCost'] ? $cost : $cost + $tax,
-                        'tax' => $store['splitTaxAndCost'] ? $tax : 0,
+                        'cost' => $store['rate']['cost'] ?? 0,
+                        'tax' => $store['rate']['tax'] ?? 0,
                         'message' => $store['message'],
                         'delivery_date_from' => isset($store['rate']['estimatedDeliveryDate']) ? $store['rate']['estimatedDeliveryDate']['from'] : null,
                         'delivery_date_to' => isset($store['rate']['estimatedDeliveryDate']) ? $store['rate']['estimatedDeliveryDate']['to'] : null,
