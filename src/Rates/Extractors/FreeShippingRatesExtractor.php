@@ -23,6 +23,7 @@ class FreeShippingRatesExtractor extends RatesExtractorAbstract
                     'label' => $this->resolveLabel($rate),
                     'cost' => $rate['rate']['cost'] ?? 0,
                     'tax' => $rate['rate']['tax'] ?? 0,
+                    'currency' => $rate['rate']['currency'] ?? '',
                     'message' => $rate['message'],
                     'delivery_date_from' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['from'] : null,
                     'delivery_date_to' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['to'] : null,
