@@ -16,7 +16,7 @@
         }
     ],
     "type": "wordpress-plugin",
-    "version": "1.6.0",
+    "version": "1.6.1",
     "config": {
         "vendor-dir": "lib",
         "optimize-autoloader": true,
@@ -32,7 +32,7 @@
     "require-dev": {
         "phpstan/phpstan": "^1.0",
         "szepeviktor/phpstan-wordpress": "^1.0",
-        "php-stubs/woocommerce-stubs": "^4.3 || ^5.0 || ^6.0 || ^7.0",
+        "php-stubs/woocommerce-stubs": "^4.3 || ^5.0 || ^6.0 || ^7.0 || ^8.0",
         "php-stubs/wordpress-stubs": "^5.2 || ^6.0",
         "friendsofphp/php-cs-fixer": "^3.0"
     }

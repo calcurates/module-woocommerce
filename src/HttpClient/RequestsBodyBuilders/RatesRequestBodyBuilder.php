@@ -139,7 +139,7 @@ class RatesRequestBodyBuilder
             $data = [
                 'quoteItemId' => $cart_product['product_id'],
                 'sku' => $product->get_sku(),
-                'price' => $cart_product['line_total'] / $cart_product['quantity'],
+                'price' => $cart_product['quantity'] ? ($cart_product['line_total'] / $cart_product['quantity']) : 0.0,
                 'quantity' => $cart_product['quantity'],
                 'weight' => (float) $product->get_weight(),
                 'origins' => $origin_codes ? \array_map(static function (string $code): array {
@@ -175,8 +175,9 @@ class RatesRequestBodyBuilder
                 ],
             ];
 
-            if ($cart_product['variation_id'] && $product->get_parent_id()) { // variation
+            if ($product instanceof \WC_Product_Variation && $product->get_parent_id()) { // variation
                 $parent_product = \wc_get_product($product->get_parent_id());
+                /** @var array<string, \WC_Product_Attribute> $wc_product_attrs */
                 $wc_product_attrs = $parent_product->get_attributes();
 
                 if (empty($data['attributes']['categories'])) {
@@ -187,7 +188,6 @@ class RatesRequestBodyBuilder
                     $data['attributes']['tags'] = $parent_product->get_tag_ids();
                 }
 
-                //fixme: only \WC_Product_Variation or \WC_Product_Simple
                 foreach ($product->get_variation_attributes(false) as $taxonomy => $terms_slug) {
                     if ($terms_slug) {
                         $term_obj = \get_term_by('slug', $terms_slug, $taxonomy);
@@ -198,6 +198,7 @@ class RatesRequestBodyBuilder
                     }
                 }
             } else {
+                /** @var array<string, \WC_Product_Attribute> $wc_product_attrs */
                 $wc_product_attrs = $product->get_attributes();
             }
 
