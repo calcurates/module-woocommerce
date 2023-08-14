@@ -4,7 +4,7 @@ Tags: woocommerce, shipping rates, shipping methods, shipping carriers, shipping
 Requires at least: 5.2
 Tested up to: 6.3
 Requires PHP: 7.2.5
-Stable tag: 1.6.0
+Stable tag: 1.6.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -64,6 +64,9 @@ Calcurates is developed and supported by Amasty. After 10 years of success in de
 5. Accurate shipping and delivery dates for WooCommerce checkout
 
 == Changelog ==
+
+= 1.6.1 =
+- Add: Duties & taxes: the {tax_amount} variable has been added to Explanatory Text for Carrier and Table Rates Shipping Options
 
 = 1.6.0 =
 - Add: "Delivery Date and Time Slot picker" feature for WooCommerce has been implemented
