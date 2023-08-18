@@ -28,6 +28,7 @@ class Rates
      *     priority_item: int|null,
      *     rate_image: string|null,
      *     time_slots: array|null,
+     *     currency: string,
      * }[]
      */
     private $rates = [];
