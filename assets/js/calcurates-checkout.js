@@ -110,7 +110,7 @@ function setupDatePicker() {
             const deliveryDatTo = new Date(new Date(timeSlots[timeSlots.length - 1]['date']).toISOString().replace(timePattern, '00:00:00'));
 
             const options = {
-                locale: exports.default,
+                locale: DATEPICKER_LANG,
                 autoClose: true,
                 onSelect(data) {
                     const normalizedDate = normalizeDatepickerDateToZeroUTC(data.date);
