@@ -1,10 +1,4 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _default = {
+var DATEPICKER_LANG = {
   days: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
   daysShort: ['일', '월', '화', '수', '목', '금', '토'],
   daysMin: ['일', '월', '화', '수', '목', '금', '토'],
@@ -16,4 +10,3 @@ var _default = {
   timeFormat: 'hh:mm aa',
   firstDay: 0
 };
-exports.default = _default;
