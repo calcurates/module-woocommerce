@@ -14,7 +14,7 @@ jQuery(document).ready(function () {
 function setupShipping() {
     const $root = jQuery('.woocommerce-shipping-totals');
     const $shippingRateTexts = $root.find('.calcurates-checkout__shipping-rate-text');
-    
+
     // setup classes
     $shippingRateTexts.each(function () {
         const $that = jQuery(this);
@@ -35,12 +35,12 @@ function setupShipping() {
             return;
         }
 
-        if($shippingRateTexts.length > 1) {
+        if ($shippingRateTexts.length > 1) {
             $datepicker.prop('disabled', !$input.prop('checked'));
             $originalUtcDate.prop('disabled', !$input.prop('checked'));
         }
 
-        if ($input.prop('checked') || $shippingRateTexts.length === 1) {
+        if ($shippingRateTexts.length === 1 || $input.prop('checked')) {
             $datepicker.closest('.calcurates-checkout__shipping-rate-date-select-label').show();
         } else {
             $datepicker.closest('.calcurates-checkout__shipping-rate-date-select-label').hide();
