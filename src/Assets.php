@@ -62,8 +62,6 @@ if (!\class_exists(Assets::class)) {
         {
             if ($this->register_js(WCCalcurates::get_plugin_text_domain(), '/assets/js/calcurates-checkout.js', ['jquery', 'wc-cart', 'wc-checkout', self::$date_picker_script_name]) && (\is_cart() || \is_checkout())) {
                 // provide global vars
-                \wp_add_inline_script(WCCalcurates::get_plugin_text_domain(), 'var exports = {};');
-
                 $date = \current_datetime();
                 $utcOffset = $date->format('Z');
 

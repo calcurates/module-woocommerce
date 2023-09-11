@@ -13,9 +13,10 @@ jQuery(document).ready(function () {
 
 function setupShipping() {
     const $root = jQuery('.woocommerce-shipping-totals');
+    const $shippingRateTexts = $root.find('.calcurates-checkout__shipping-rate-text');
 
     // setup classes
-    $root.find('.calcurates-checkout__shipping-rate-text').each(function () {
+    $shippingRateTexts.each(function () {
         const $that = jQuery(this);
         const $liElem = $that.closest('li').addClass('calcurates-checkout__shipping-rate');
         const $input = $liElem.find('input[name^="shipping_method"]');
@@ -34,10 +35,12 @@ function setupShipping() {
             return;
         }
 
-        $datepicker.prop('disabled', !$input.prop('checked'));
-        $originalUtcDate.prop('disabled', !$input.prop('checked'));
+        if ($shippingRateTexts.length > 1) {
+            $datepicker.prop('disabled', !$input.prop('checked'));
+            $originalUtcDate.prop('disabled', !$input.prop('checked'));
+        }
 
-        if ($input.prop('checked')) {
+        if ($shippingRateTexts.length === 1 || $input.prop('checked')) {
             $datepicker.closest('.calcurates-checkout__shipping-rate-date-select-label').show();
         } else {
             $datepicker.closest('.calcurates-checkout__shipping-rate-date-select-label').hide();
@@ -110,7 +113,7 @@ function setupDatePicker() {
             const deliveryDatTo = new Date(new Date(timeSlots[timeSlots.length - 1]['date']).toISOString().replace(timePattern, '00:00:00'));
 
             const options = {
-                locale: exports.default,
+                locale: DATEPICKER_LANG,
                 autoClose: true,
                 onSelect(data) {
                     const normalizedDate = normalizeDatepickerDateToZeroUTC(data.date);

@@ -1,10 +1,4 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _default = {
+var DATEPICKER_LANG = {
   days: ['Söndag', 'Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag'],
   daysShort: ['Sön', 'Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör'],
   daysMin: ['Sö', 'Må', 'Ti', 'On', 'To', 'Fr', 'Lö'],
@@ -16,4 +10,3 @@ var _default = {
   timeFormat: 'HH:mm',
   firstDay: 1
 };
-exports.default = _default;
