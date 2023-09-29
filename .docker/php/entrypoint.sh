@@ -11,7 +11,7 @@ done
 >&2 echo "MySQL is up"
 
 isSourced=`mysql --silent --skip-column-names --user="$MYSQL_USER" --password="$MYSQL_PASSWORD" --host="mysql" --port="3306" -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '$MYSQL_DATABASE';"`
-#isSourced=0
+isSourced=0
 if [ "${isSourced}" -eq "0" ]; then
     echo "Installing the WordPress..."
 

@@ -29,6 +29,8 @@ class Rates
      *     rate_image: string|null,
      *     time_slots: array|null,
      *     currency: string,
+     *     days_in_transit_from: int|null,
+     *     days_in_transit_to: int|null,
      * }[]
      */
     private $rates = [];
@@ -195,7 +197,11 @@ class Rates
         $message = $rate['message'] ?: '';
 
         if ($message) {
-            $message = \str_replace('{tax_amount}', ($rate['tax'].' '.$rate['currency']), $message);
+            $message = \str_replace(
+                ['{tax_amount}', '{min_transit_days}', '{max_transit_days}'],
+                [($rate['tax'].' '.$rate['currency']), $rate['days_in_transit_from'], $rate['days_in_transit_to']],
+                $message
+            );
         }
 
         return $message;

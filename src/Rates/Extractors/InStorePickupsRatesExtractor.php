@@ -46,12 +46,14 @@ class InStorePickupsRatesExtractor extends RatesExtractorAbstract
                         'tax' => $store['rate']['tax'] ?? 0,
                         'currency' => $store['rate']['currency'] ?? '',
                         'message' => $store['message'],
-                        'delivery_date_from' => isset($store['rate']['estimatedDeliveryDate']) ? $store['rate']['estimatedDeliveryDate']['from'] : null,
-                        'delivery_date_to' => isset($store['rate']['estimatedDeliveryDate']) ? $store['rate']['estimatedDeliveryDate']['to'] : null,
+                        'delivery_date_from' => $store['rate']['estimatedDeliveryDate']['from'] ?? null,
+                        'delivery_date_to' => $store['rate']['estimatedDeliveryDate']['to'] ?? null,
                         'priority' => $in_store_rate['priority'],
                         'priority_item' => $store['priority'],
                         'rate_image' => $store['imageUri'],
                         'time_slots' => $store['rate']['estimatedDeliveryDate']['timeSlots'] ?? null,
+                        'days_in_transit_from' => $store['rate']['estimatedDeliveryDate']['daysInTransitFrom'] ?? null,
+                        'days_in_transit_to' => $store['rate']['estimatedDeliveryDate']['daysInTransitTo'] ?? null,
                     ];
                 }
             }
