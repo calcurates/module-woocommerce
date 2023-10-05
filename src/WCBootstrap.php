@@ -56,12 +56,12 @@ if (!\class_exists(WCBootstrap::class)) {
             \add_filter('woocommerce_order_item_get_formatted_meta_data', [$this, 'filter_wc_order_item_get_formatted_meta_data'], 10, 2);
 
             // Plugin Settings Page
-            \add_filter('plugin_action_links_'.\plugin_basename(__FILE__), 'calcurates_settings_page');
+            \add_filter('plugin_action_links_'.\plugin_basename(CALCURATES_PLUGIN_FILE), [$this, 'calcurates_settings_page']);
         }
 
         public function calcurates_settings_page(array $links): array
         {
-            $links[] = '<a href="'.\admin_url('admin.php?page=wc-settings&tab=shipping&section=calcurates').'">'.\esc_html('Settings', 'calcurates').'</a>';
+            $links[] = '<a href="'.\admin_url('admin.php?page=wc-settings&tab=shipping&section=calcurates').'">'.\__('Settings').'</a>';
 
             return $links;
         }

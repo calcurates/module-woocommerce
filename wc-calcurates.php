@@ -20,6 +20,10 @@ if (!\defined('ABSPATH')) {
     exit;
 }
 
+if (!\defined('CALCURATES_PLUGIN_FILE')) {
+    \define('CALCURATES_PLUGIN_FILE', __FILE__);
+}
+
 /**
  * Composer autoload.
  */
