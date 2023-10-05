@@ -56,7 +56,7 @@ if (!\class_exists(WCBootstrap::class)) {
             \add_filter('woocommerce_order_item_get_formatted_meta_data', [$this, 'filter_wc_order_item_get_formatted_meta_data'], 10, 2);
 
             // Plugin Settings Page
-            \add_filter('plugin_action_links_calcurates', 'calcurates_settings_page');
+            \add_filter('plugin_action_links_'.\plugin_basename(__FILE__), 'calcurates_settings_page');
         }
 
         public function calcurates_settings_page(array $links): array
