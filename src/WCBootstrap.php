@@ -61,9 +61,11 @@ if (!\class_exists(WCBootstrap::class)) {
 
         public function calcurates_settings_page(array $links): array
         {
-            $links[] = '<a href="'.\admin_url('admin.php?page=wc-settings&tab=shipping&section=calcurates').'">'.\__('Settings').'</a>';
+            $settings = [
+                'settings' => '<a href="'.\admin_url('admin.php?page=wc-settings&tab=shipping&section=calcurates').'">'.\__('Settings').'</a>',
+            ];
 
-            return $links;
+            return \array_merge($links, $settings);
         }
 
         public function filter_wc_order_item_display_meta_key($display_key, $meta, $item)
