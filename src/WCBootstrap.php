@@ -54,6 +54,16 @@ if (!\class_exists(WCBootstrap::class)) {
 
             // hide meta fields in admin panel
             \add_filter('woocommerce_order_item_get_formatted_meta_data', [$this, 'filter_wc_order_item_get_formatted_meta_data'], 10, 2);
+
+            // Plugin Settings Page
+            \add_filter('plugin_action_links_calcurates', 'calcurates_settings_page');
+        }
+
+        public function calcurates_settings_page(array $links): array
+        {
+            $links[] = '<a href="'.\admin_url('admin.php?page=wc-settings&tab=shipping&section=calcurates').'">'.\esc_html('Settings', 'calcurates').'</a>';
+
+            return $links;
         }
 
         public function filter_wc_order_item_display_meta_key($display_key, $meta, $item)
