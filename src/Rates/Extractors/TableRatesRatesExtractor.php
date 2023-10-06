@@ -46,12 +46,14 @@ class TableRatesRatesExtractor extends RatesExtractorAbstract
                         'tax' => $method['rate']['tax'] ?? 0,
                         'currency' => $method['rate']['currency'] ?? '',
                         'message' => $method['message'],
-                        'delivery_date_from' => isset($method['rate']['estimatedDeliveryDate']) ? $method['rate']['estimatedDeliveryDate']['from'] : null,
-                        'delivery_date_to' => isset($method['rate']['estimatedDeliveryDate']) ? $method['rate']['estimatedDeliveryDate']['to'] : null,
+                        'delivery_date_from' => $method['rate']['estimatedDeliveryDate']['from'] ?? null,
+                        'delivery_date_to' => $method['rate']['estimatedDeliveryDate']['to'] ?? null,
                         'priority' => $table_rate['priority'],
                         'priority_item' => $method['priority'],
                         'rate_image' => $method['imageUri'],
                         'time_slots' => $method['rate']['estimatedDeliveryDate']['timeSlots'] ?? null,
+                        'days_in_transit_from' => $method['rate']['estimatedDeliveryDate']['daysInTransitFrom'] ?? null,
+                        'days_in_transit_to' => $method['rate']['estimatedDeliveryDate']['daysInTransitTo'] ?? null,
                     ];
                 }
             }

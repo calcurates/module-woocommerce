@@ -4,7 +4,7 @@ Tags: woocommerce, shipping rates, shipping methods, shipping carriers, shipping
 Requires at least: 5.2
 Tested up to: 6.3
 Requires PHP: 7.2.5
-Stable tag: 1.6.2
+Stable tag: 1.6.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -64,6 +64,10 @@ Calcurates is developed and supported by Amasty. After 10 years of success in de
 5. Accurate shipping and delivery dates for WooCommerce checkout
 
 == Changelog ==
+
+= 1.6.3 =
+- Add: New variables for shipping method's explanatory text are now supported: min transit days qty - {min_transit_days}, max transit days qty - {max_transit_days}
+- Add: Link to "Settings" has been added in the list of plugins
 
 = 1.6.2 =
 - Fix: compatibility with Revolut payment plugin

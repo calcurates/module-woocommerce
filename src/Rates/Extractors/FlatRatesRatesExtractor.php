@@ -25,12 +25,14 @@ class FlatRatesRatesExtractor extends RatesExtractorAbstract
                     'tax' => $rate['rate']['tax'] ?? 0,
                     'currency' => $rate['rate']['currency'] ?? '',
                     'message' => $rate['message'],
-                    'delivery_date_from' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['from'] : null,
-                    'delivery_date_to' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['to'] : null,
+                    'delivery_date_from' => $rate['rate']['estimatedDeliveryDate']['from'] ?? null,
+                    'delivery_date_to' => $rate['rate']['estimatedDeliveryDate']['to'] ?? null,
                     'priority' => $rate['priority'],
                     'priority_item' => null,
                     'rate_image' => $rate['imageUri'],
                     'time_slots' => $rate['rate']['estimatedDeliveryDate']['timeSlots'] ?? null,
+                    'days_in_transit_from' => $rate['rate']['estimatedDeliveryDate']['daysInTransitFrom'] ?? null,
+                    'days_in_transit_to' => $rate['rate']['estimatedDeliveryDate']['daysInTransitTo'] ?? null,
                 ];
             }
         }

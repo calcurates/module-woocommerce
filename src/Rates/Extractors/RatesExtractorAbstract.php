@@ -26,6 +26,8 @@ abstract class RatesExtractorAbstract
      *     rate_image: string|null,
      *     time_slots: array|null,
      *     currency: string,
+     *     days_in_transit_from: int|null,
+     *     days_in_transit_to: int|null,
      * }[]
      */
     abstract public function extract(array $data): array;

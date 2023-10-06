@@ -50,12 +50,14 @@ class RateShoppingRatesExtractor extends RatesExtractorAbstract
                             'tax' => $rate['rate']['tax'] ?? 0,
                             'currency' => $rate['rate']['currency'] ?? '',
                             'message' => $rate['success'] ? $rate_shopping['message'].' '.$services_messages : $rate['message'],
-                            'delivery_date_from' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['from'] : null,
-                            'delivery_date_to' => isset($rate['rate']['estimatedDeliveryDate']) ? $rate['rate']['estimatedDeliveryDate']['to'] : null,
+                            'delivery_date_from' => $rate['rate']['estimatedDeliveryDate']['from'] ?? null,
+                            'delivery_date_to' => $rate['rate']['estimatedDeliveryDate']['to'] ?? null,
                             'priority' => $rate_shopping['priority'],
                             'priority_item' => $services_priority,
                             'rate_image' => $rate_shopping['imageUri'],
                             'time_slots' => $rate['rate']['estimatedDeliveryDate']['timeSlots'] ?? null,
+                            'days_in_transit_from' => $rate['rate']['estimatedDeliveryDate']['daysInTransitFrom'] ?? null,
+                            'days_in_transit_to' => $rate['rate']['estimatedDeliveryDate']['daysInTransitTo'] ?? null,
                         ];
                     }
                 }
