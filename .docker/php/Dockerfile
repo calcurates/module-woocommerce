@@ -47,7 +47,11 @@ RUN set -xe \
 \
     # Bcmath
     && docker-php-ext-install bcmath \
-    && docker-php-ext-enable bcmath
+    && docker-php-ext-enable bcmath \
+\
+    # PCNTL
+    && docker-php-ext-install pcntl \
+    && docker-php-ext-enable pcntl
 
 # Cleanup
 RUN set -xe \
