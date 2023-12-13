@@ -223,7 +223,7 @@ class Rates
                 $packages,
                 \range( 1, \count( $packages ) )
             );
-            error_log(var_export($packages,true));
+            //error_log(var_export($packages,true));
         } else {
             error_log('no packages?');
         }
