@@ -211,7 +211,7 @@ class Rates
     {
         $packages = \WC()->cart->get_shipping_packages();
         if ($packages) {
-            error_log(var_export($packages,true));
+            error_log('packages!');
             $packages = \array_map(
                 function( $key, $package, $index ) {
                     $package['package_id']   = isset( $package['package_id'] ) ? $package['package_id'] : $key;
