@@ -216,7 +216,7 @@ class Rates
                 function( $key, $package, $index ) {
                     $package['package_id']   = isset( $package['package_id'] ) ? $package['package_id'] : $key;
                     $package['package_name'] = isset( $package['package_name'] ) ? $package['package_name'] : $this->get_package_name( $package, $index );
-                    error_log(var_export($package,true));
+                    error_log($package['package_name']);
                     return $package;
                 },
                 \array_keys( $packages ),
