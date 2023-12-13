@@ -31,6 +31,7 @@ class Rates
      *     currency: string,
      *     days_in_transit_from: int|null,
      *     days_in_transit_to: int|null,
+     *     packages: string[],
      * }[]
      */
     private $rates = [];
@@ -199,7 +200,7 @@ class Rates
         if ($message) {
             $message = \str_replace(
                 ['{tax_amount}', '{min_transit_days}', '{max_transit_days}', '{packages}'],
-                [($rate['tax'].' '.$rate['currency']), $rate['days_in_transit_from'], $rate['days_in_transit_to'], $this->get_packages_string()],
+                [($rate['tax'].' '.$rate['currency']), $rate['days_in_transit_from'], $rate['days_in_transit_to'], $this->get_packages_string($rate)],
                 $message
             );
         }
@@ -207,21 +208,14 @@ class Rates
         return $message;
     }
 
-    private function get_packages_string(): string
+    private function get_packages_string(array $rate): string
     {
-        \error_log(print_r($this->response, true));
-
-
         $packages = [];
-        foreach ($this->package['contents'] as $values) {
-            /** @var \WC_Product $product */
-            $product = $values['data'];
-
-            if ($values['quantity'] > 0 && $product->needs_shipping()) {
-                $packages[$product->get_name()] = $packages[$product->get_name()] ?? 0;
-                $packages[$product->get_name()] += $values['quantity'];
-            }
+        foreach ($rate['packages'] as $packageName) {
+            $packages[$packageName] = $packages[$packageName] ?? 0;
+            ++$packages[$packageName];
         }
+
         $out = '';
         foreach ($packages as $name => $count) {
             $out .= $name.' x'.$count.'; ';
