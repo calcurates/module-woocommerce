@@ -209,7 +209,7 @@ class Rates
 
     private function get_packages_string(): string
     {
-        \error_log($this->response);
+        \error_log(print_r($this->response, true));
 
 
         $packages = [];
