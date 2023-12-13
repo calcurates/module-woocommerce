@@ -209,25 +209,7 @@ class Rates
 
     private function get_packages_string(): string
     {
-        $packages = \WC()->cart->get_shipping_packages();
-        if ($packages) {
-            error_log('packages!');
-            $packages = \array_map(
-                function( $key, $package, $index ) {
-                    $package['package_id']   = isset( $package['package_id'] ) ? $package['package_id'] : $key;
-                    $package['package_name'] = isset( $package['package_name'] ) ? $package['package_name'] : $this->get_package_name( $package, $index );
-                    error_log($package['package_name']);
-                    return $package;
-                },
-                \array_keys( $packages ),
-                $packages,
-                \range( 1, \count( $packages ) )
-            );
-            //error_log(var_export($packages,true));
-        } else {
-            error_log('no packages?');
-        }
-
+        \error_log($this->response);
 
 
         $packages = [];
@@ -246,39 +228,5 @@ class Rates
         }
 
         return \rtrim($out, '; ');
-    }
-
-    /**
-     * Creates a name for a package.
-     *
-     * @param array $package Shipping package from WooCommerce.
-     * @param int   $index Package number.
-     * @return string
-     */
-    protected function get_package_name( $package, $index ) {
-        /**
-         * Filters the shipping package name.
-         *
-         * @since 4.3.0
-         *
-         * @internal Matches filter name in WooCommerce core.
-         *
-         * @param string $shipping_package_name Shipping package name.
-         * @param string $package_id Shipping package ID.
-         * @param array $package Shipping package from WooCommerce.
-         * @return string Shipping package name.
-         */
-        return \apply_filters(
-            'woocommerce_shipping_package_name',
-            $index > 1 ?
-                \sprintf(
-                /* translators: %d: shipping package number */
-                    \_x( 'Shipment %d', 'shipping packages', 'woocommerce' ),
-                    $index
-                ) :
-                \_x( 'Shipment 1', 'shipping packages', 'woocommerce' ),
-            $package['package_id'],
-            $package
-        );
     }
 }
