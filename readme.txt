@@ -2,9 +2,9 @@
 Contributors: calcurates
 Tags: woocommerce, shipping rates, shipping methods, shipping carriers, shipping zones, shipping rules, delivery dates, international shipping, table rates, free shipping, in-store pickup, dimensional shipping, multi-origin shipping, dropshipping
 Requires at least: 5.2
-Tested up to: 6.3
+Tested up to: 6.4
 Requires PHP: 7.2.5
-Stable tag: 1.6.3
+Stable tag: 1.6.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -64,6 +64,9 @@ Calcurates is developed and supported by Amasty. After 10 years of success in de
 5. Accurate shipping and delivery dates for WooCommerce checkout
 
 == Changelog ==
+
+= 1.6.4 =
+- Fix: Fixed PHP Warning: Undefined array key "post_data"
 
 = 1.6.3 =
 - Add: New variables for shipping method's explanatory text are now supported: min transit days qty - {min_transit_days}, max transit days qty - {max_transit_days}
