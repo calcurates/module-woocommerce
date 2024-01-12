@@ -31,6 +31,7 @@ class InStorePickupsRatesExtractor extends RatesExtractorAbstract
                         'priority' => $in_store_rate['priority'],
                         'priority_item' => null,
                         'rate_image' => $in_store_rate['imageUri'],
+                        'packages' => [],
                     ];
                 }
                 continue;
@@ -54,11 +55,24 @@ class InStorePickupsRatesExtractor extends RatesExtractorAbstract
                         'time_slots' => $store['rate']['estimatedDeliveryDate']['timeSlots'] ?? null,
                         'days_in_transit_from' => $store['rate']['estimatedDeliveryDate']['daysInTransitFrom'] ?? null,
                         'days_in_transit_to' => $store['rate']['estimatedDeliveryDate']['daysInTransitTo'] ?? null,
+                        'packages' => $this->make_packages($store['rates']),
                     ];
                 }
             }
         }
 
         return $ready_rates;
+    }
+
+    private function make_packages(?array $rates): array
+    {
+        $packages = [];
+        foreach ($rates ?? [] as $rate) {
+            \array_push($packages, ...\array_map(static function (array $package): string {
+                return $package['name'];
+            }, $rate['packages'] ?? []));
+        }
+
+        return $packages;
     }
 }

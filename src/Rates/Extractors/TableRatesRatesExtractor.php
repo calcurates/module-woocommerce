@@ -31,6 +31,7 @@ class TableRatesRatesExtractor extends RatesExtractorAbstract
                         'priority' => $table_rate['priority'],
                         'priority_item' => null,
                         'rate_image' => $table_rate['imageUri'],
+                        'packages' => [],
                     ];
                 }
                 continue;
@@ -54,11 +55,24 @@ class TableRatesRatesExtractor extends RatesExtractorAbstract
                         'time_slots' => $method['rate']['estimatedDeliveryDate']['timeSlots'] ?? null,
                         'days_in_transit_from' => $method['rate']['estimatedDeliveryDate']['daysInTransitFrom'] ?? null,
                         'days_in_transit_to' => $method['rate']['estimatedDeliveryDate']['daysInTransitTo'] ?? null,
+                        'packages' => $this->make_packages($method['rates']),
                     ];
                 }
             }
         }
 
         return $ready_rates;
+    }
+
+    private function make_packages(?array $rates): array
+    {
+        $packages = [];
+        foreach ($rates ?? [] as $rate) {
+            \array_push($packages, ...\array_map(static function (array $package): string {
+                return $package['name'];
+            }, $rate['packages'] ?? []));
+        }
+
+        return $packages;
     }
 }

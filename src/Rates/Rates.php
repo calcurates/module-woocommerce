@@ -31,6 +31,7 @@ class Rates
      *     currency: string,
      *     days_in_transit_from: int|null,
      *     days_in_transit_to: int|null,
+     *     packages: string[],
      * }[]
      */
     private $rates = [];
@@ -192,18 +193,34 @@ class Rates
         $this->rates = $rates;
     }
 
-    private function prepare_message($rate): string
+    private function prepare_message(array $rate): string
     {
         $message = $rate['message'] ?: '';
 
         if ($message) {
             $message = \str_replace(
-                ['{tax_amount}', '{min_transit_days}', '{max_transit_days}'],
-                [($rate['tax'].' '.$rate['currency']), $rate['days_in_transit_from'], $rate['days_in_transit_to']],
+                ['{tax_amount}', '{min_transit_days}', '{max_transit_days}', '{packages}'],
+                [($rate['tax'].' '.$rate['currency']), $rate['days_in_transit_from'], $rate['days_in_transit_to'], $this->get_packages_string($rate)],
                 $message
             );
         }
 
         return $message;
+    }
+
+    private function get_packages_string(array $rate): string
+    {
+        $packages = [];
+        foreach ($rate['packages'] as $packageName) {
+            $packages[$packageName] = $packages[$packageName] ?? 0;
+            ++$packages[$packageName];
+        }
+
+        $out = '';
+        foreach ($packages as $name => $count) {
+            $out .= $name.' x'.$count.'; ';
+        }
+
+        return \rtrim($out, '; ');
     }
 }

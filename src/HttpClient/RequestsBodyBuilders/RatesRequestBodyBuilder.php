@@ -71,7 +71,7 @@ class RatesRequestBodyBuilder
         $post_data = [];
         $customer_session_data = \WC()->session->get('customer', []);
 
-        if ($_POST['post_data']) {
+        if (isset($_POST['post_data']) && $_POST['post_data']) {
             \parse_str(\rawurldecode($_POST['post_data']), $post_data);
         }
 

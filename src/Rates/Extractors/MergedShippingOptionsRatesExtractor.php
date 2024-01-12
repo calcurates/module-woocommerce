@@ -16,7 +16,7 @@ class MergedShippingOptionsRatesExtractor extends RatesExtractorAbstract
         $ready_rates = [];
 
         foreach ($data as $rate) {
-            if ($rate['success']) {
+            if ($rate['success'] || $rate['message']) {
                 $ready_rates[] = [
                     'has_error' => false,
                     'id' => $rate['id'],
@@ -33,10 +33,70 @@ class MergedShippingOptionsRatesExtractor extends RatesExtractorAbstract
                     'time_slots' => $rate['rate']['estimatedDeliveryDate']['timeSlots'] ?? null,
                     'days_in_transit_from' => $rate['rate']['estimatedDeliveryDate']['daysInTransitFrom'] ?? null,
                     'days_in_transit_to' => $rate['rate']['estimatedDeliveryDate']['daysInTransitTo'] ?? null,
+                    'packages' => $this->make_packages($rate),
                 ];
             }
         }
 
         return $ready_rates;
+    }
+
+    private function make_packages(array $rate): array
+    {
+        $packages = [];
+        foreach ($rate['flatRates'] as $item) {
+            foreach ($item['rates'] ?? [] as $v) {
+                foreach ($v['packages'] ?? [] as $p) {
+                    $packages[] = $p['name'];
+                }
+            }
+        }
+        foreach ($rate['freeShipping'] as $item) {
+            foreach ($item['rates'] ?? [] as $v) {
+                foreach ($v['packages'] ?? [] as $p) {
+                    $packages[] = $p['name'];
+                }
+            }
+        }
+        foreach ($rate['tableRates'] as $item) {
+            foreach ($item['methods'] as $method) {
+                foreach ($method['rates'] ?? [] as $v) {
+                    foreach ($v['packages'] ?? [] as $p) {
+                        $packages[] = $p['name'];
+                    }
+                }
+            }
+        }
+        foreach ($rate['inStorePickups'] as $item) {
+            foreach ($item['stores'] as $store) {
+                foreach ($store['rates'] ?? [] as $v) {
+                    foreach ($v['packages'] ?? [] as $p) {
+                        $packages[] = $p['name'];
+                    }
+                }
+            }
+        }
+        foreach ($rate['carriers'] as $item) {
+            foreach ($item['rates'] ?? [] as $v) {
+                foreach ($v['services'] as $s) {
+                    foreach ($s['packages'] ?? [] as $p) {
+                        $packages[] = $p['name'];
+                    }
+                }
+            }
+        }
+        foreach ($rate['rateShopping'] as $item) {
+            foreach ($item['carriers'] ?? [] as $c) {
+                foreach ($c['rates'] ?? [] as $v) {
+                    foreach ($v['services'] as $s) {
+                        foreach ($s['packages'] ?? [] as $p) {
+                            $packages[] = $p['name'];
+                        }
+                    }
+                }
+            }
+        }
+
+        return $packages;
     }
 }

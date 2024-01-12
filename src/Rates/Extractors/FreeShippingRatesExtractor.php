@@ -33,10 +33,23 @@ class FreeShippingRatesExtractor extends RatesExtractorAbstract
                     'time_slots' => $rate['rate']['estimatedDeliveryDate']['timeSlots'] ?? null,
                     'days_in_transit_from' => $rate['rate']['estimatedDeliveryDate']['daysInTransitFrom'] ?? null,
                     'days_in_transit_to' => $rate['rate']['estimatedDeliveryDate']['daysInTransitTo'] ?? null,
+                    'packages' => $this->make_packages($rate['rates']),
                 ];
             }
         }
 
         return $ready_rates;
+    }
+
+    private function make_packages(?array $rates): array
+    {
+        $packages = [];
+        foreach ($rates ?? [] as $rate) {
+            \array_push($packages, ...\array_map(static function (array $package): string {
+                return $package['name'];
+            }, $rate['packages'] ?? []));
+        }
+
+        return $packages;
     }
 }
