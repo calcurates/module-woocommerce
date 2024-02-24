@@ -12,10 +12,7 @@ if (!\defined('ABSPATH')) {
 if (!\class_exists(OriginUtils::class)) {
     class OriginUtils
     {
-        /**
-         * @var self
-         */
-        private static $instance;
+        private static ?self $instance = null;
 
         private function __construct()
         {

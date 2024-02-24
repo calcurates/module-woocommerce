@@ -15,7 +15,7 @@ if (!\class_exists(Assets::class)) {
      */
     class Assets
     {
-        private static $date_picker_script_name = 'air-datepicker';
+        private static string $date_picker_script_name = 'air-datepicker';
 
         /**
          * Register stylesheet.

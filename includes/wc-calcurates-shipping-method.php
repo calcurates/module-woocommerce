@@ -18,47 +18,31 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
 
     /**
      * Debug mode.
-     *
-     * @var string
      */
-    private $debug_mode;
+    private ?string $debug_mode = null;
 
     /**
      * Key for that module API access.
-     *
-     * @var string
      */
-    private $plugin_api_key;
+    private ?string $plugin_api_key = null;
 
-    /**
-     * @var string
-     */
-    private $generate_new_api_key;
+    private ?string $generate_new_api_key = null;
 
     /**
      * Calcurates API URL.
-     *
-     * @var string
      */
-    private $calcurates_api_url;
+    private ?string $calcurates_api_url = null;
 
     /**
      * Calcurates API access key.
-     *
-     * @var string
      */
-    private $calcurates_api_key;
+    private ?string $calcurates_api_key = null;
 
     /**
      * Tax view type.
-     *
-     * @var string
      */
-    private $tax_mode;
+    private ?string $tax_mode = null;
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct($instance_id = 0)
     {
         parent::__construct($instance_id);
@@ -176,9 +160,6 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function calculate_shipping($package = []): void
     {
         $rates = $this->get_rates($package);
@@ -218,9 +199,6 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         return $rates->convert_rates_to_wc_rates();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process_admin_options(): bool
     {
         parent::process_admin_options();

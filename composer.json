@@ -6,7 +6,7 @@
         "GPL-3.0-or-later"
     ],
     "require": {
-        "php": ">=7.2.5",
+        "php": ">=7.4",
         "ext-json": "*"
     },
     "authors": [
@@ -21,7 +21,7 @@
         "vendor-dir": "lib",
         "optimize-autoloader": true,
         "platform": {
-            "php": "7.2.5"
+            "php": "7.4.33"
         }
     },
     "autoload": {

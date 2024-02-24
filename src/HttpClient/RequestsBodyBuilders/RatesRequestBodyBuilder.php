@@ -18,14 +18,12 @@ class RatesRequestBodyBuilder
      *
      * @var array package array
      */
-    private $package;
+    private array $package;
 
     /**
      * Stored WPML language.
-     *
-     * @var string|null
      */
-    private $wpml_language;
+    private ?string $wpml_language = null;
 
     public function __construct(array $package)
     {
