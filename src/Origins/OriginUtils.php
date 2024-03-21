@@ -92,9 +92,9 @@ if (!\class_exists(OriginUtils::class)) {
                 'fields' => 'ids',
                 'meta_query' => [
                     [
-                       'key' => 'origin_code',
-                       'value' => \sanitize_text_field($code),
-                       'compare' => '=',
+                        'key' => 'origin_code',
+                        'value' => \sanitize_text_field($code),
+                        'compare' => '=',
                     ],
                 ],
             ]);
