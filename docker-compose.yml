@@ -1,5 +1,3 @@
-version: "3.8"
-
 volumes:
   app_code:
     name: "wc_calcurates_volume"
