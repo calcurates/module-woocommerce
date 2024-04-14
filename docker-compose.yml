@@ -18,6 +18,7 @@ services:
     volumes:
       - app_code:/var/www/wordpress
       - ./.docker/php/php.ini:/usr/local/etc/php/php.ini
+      - ./.docker/php/php-fpm.conf:/usr/local/etc/php-fpm.conf
       - ./assets:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/assets
       - ./includes:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/includes
       - ./lib:/var/www/wordpress/wp-content/plugins/calcurates-for-woocommerce/lib
