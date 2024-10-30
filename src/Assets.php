@@ -15,7 +15,9 @@ if (!\class_exists(Assets::class)) {
      */
     class Assets
     {
-        private static string $date_picker_script_name = 'air-datepicker';
+        private static $date_picker_script_name = 'air-datepicker';
+        private static $php_date_formatter_script_name = 'php-date-formatter';
+
 
         /**
          * Register stylesheet.
@@ -70,10 +72,15 @@ if (!\class_exists(Assets::class)) {
                         'pluginDir' => \plugin_dir_url(__DIR__),
                         'lang' => \substr(\get_locale(), 0, 2),
                         'wpTimeZoneOffsetSeconds' => $utcOffset,
+                        'dateFormat' => get_option('date_format'),
                     ]
                 ).';');
 
                 \wp_enqueue_script(WCCalcurates::get_plugin_text_domain());
+            }
+
+            if ($this->register_js(self::$php_date_formatter_script_name, '/assets/lib/php-date-formatter.min.js') && (\is_cart() || \is_checkout())) {
+                \wp_enqueue_script(self::$php_date_formatter_script_name);
             }
 
             if ($this->register_js(self::$date_picker_script_name, '/assets/lib/air-datepicker/air-datepicker.js') && (\is_cart() || \is_checkout())) {
