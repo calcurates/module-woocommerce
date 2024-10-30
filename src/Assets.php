@@ -18,7 +18,6 @@ if (!\class_exists(Assets::class)) {
         private static $date_picker_script_name = 'air-datepicker';
         private static $php_date_formatter_script_name = 'php-date-formatter';
 
-
         /**
          * Register stylesheet.
          */
@@ -72,7 +71,7 @@ if (!\class_exists(Assets::class)) {
                         'pluginDir' => \plugin_dir_url(__DIR__),
                         'lang' => \substr(\get_locale(), 0, 2),
                         'wpTimeZoneOffsetSeconds' => $utcOffset,
-                        'dateFormat' => get_option('date_format'),
+                        'dateFormat' => \get_option('date_format'),
                     ]
                 ).';');
 

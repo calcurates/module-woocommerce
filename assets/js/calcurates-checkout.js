@@ -144,11 +144,11 @@ function setupDatePicker() {
                 },
                 dateFormat(date) {
                     const fmt = new DateFormatter();
-                    
-                    if(!CALCURATES_GLOBAL.dateFormat){
+
+                    if (!CALCURATES_GLOBAL.dateFormat) {
                         return fmt.formatDate(date, 'F j, Y');
                     }
-                    
+
                     return fmt.formatDate(date, CALCURATES_GLOBAL.dateFormat);
                 }
             };
