@@ -72,6 +72,7 @@ if (!\class_exists(Assets::class)) {
                         'lang' => \substr(\get_locale(), 0, 2),
                         'wpTimeZoneOffsetSeconds' => $utcOffset,
                         'dateFormat' => \get_option('date_format'),
+                        'timeFormat' => \get_option('time_format'),
                     ]
                 ).';');
 
