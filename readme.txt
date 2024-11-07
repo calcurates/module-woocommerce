@@ -1,6 +1,6 @@
 === Calcurates for WooCommerce ===
 Contributors: calcurates
-Tags: woocommerce, shipping rates, shipping methods, shipping carriers, shipping zones, shipping rules, delivery dates, international shipping, table rates, free shipping, in-store pickup, dimensional shipping, multi-origin shipping, dropshipping
+Tags: shipping rules,shipping rates,delivery dates, table rates, dimensional shipping
 Requires at least: 5.2
 Tested up to: 6.6
 Requires PHP: 7.4
