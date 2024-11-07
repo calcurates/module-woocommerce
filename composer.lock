@@ -564,16 +564,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.12.7",
+            "version": "1.12.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "dc2b9976bd8b0f84ec9b0e50cc35378551de7af0"
+                "reference": "f6a60a4d66142b8156c9da923f1972657bc4748c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/dc2b9976bd8b0f84ec9b0e50cc35378551de7af0",
-                "reference": "dc2b9976bd8b0f84ec9b0e50cc35378551de7af0",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/f6a60a4d66142b8156c9da923f1972657bc4748c",
+                "reference": "f6a60a4d66142b8156c9da923f1972657bc4748c",
                 "shasum": ""
             },
             "require": {
@@ -611,7 +611,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-10-18T11:12:07+00:00"
+            "time": "2024-11-06T19:06:49+00:00"
         },
         {
             "name": "psr/container",
@@ -1316,16 +1316,16 @@
         },
         {
             "name": "symfony/console",
-            "version": "v5.4.45",
+            "version": "v5.4.46",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "108d436c2af470858bdaba3257baab3a74172017"
+                "reference": "fb0d4760e7147d81ab4d9e2d57d56268261b4e4e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/108d436c2af470858bdaba3257baab3a74172017",
-                "reference": "108d436c2af470858bdaba3257baab3a74172017",
+                "url": "https://api.github.com/repos/symfony/console/zipball/fb0d4760e7147d81ab4d9e2d57d56268261b4e4e",
+                "reference": "fb0d4760e7147d81ab4d9e2d57d56268261b4e4e",
                 "shasum": ""
             },
             "require": {
@@ -1408,7 +1408,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-10-08T07:27:17+00:00"
+            "time": "2024-11-05T14:17:06+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -2353,16 +2353,16 @@
         },
         {
             "name": "symfony/process",
-            "version": "v5.4.45",
+            "version": "v5.4.46",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "95f3f19d0f8f06e4253c66a0828ddb69f8b8ede4"
+                "reference": "01906871cb9b5e3cf872863b91aba4ec9767daf4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/95f3f19d0f8f06e4253c66a0828ddb69f8b8ede4",
-                "reference": "95f3f19d0f8f06e4253c66a0828ddb69f8b8ede4",
+                "url": "https://api.github.com/repos/symfony/process/zipball/01906871cb9b5e3cf872863b91aba4ec9767daf4",
+                "reference": "01906871cb9b5e3cf872863b91aba4ec9767daf4",
                 "shasum": ""
             },
             "require": {
@@ -2408,7 +2408,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-09-25T14:11:13+00:00"
+            "time": "2024-11-06T09:18:28+00:00"
         },
         {
             "name": "symfony/service-contracts",
