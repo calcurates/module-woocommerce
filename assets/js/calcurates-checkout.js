@@ -141,6 +141,15 @@ function setupDatePicker() {
                             disabled: isDisabled
                         }
                     }
+                },
+                dateFormat(date) {
+                    const fmt = new DateFormatter();
+
+                    if (!CALCURATES_GLOBAL.dateFormat) {
+                        return fmt.formatDate(date, 'F j, Y');
+                    }
+
+                    return fmt.formatDate(date, CALCURATES_GLOBAL.dateFormat);
                 }
             };
 
@@ -236,5 +245,11 @@ function formatToWordpressTime(dateTime) {
     const wpTime = utc + (1000 * +CALCURATES_GLOBAL.wpTimeZoneOffsetSeconds);
     const newDate = new Date(wpTime);
 
-    return newDate.toLocaleTimeString().slice(0, -3);
+    const fmt = new DateFormatter();
+
+    if (!CALCURATES_GLOBAL.timeFormat) {
+        return fmt.formatDate(newDate, 'H:i:s');
+    }
+
+    return fmt.formatDate(newDate, CALCURATES_GLOBAL.timeFormat);
 }

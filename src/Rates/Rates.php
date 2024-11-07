@@ -34,19 +34,10 @@ class Rates
      *     packages: string[],
      * }[]
      */
-    private $rates = [];
-    /**
-     * @var string
-     */
-    private $tax_mode;
-    /**
-     * @var array
-     */
-    private $package;
-    /**
-     * @var array
-     */
-    private $response;
+    private array $rates = [];
+    private string $tax_mode;
+    private array $package;
+    private array $response;
 
     public function __construct(array $response, string $tax_mode, array $package)
     {
@@ -200,7 +191,7 @@ class Rates
         if ($message) {
             $message = \str_replace(
                 ['{tax_amount}', '{min_transit_days}', '{max_transit_days}', '{packages}'],
-                [($rate['tax'].' '.$rate['currency']), $rate['days_in_transit_from'], $rate['days_in_transit_to'], $this->get_packages_string($rate)],
+                [$rate['tax'].' '.$rate['currency'], $rate['days_in_transit_from'], $rate['days_in_transit_to'], $this->get_packages_string($rate)],
                 $message
             );
         }
@@ -212,7 +203,7 @@ class Rates
     {
         $packages = [];
         foreach ($rate['packages'] as $packageName) {
-            $packages[$packageName] = $packages[$packageName] ?? 0;
+            $packages[$packageName] ??= 0;
             ++$packages[$packageName];
         }
 

@@ -1,12 +1,12 @@
 {
     "name": "calcurates/module-woocomerce",
     "description": "Calcurates Integration for WooCommerce",
-    "keywords": ["shipping","ecommerce","e-commerce","sales"],
+    "keywords": ["shipping", "ecommerce", "e-commerce", "sales"],
     "license": [
         "GPL-3.0-or-later"
     ],
     "require": {
-        "php": ">=7.2.5",
+        "php": ">=7.4",
         "ext-json": "*"
     },
     "authors": [
@@ -16,12 +16,12 @@
         }
     ],
     "type": "wordpress-plugin",
-    "version": "1.6.4",
+    "version": "1.6.5",
     "config": {
         "vendor-dir": "lib",
         "optimize-autoloader": true,
         "platform": {
-            "php": "7.2.5"
+            "php": "7.4.33"
         }
     },
     "autoload": {

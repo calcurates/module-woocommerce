@@ -18,8 +18,8 @@ if (!\class_exists(WCBootstrap::class)) {
      */
     class WCBootstrap
     {
-        private static $delivery_date_meta_name = 'selected_delivery_date';
-        private static $delivery_time_meta_name = 'selected_delivery_time';
+        private static string $delivery_date_meta_name = 'selected_delivery_date';
+        private static string $delivery_time_meta_name = 'selected_delivery_time';
 
         public function run(): void
         {
@@ -518,7 +518,7 @@ if (!\class_exists(WCBootstrap::class)) {
          */
         public function filter_woocommerce_cart_shipping_method_full_label(string $label, \WC_Shipping_Rate $rate): string
         {
-            if (false === \strpos($rate->get_id(), \WC_Calcurates_Shipping_Method::CODE.':')) {
+            if (!\str_contains($rate->get_id(), \WC_Calcurates_Shipping_Method::CODE.':')) {
                 return $label;
             }
 

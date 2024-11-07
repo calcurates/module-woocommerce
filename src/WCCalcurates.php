@@ -19,18 +19,9 @@ if (!\class_exists(WCCalcurates::class)) {
      */
     class WCCalcurates
     {
-        /**
-         * @var WCBootstrap
-         */
-        private $wc_bootstrap;
-        /**
-         * @var Assets
-         */
-        private $assets;
-        /**
-         * @var OriginsTaxonomy
-         */
-        private $origins_taxonomy;
+        private WCBootstrap $wc_bootstrap;
+        private Assets $assets;
+        private OriginsTaxonomy $origins_taxonomy;
 
         public function __construct()
         {

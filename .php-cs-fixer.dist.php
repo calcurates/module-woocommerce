@@ -7,8 +7,8 @@ return (new PhpCsFixer\Config())
     ->setRules([
         '@Symfony' => true,
         '@Symfony:risky' => true,
-        //'@PHP72Migration:risky' => true,
-        //'@PHP72Migration' => true,
+        //'@PHP74Migration:risky' => true,
+        '@PHP74Migration' => true,
 
         'combine_consecutive_issets' => true,
         'combine_consecutive_unsets' => true,

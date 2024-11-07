@@ -41,4 +41,5 @@
 !.docker/nginx/Dockerfile
 !.docker/php/Dockerfile
 !.docker/php/php.ini
+!.docker/php/php-fpm.conf
 !.docker/php/entrypoint.sh

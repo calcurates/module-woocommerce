@@ -19,24 +19,18 @@ class CalcuratesHttpClient
 {
     /**
      * Calcurates API key for auth.
-     *
-     * @var string
      */
-    private $api_key;
+    private string $api_key;
 
     /**
      * Calcurates API URL.
-     *
-     * @var string
      */
-    private $api_url;
+    private string $api_url;
 
     /**
      * Debug level mode.
-     *
-     * @var string
      */
-    private $debug_mode;
+    private string $debug_mode;
 
     public function __construct(string $api_key, string $api_url, string $debug_mode)
     {

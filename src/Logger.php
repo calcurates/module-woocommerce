@@ -32,22 +32,15 @@ if (!\class_exists(Logger::class)) {
 
         /**
          * Default WooCommerce logger.
-         *
-         * @var \WC_Logger
          */
-        private $logger;
+        private \WC_Logger_Interface $logger;
 
         /**
          * Log source file.
-         *
-         * @var string
          */
-        private $source;
+        private string $source;
 
-        /**
-         * @var self
-         */
-        private static $instance;
+        private static ?self $instance = null;
 
         private function __construct()
         {
