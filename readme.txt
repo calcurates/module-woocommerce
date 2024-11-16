@@ -2,7 +2,7 @@
 Contributors: calcurates
 Tags: shipping rules,shipping rates,delivery dates, table rates, dimensional shipping
 Requires at least: 5.2
-Tested up to: 6.6
+Tested up to: 6.7
 Requires PHP: 7.4
 Stable tag: 1.6.5
 License: GPLv3
