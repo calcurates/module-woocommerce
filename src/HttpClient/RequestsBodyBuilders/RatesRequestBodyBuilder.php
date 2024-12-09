@@ -134,6 +134,12 @@ class RatesRequestBodyBuilder
 
             $origin_codes = OriginUtils::getInstance()->get_origin_codes_from_product($cart_product['product_id']);
 
+            $is_backorder = false;
+
+            if($product->get_stock_quantity() !== null){
+                $is_backorder = $product->backorders_allowed() ? $cart_product['quantity'] >= $product->get_stock_quantity() : false;
+            }
+
             $data = [
                 'quoteItemId' => $cart_product['product_id'],
                 'sku' => $product->get_sku(),
@@ -162,6 +168,7 @@ class RatesRequestBodyBuilder
                     'managing_stock' => $product->managing_stock(),
                     'is_in_stock' => $product->is_in_stock(),
                     'backorders_allowed' => $product->backorders_allowed(),
+                    'is_backorder' => $is_backorder,
                     'low_stock_amount' => $product->get_low_stock_amount() ?: null,
                     'is_sold_individually' => $product->is_sold_individually(),
                     'purchase_note' => $product->get_purchase_note(),
