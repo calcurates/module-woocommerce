@@ -135,9 +135,8 @@ class RatesRequestBodyBuilder
             $origin_codes = OriginUtils::getInstance()->get_origin_codes_from_product($cart_product['product_id']);
 
             $is_backorder = false;
-
-            if($product->get_stock_quantity() !== null){
-                $is_backorder = $product->backorders_allowed() ? $cart_product['quantity'] >= $product->get_stock_quantity() : false;
+            if (null !== $product->get_stock_quantity()) {
+                $is_backorder = $product->backorders_allowed() && $cart_product['quantity'] >= $product->get_stock_quantity();
             }
 
             $data = [
