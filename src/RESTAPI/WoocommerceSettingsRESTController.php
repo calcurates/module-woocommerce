@@ -164,6 +164,13 @@ if (!\class_exists(WoocommerceSettingsRESTController::class)) {
                 'field_type' => 'bool',
             ];
 
+            // is_backorder
+            $data['attrs'][] = [
+                'title' => 'Is backorder',
+                'name' => 'is_backorder',
+                'field_type' => 'bool',
+            ];
+
             // low_stock_amount
             $data['attrs'][] = [
                 'title' => 'Low stock amount',
