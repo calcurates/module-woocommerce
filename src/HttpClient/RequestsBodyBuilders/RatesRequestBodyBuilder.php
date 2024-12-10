@@ -136,7 +136,7 @@ class RatesRequestBodyBuilder
 
             $is_backorder = false;
             if (null !== $product->get_stock_quantity()) {
-                $is_backorder = $product->backorders_allowed() && $cart_product['quantity'] >= $product->get_stock_quantity();
+                $is_backorder = $product->backorders_allowed() && $cart_product['quantity'] > $product->get_stock_quantity();
             }
 
             $data = [
