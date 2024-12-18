@@ -110,6 +110,14 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
                 'description' => \__('Check and save changes to generate new Plugin Api Key', 'woocommerce'),
                 'desc_tip' => false,
             ],
+            'prevent_redundant_shipping_calculation' => [
+                'title' => \__('Prevent redundant shipping calculations', 'woocommerce'),
+                'type' => 'checkbox',
+                'description' => \__('Requests to Calcurates will be sent only from the Cart and Checkout pages', 'woocommerce'),
+                'desc_tip' => false,
+                'default' => 'yes',
+                'label' => \__('Prevent shipping calculations prior to Cart or Checkout', 'woocommerce'),
+            ],
             'debug_mode' => [
                 'title' => \__('Debug', 'woocommerce'),
                 'type' => 'select',
