@@ -22,7 +22,7 @@ if (!\class_exists(WCBootstrap::class)) {
         private static string $delivery_time_meta_name = 'selected_delivery_time';
 
         public function run(): void
-        {         
+        {
             // Create Calcurates shipping method
             \add_action('init', [$this, 'init_shipping']);
 
@@ -62,10 +62,11 @@ if (!\class_exists(WCBootstrap::class)) {
             \add_filter('woocommerce_cart_ready_to_calc_shipping', [$this, 'prevent_shipping_calculation_prior_to_cart'], 10, 1);
         }
 
-        public function prevent_shipping_calculation_prior_to_cart($default) { 
+        public function prevent_shipping_calculation_prior_to_cart($default)
+        {
             $shipping_method_options = \get_option('woocommerce_'.\WC_Calcurates_Shipping_Method::CODE.'_settings', true);
-   
-            return $shipping_method_options['prevent_redundant_shipping_calculation'] != 'no' ? (is_cart() || is_checkout()) : true; 
+
+            return 'no' !== $shipping_method_options['prevent_redundant_shipping_calculation'] ? (\is_cart() || \is_checkout()) : true;
         }
 
         public function calcurates_settings_page(array $links): array

@@ -195,7 +195,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         $rates_request_body = $rates_request_body_builder->build();
 
         // validate request
-        if(!$this->is_request_body_valid($rates_request_body)){
+        if (!$this->is_request_body_valid($rates_request_body)) {
             return [];
         }
 
