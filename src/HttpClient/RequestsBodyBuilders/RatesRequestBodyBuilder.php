@@ -74,7 +74,7 @@ class RatesRequestBodyBuilder
         }
 
         $ship_to_different_address = \WC()->session->get('ship_to_different_address', '0');
-        $postcode = $ship_to_different_address || (!$is_checkout && \array_key_exists('shipping_postcode', $customer_session_data)) ? ($customer_session_data['shipping_postcode'] ?: 'string') : (\array_key_exists('postcode', $customer_session_data) ? $customer_session_data['postcode'] : 'string'); // fixme: remove the "string"
+        $postcode = $ship_to_different_address || (!$is_checkout && \array_key_exists('shipping_postcode', $customer_session_data)) ? ($customer_session_data['shipping_postcode'] ?: '') : (\array_key_exists('postcode', $customer_session_data) ? $customer_session_data['postcode'] : '');
         $first_name = $ship_to_different_address ? (\array_key_exists('shipping_first_name', $post_data) ? $post_data['shipping_first_name'] : null) : (\array_key_exists('billing_first_name', $post_data) ? $post_data['billing_first_name'] : null);
         $last_name = $ship_to_different_address ? (\array_key_exists('shipping_last_name', $post_data) ? $post_data['shipping_last_name'] : null) : (\array_key_exists('billing_last_name', $post_data) ? $post_data['billing_last_name'] : null);
         $company = $ship_to_different_address ? (\array_key_exists('shipping_company', $post_data) ? $post_data['shipping_company'] : null) : (\array_key_exists('billing_company', $post_data) ? $post_data['billing_company'] : null);

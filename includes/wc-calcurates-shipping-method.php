@@ -194,6 +194,11 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         // build body for the request
         $rates_request_body = $rates_request_body_builder->build();
 
+        // validate request
+        if(!$this->is_request_body_valid($rates_request_body)){
+            return [];
+        }
+
         $calcurates_client = new CalcuratesHttpClient($this->calcurates_api_key, $this->calcurates_api_url, $this->debug_mode);
         // get request results
         $response = $calcurates_client->get_rates($rates_request_body);
@@ -205,6 +210,11 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         $rates->apply_tax_mode();
 
         return $rates->convert_rates_to_wc_rates();
+    }
+
+    private function is_request_body_valid(array $request_body): bool
+    {
+        return $request_body['shipTo']['country'] && $request_body['shipTo']['postalCode'];
     }
 
     public function process_admin_options(): bool
