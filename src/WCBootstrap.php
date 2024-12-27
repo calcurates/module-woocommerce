@@ -57,6 +57,16 @@ if (!\class_exists(WCBootstrap::class)) {
 
             // Plugin Settings Page
             \add_filter('plugin_action_links_'.\plugin_basename(CALCURATES_PLUGIN_FILE), [$this, 'calcurates_settings_page']);
+
+            // Prevent shipping calculations prior to Cart or Checkout
+            \add_filter('woocommerce_cart_ready_to_calc_shipping', [$this, 'prevent_shipping_calculation_prior_to_cart'], 10, 1);
+        }
+
+        public function prevent_shipping_calculation_prior_to_cart($default)
+        {
+            $shipping_method_options = \get_option('woocommerce_'.\WC_Calcurates_Shipping_Method::CODE.'_settings', true);
+
+            return 'no' !== $shipping_method_options['prevent_redundant_shipping_calculation'] ? (\is_cart() || \is_checkout()) : true;
         }
 
         public function calcurates_settings_page(array $links): array
