@@ -61,7 +61,17 @@ if (!\class_exists(Assets::class)) {
          */
         public function enqueue_js(): void
         {
-            if ($this->register_js(WCCalcurates::get_plugin_text_domain(), '/assets/js/calcurates-checkout.js', ['jquery', 'wc-cart', 'wc-checkout', self::$date_picker_script_name]) && (\is_cart() || \is_checkout())) {
+            $deps = ['jquery'];
+
+            if (\is_cart()) {
+                $deps[] = 'wc-cart';
+            } elseif (\is_checkout()) {
+                $deps[] = 'wc-checkout';
+            }
+
+            $deps[] = self::$date_picker_script_name;
+
+            if ($this->register_js(WCCalcurates::get_plugin_text_domain(), '/assets/js/calcurates-checkout.js', $deps) && (\is_cart() || \is_checkout())) {
                 // provide global vars
                 $date = \current_datetime();
                 $utcOffset = $date->format('Z');
