@@ -38,12 +38,11 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
      */
     private ?string $calcurates_api_key = null;
 
-
     /**
      * Calcurates API cache timeout.
      */
     private ?string $rates_request_cache_timeout = null;
-    private ?string $default_rates_request_cache_timeout_sec = null;
+    private ?string $default_rates_request_cache_timeout_sec = '86400';
 
     /**
      * Tax view type.
@@ -66,8 +65,6 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
             'settings',
         ];
 
-        $this->$default_rates_request_cache_timeout_sec = '86400';
-
         $this->init();
     }
 
@@ -84,10 +81,10 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         $this->tax_mode = $this->get_option('tax_mode');
         $this->rates_request_cache_timeout = $this->get_option('rates_request_cache_timeout');
 
-        if(!$this->rates_request_cache_timeout || (int)$this->rates_request_cache_timeout <= 0){
-            $this->rates_request_cache_timeout = $this->$default_rates_request_cache_timeout_sec;
+        if (!$this->rates_request_cache_timeout || (int) $this->rates_request_cache_timeout <= 0) {
+            $this->rates_request_cache_timeout = $this->default_rates_request_cache_timeout_sec;
         }
-        
+
         // Save settings in admin if you have any defined
         \add_action('woocommerce_update_options_shipping_'.$this->id, [$this, 'process_admin_options']);
     }
@@ -222,13 +219,11 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
 
         $key = $this->get_request_hash($rates_request_body);
 
-        $response_cache = get_transient( $key );
+        $response_cache = \get_transient($key);
 
-        if ( $html ) {
+        if ($html) {
             $response = $response_cache;
-        } 
-        else 
-        {
+        } else {
             $calcurates_client = new CalcuratesHttpClient($this->calcurates_api_key, $this->calcurates_api_url, $this->debug_mode);
             // get request results
             $response = $calcurates_client->get_rates($rates_request_body);
@@ -237,7 +232,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
                 return [];
             }
 
-            set_transient($key, $response, $this->rates_request_cache_timeout);
+            \set_transient($key, $response, $this->rates_request_cache_timeout);
         }
 
         $rates = new Rates($response, $this->tax_mode, $package);
@@ -251,7 +246,8 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         return $request_body['shipTo']['country'] && $request_body['shipTo']['postalCode'];
     }
 
-    private function get_request_hash(array $request_body): string {
+    private function get_request_hash(array $request_body): string
+    {
         $hash_based_object = [
             'products' => $request_body['products'],
             'shipTo' => [
@@ -260,11 +256,11 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
                 'companyName' => $request_body['shipTo']['companyName'],
                 'postalCode' => $request_body['shipTo']['postalCode'],
                 'addressLine1' => $request_body['shipTo']['addressLine1'],
-                'addressLine2' => $request_body['shipTo']['addressLine2']
-            ]
+                'addressLine2' => $request_body['shipTo']['addressLine2'],
+            ],
         ];
 
-        return self::CODE.'_'.wp_hash(serialize($hash_based_object));
+        return self::CODE.'_'.\wp_hash(\serialize($hash_based_object));
     }
 
     public function process_admin_options(): bool
