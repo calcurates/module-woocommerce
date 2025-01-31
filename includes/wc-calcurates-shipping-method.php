@@ -221,7 +221,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
 
         $response_cache = \get_transient($key);
 
-        if ($html) {
+        if ($response_cache) {
             $response = $response_cache;
         } else {
             $calcurates_client = new CalcuratesHttpClient($this->calcurates_api_key, $this->calcurates_api_url, $this->debug_mode);
