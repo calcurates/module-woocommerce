@@ -256,7 +256,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
                 'companyName' => $request_body['shipTo']['companyName'] ?? '',
                 'postalCode' => $request_body['shipTo']['postalCode'] ?? '',
                 'addressLine1' => $request_body['shipTo']['addressLine1'] ?? '',
-                'addressLine2' => $request_body['shipTo']['addressLine2'] ?? ''
+                'addressLine2' => $request_body['shipTo']['addressLine2'] ?? '',
             ],
         ];
 
