@@ -66,6 +66,10 @@ if (!\class_exists(WCBootstrap::class)) {
         {
             $shipping_method_options = \get_option('woocommerce_'.\WC_Calcurates_Shipping_Method::CODE.'_settings', true);
 
+            if (!isset($shipping_method_options['prevent_redundant_shipping_calculation'])) {
+                return (\is_cart() || \is_checkout());
+            }
+
             return 'no' !== $shipping_method_options['prevent_redundant_shipping_calculation'] ? (\is_cart() || \is_checkout()) : true;
         }
 
