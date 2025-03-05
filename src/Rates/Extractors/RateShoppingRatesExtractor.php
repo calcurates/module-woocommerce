@@ -20,6 +20,9 @@ class RateShoppingRatesExtractor extends RatesExtractorAbstract
                 continue;
             }
             foreach ($rate_shopping['carriers'] as $carrier) {
+                if (!$carrier['rates']) {
+                    continue;
+                }
                 foreach ($carrier['rates'] as $rate) {
                     if (!$rate['success'] && !$rate['message']) {
                         continue;
