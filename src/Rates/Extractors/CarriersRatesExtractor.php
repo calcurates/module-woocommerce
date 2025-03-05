@@ -16,6 +16,9 @@ class CarriersRatesExtractor extends RatesExtractorAbstract
         $ready_rates = [];
 
         foreach ($data as $carrier) {
+            if (!$carrier['rates']) {
+                continue;
+            }
             foreach ($carrier['rates'] as $rate) {
                 if (!$rate['success'] && !$rate['message']) {
                     continue;

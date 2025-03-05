@@ -10,7 +10,6 @@ return (new PhpCsFixer\Config())
         '@PHP74Migration:risky' => true,
         '@PHP74Migration' => true,
 
-        'use_arrow_functions' => false,
         'combine_consecutive_issets' => true,
         'combine_consecutive_unsets' => true,
         'compact_nullable_typehint' => true,
@@ -24,6 +23,8 @@ return (new PhpCsFixer\Config())
         'phpdoc_order' => true,
         'strict_comparison' => true,
         'combine_nested_dirname' => true,
+        'use_arrow_functions' => false,
+        'declare_strict_types' => false,
     ])
     ->setRiskyAllowed(true)
     ->setFinder($finder)
