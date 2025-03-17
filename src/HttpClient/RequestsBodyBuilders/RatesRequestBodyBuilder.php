@@ -32,6 +32,33 @@ class RatesRequestBodyBuilder
 
     /**
      * Build request body.
+     *
+     * @return array{
+     *     promoCode: string|null,
+     *     shipTo: array{
+     *          country: string,
+     *          city: string,
+     *          contactName: string|null,
+     *          companyName: string|null,
+     *          contactPhone: string|null,
+     *          regionCode: string|null,
+     *          regionName: string|null,
+     *          postalCode: string,
+     *          addressLine1: string|null,
+     *          addressLine2: string|null,
+     *     }[],
+     *     products: array{
+     *         quoteItemId: int,
+     *         sku: string,
+     *         price: float,
+     *         quantity: int,
+     *         weight: float,
+     *         origins: array{origin: string}[]|null,
+     *         attributes: array<string, string>[],
+     *     }[],
+     *     customerGroup: string,
+     *     estimate: bool,
+     * }
      */
     public function build(): array
     {

@@ -118,7 +118,7 @@ class Rates
     /**
      * Convert rates to WooCommerce compatible data structure.
      */
-    public function convert_rates_to_wc_rates(): array
+    public function convert_rates_to_wc_rates(array $rates_request_body): array
     {
         $rates = [];
 
@@ -129,7 +129,7 @@ class Rates
                 'cost' => $rate['cost'],
                 'package' => $this->package,
                 'meta_data' => [
-                    'message' => $this->prepare_message($rate),
+                    'message' => $this->prepare_message($rates_request_body, $rate),
                     'delivery_date_from' => $rate['delivery_date_from'],
                     'delivery_date_to' => $rate['delivery_date_to'],
                     'tax' => $rate['tax'],
@@ -185,14 +185,20 @@ class Rates
         $this->rates = $rates;
     }
 
-    private function prepare_message(array $rate): string
+    private function prepare_message(array $rates_request_body, array $rate): string
     {
         $message = $rate['message'] ?: '';
 
         if ($message) {
+            $cartWeight = 0.0;
+            foreach ($rates_request_body['products'] as $product) {
+                $cartWeight += $product['weight'];
+            }
+            $cartWeight .= ' '.\get_option('woocommerce_weight_unit');
+
             $message = \str_replace(
-                ['{tax_amount}', '{min_transit_days}', '{max_transit_days}', '{packages}', '{custom_number}'],
-                [$rate['tax'].' '.$rate['currency'], $rate['days_in_transit_from'], $rate['days_in_transit_to'], $this->get_packages_string($rate), $rate['custom_number']],
+                ['{tax_amount}', '{min_transit_days}', '{max_transit_days}', '{packages}', '{custom_number}', '{cart_weight}'],
+                [$rate['tax'].' '.$rate['currency'], $rate['days_in_transit_from'], $rate['days_in_transit_to'], $this->get_packages_string($rate), $rate['custom_number'], $cartWeight],
                 $message
             );
         }

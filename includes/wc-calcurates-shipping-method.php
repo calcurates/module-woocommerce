@@ -238,7 +238,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         $rates = new Rates($response, $this->tax_mode, $package);
         $rates->apply_tax_mode();
 
-        return $rates->convert_rates_to_wc_rates();
+        return $rates->convert_rates_to_wc_rates($rates_request_body);
     }
 
     private function is_request_body_valid(array $request_body): bool
