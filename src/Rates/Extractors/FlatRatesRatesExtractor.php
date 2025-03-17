@@ -34,6 +34,7 @@ class FlatRatesRatesExtractor extends RatesExtractorAbstract
                     'days_in_transit_from' => $rate['rate']['estimatedDeliveryDate']['daysInTransitFrom'] ?? null,
                     'days_in_transit_to' => $rate['rate']['estimatedDeliveryDate']['daysInTransitTo'] ?? null,
                     'packages' => $this->make_packages($rate['rates']),
+                    'custom_number' => null,
                 ];
             }
         }

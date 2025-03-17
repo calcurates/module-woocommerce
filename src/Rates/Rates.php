@@ -32,6 +32,7 @@ class Rates
      *     days_in_transit_from: int|null,
      *     days_in_transit_to: int|null,
      *     packages: string[],
+     *     custom_number: float|null,
      * }[]
      */
     private array $rates = [];
@@ -190,8 +191,8 @@ class Rates
 
         if ($message) {
             $message = \str_replace(
-                ['{tax_amount}', '{min_transit_days}', '{max_transit_days}', '{packages}'],
-                [$rate['tax'].' '.$rate['currency'], $rate['days_in_transit_from'], $rate['days_in_transit_to'], $this->get_packages_string($rate)],
+                ['{tax_amount}', '{min_transit_days}', '{max_transit_days}', '{packages}', '{custom_number}'],
+                [$rate['tax'].' '.$rate['currency'], $rate['days_in_transit_from'], $rate['days_in_transit_to'], $this->get_packages_string($rate), $rate['custom_number']],
                 $message
             );
         }

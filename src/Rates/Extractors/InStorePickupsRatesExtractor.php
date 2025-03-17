@@ -32,6 +32,7 @@ class InStorePickupsRatesExtractor extends RatesExtractorAbstract
                         'priority_item' => null,
                         'rate_image' => $in_store_rate['imageUri'],
                         'packages' => [],
+                        'custom_number' => null,
                     ];
                 }
                 continue;
@@ -56,6 +57,7 @@ class InStorePickupsRatesExtractor extends RatesExtractorAbstract
                         'days_in_transit_from' => $store['rate']['estimatedDeliveryDate']['daysInTransitFrom'] ?? null,
                         'days_in_transit_to' => $store['rate']['estimatedDeliveryDate']['daysInTransitTo'] ?? null,
                         'packages' => $this->make_packages($store['rates']),
+                        'custom_number' => $store['customNumber'],
                     ];
                 }
             }

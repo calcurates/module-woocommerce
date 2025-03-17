@@ -29,6 +29,7 @@ abstract class RatesExtractorAbstract
      *     days_in_transit_from: int|null,
      *     days_in_transit_to: int|null,
      *     packages: string[],
+     *     custom_number: float|null,
      * }[]
      */
     abstract public function extract(array $data): array;

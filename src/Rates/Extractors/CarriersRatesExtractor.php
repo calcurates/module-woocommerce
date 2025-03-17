@@ -69,6 +69,7 @@ class CarriersRatesExtractor extends RatesExtractorAbstract
                     'days_in_transit_from' => $rate['rate']['estimatedDeliveryDate']['daysInTransitFrom'] ?? null,
                     'days_in_transit_to' => $rate['rate']['estimatedDeliveryDate']['daysInTransitTo'] ?? null,
                     'packages' => $packages_names,
+                    'custom_number' => null,
                 ];
             }
         }

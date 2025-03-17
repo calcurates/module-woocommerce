@@ -32,6 +32,7 @@ class TableRatesRatesExtractor extends RatesExtractorAbstract
                         'priority_item' => null,
                         'rate_image' => $table_rate['imageUri'],
                         'packages' => [],
+                        'custom_number' => null,
                     ];
                 }
                 continue;
@@ -56,6 +57,7 @@ class TableRatesRatesExtractor extends RatesExtractorAbstract
                         'days_in_transit_from' => $method['rate']['estimatedDeliveryDate']['daysInTransitFrom'] ?? null,
                         'days_in_transit_to' => $method['rate']['estimatedDeliveryDate']['daysInTransitTo'] ?? null,
                         'packages' => $this->make_packages($method['rates']),
+                        'custom_number' => $method['customNumber'],
                     ];
                 }
             }
