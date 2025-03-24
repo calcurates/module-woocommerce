@@ -17,7 +17,7 @@ abstract class RatesExtractorAbstract
      *     id: string,
      *     label: string,
      *     cost: float|int,
-     *     tax: float|int,
+     *     tax: float|int|null,
      *     message: string|null,
      *     delivery_date_from: string|null,
      *     delivery_date_to: string|null,

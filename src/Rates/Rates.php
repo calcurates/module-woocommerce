@@ -20,7 +20,7 @@ class Rates
      *     id: string,
      *     label: string,
      *     cost: float|int,
-     *     tax: float|int,
+     *     tax: float|int|null,
      *     message: string|null,
      *     delivery_date_from: string|null,
      *     delivery_date_to: string|null,
@@ -155,7 +155,7 @@ class Rates
         $rates = [];
 
         foreach ($this->rates as $rate) {
-            if ($rate['tax']) {
+            if (null !== $rate['tax']) {
                 if ('tax_included' === $this->tax_mode) {
                     $rate['label'] .= ' - duties & tax included';
                     $rate['cost'] += $rate['tax'];
@@ -196,9 +196,11 @@ class Rates
             }
             $cartWeight .= ' '.\get_option('woocommerce_weight_unit');
 
+            $taxStr = null !== $rate['tax'] ? ($rate['tax'].' '.$rate['currency']) : '';
+
             $message = \str_replace(
                 ['{tax_amount}', '{min_transit_days}', '{max_transit_days}', '{packages}', '{custom_number}', '{cart_weight}'],
-                [$rate['tax'].' '.$rate['currency'], $rate['days_in_transit_from'], $rate['days_in_transit_to'], $this->get_packages_string($rate), $rate['custom_number'], $cartWeight],
+                [$taxStr, $rate['days_in_transit_from'], $rate['days_in_transit_to'], $this->get_packages_string($rate), $rate['custom_number'], $cartWeight],
                 $message
             );
         }

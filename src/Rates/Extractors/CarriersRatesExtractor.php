@@ -57,7 +57,7 @@ class CarriersRatesExtractor extends RatesExtractorAbstract
                     'id' => $carrier['id'].'_'.$services_ids,
                     'label' => $this->resolveLabel($carrier).'. '.$services_names,
                     'cost' => $rate['rate']['cost'] ?? 0,
-                    'tax' => $rate['rate']['tax'] ?? 0,
+                    'tax' => $rate['rate']['tax'] ?? null,
                     'currency' => $rate['rate']['currency'] ?? '',
                     'message' => $rate['success'] ? $carrier['message'].' '.$services_messages : $rate['message'],
                     'delivery_date_from' => $rate['rate']['estimatedDeliveryDate']['from'] ?? null,
