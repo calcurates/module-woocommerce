@@ -192,7 +192,7 @@ class Rates
         if ($message) {
             $cartWeight = 0.0;
             foreach ($rates_request_body['products'] as $product) {
-                $cartWeight += $product['weight'];
+                $cartWeight += $product['weight'] * $product['quantity'];
             }
             $cartWeight .= ' '.\get_option('woocommerce_weight_unit');
 
