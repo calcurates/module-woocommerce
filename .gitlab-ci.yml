@@ -13,7 +13,7 @@ deploy_staging:
     stage: deploy
     script:
         - echo "Deploy to staging server"
-        - echo "$SSH_PRIVATE_KEY_BASE64" | base64 -d > ./id_rsa
+        - echo "$SSH_PRIVATE_KEY_BASE64" | base64 -d | tr -d '\r' > ./id_rsa
         - chmod 600 ./id_rsa
         - ssh -o StrictHostKeyChecking=no -p"$SSH_PORT" -i ./id_rsa "$SSH_USER"@"$SSH_STAGING_HOST" "$SSH_DEPLOY_SCRIPT"
     only:
