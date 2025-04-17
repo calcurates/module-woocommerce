@@ -76,7 +76,7 @@ function watchForCompanyInputChange() {
 function setupDatePicker() {
     const timePattern = /\d\d:\d\d:\d\d/;
 
-    jQuery.getScript(CALCURATES_GLOBAL.pluginDir + "/assets/lib/air-datepicker/locale/" + CALCURATES_GLOBAL.lang + ".js", function () {
+    jQuery.getScript(CALCURATES_GLOBAL.pluginDir + '/assets/lib/air-datepicker/locale/' + CALCURATES_GLOBAL.lang + '.js', function () {
         jQuery('input[id^="calcurates-datepicker"]').each(function () {
             const $datepicker = jQuery(this);
             const $originalUtcDate = $datepicker.parent().find('.calcurates-checkout__shipping-rate-date-original-utc');
@@ -109,10 +109,11 @@ function setupDatePicker() {
                 })
             });
 
-            const deliveryDatFrom = new Date(new Date(timeSlots[0]['date']).toISOString().replace(timePattern, '00:00:00'));
-            const deliveryDatTo = new Date(new Date(timeSlots[timeSlots.length - 1]['date']).toISOString().replace(timePattern, '00:00:00'));
+            const deliveryDateFrom = new Date(new Date(timeSlots[0]['date']).toISOString().replace(timePattern, '00:00:00'));
+            const deliveryDateTo = new Date(new Date(timeSlots[timeSlots.length - 1]['date']).toISOString().replace(timePattern, '00:00:00'));
 
             const options = {
+                startDate: deliveryDateFrom,
                 locale: DATEPICKER_LANG,
                 autoClose: true,
                 onSelect(data) {
@@ -153,11 +154,11 @@ function setupDatePicker() {
                 }
             };
 
-            if (deliveryDatFrom) {
-                options['minDate'] = deliveryDatFrom
+            if (deliveryDateFrom) {
+                options['minDate'] = deliveryDateFrom
             }
-            if (deliveryDatTo) {
-                options['maxDate'] = deliveryDatTo;
+            if (deliveryDateTo) {
+                options['maxDate'] = deliveryDateTo;
             }
             if (timeSlotDateRequired) {
                 options['toggleSelected'] = !timeSlotDateRequired;
@@ -166,7 +167,7 @@ function setupDatePicker() {
             const picker = new AirDatepicker(id, options);
 
             if (timeSlotDateRequired && timeSlots.length > 0) {
-                picker.selectDate(new Date(deliveryDatFrom));
+                picker.selectDate(new Date(deliveryDateFrom));
             }
         });
     });
