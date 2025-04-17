@@ -90,39 +90,55 @@ function setupDatePicker() {
             const timeSlotTimeRequired = $datepicker.data('time-slot-time-required') ? ('1' === $datepicker.data('time-slot-time-required') || 1 === $datepicker.data('time-slot-time-required')) : false;
             const id = "#" + $datepicker.attr('id');
 
+            let deliveryDateFrom = null;
+            let deliveryDateTo = null;
+
             // normalize
             timeSlots.forEach(function (item, index) {
-                const baseDate = item['date'];
+                const parsedDate = parseDate(item['date']);
+                const baseDate = new Date(); // skip timezone
+                baseDate.setFullYear(parsedDate.year, parsedDate.month, parsedDate.date);
+                baseDate.setHours(parsedDate.hours, parsedDate.minutes, parsedDate.seconds, 0);
 
-                timeSlots[index]['date'] = new Date(baseDate).toISOString();
+                timeSlots[index]['date'] = formatParsedDateAsIsoDate(parsedDate);
 
                 timeSlots[index]['time'].forEach(function (time, timeIndex) {
                     if (time.from) {
-                        time.from = new Date(baseDate.replace(timePattern, time.from)).toISOString();
+                        time.from = timeSlots[index]['date'].replace(timePattern, time.from);
                     }
 
                     if (time.to) {
-                        time.to = new Date(baseDate.replace(timePattern, time.to)).toISOString();
+                        time.to = timeSlots[index]['date'].replace(timePattern, time.to);
                     }
 
                     timeSlots[index]['time'][timeIndex] = time;
-                })
+                });
+
+                if (0 === index) {
+                    deliveryDateFrom = baseDate;
+                }
+                if ((timeSlots.length - 1) === index) {
+                    deliveryDateTo = baseDate;
+                }
             });
 
-            const deliveryDateFrom = new Date(new Date(timeSlots[0]['date']).toISOString().replace(timePattern, '00:00:00'));
-            const deliveryDateTo = new Date(new Date(timeSlots[timeSlots.length - 1]['date']).toISOString().replace(timePattern, '00:00:00'));
-
             const options = {
-                startDate: deliveryDateFrom,
+                minDate: deliveryDateFrom,
+                maxDate: deliveryDateTo,
+                toggleSelected: !timeSlotDateRequired,
                 locale: DATEPICKER_LANG,
                 autoClose: true,
                 onSelect(data) {
-                    const normalizedDate = normalizeDatepickerDateToZeroUTC(data.date);
+                    if (!data.date) {
+                        removeTimeSelect($datepicker);
+                        return;
+                    }
+
                     //find time
                     const result = timeSlots.find(function (item) {
                         $originalUtcDate.val(item['date']);
 
-                        return item['date'].replace(timePattern, '00:00:00') === normalizedDate;
+                        return isSameDates(item['date'], data.date);
                     });
 
                     if (result) {
@@ -133,9 +149,8 @@ function setupDatePicker() {
                 },
                 onRenderCell: function (data) {
                     if (data.cellType === 'day') {
-                        const normalizedDate = normalizeDatepickerDateToZeroUTC(data.date);
                         const isDisabled = timeSlots.find(function (item) {
-                            return item['date'].replace(timePattern, '00:00:00') === normalizedDate;
+                            return isSameDates(item['date'], data.date);
                         }) === undefined;
 
                         return {
@@ -154,23 +169,78 @@ function setupDatePicker() {
                 }
             };
 
-            if (deliveryDateFrom) {
-                options['minDate'] = deliveryDateFrom
-            }
-            if (deliveryDateTo) {
-                options['maxDate'] = deliveryDateTo;
-            }
-            if (timeSlotDateRequired) {
-                options['toggleSelected'] = !timeSlotDateRequired;
-            }
-
             const picker = new AirDatepicker(id, options);
 
-            if (timeSlotDateRequired && timeSlots.length > 0) {
+            if (timeSlotDateRequired) {
                 picker.selectDate(new Date(deliveryDateFrom));
             }
         });
     });
+}
+
+/**
+ * @param {{year: number, month: number, date: number, hours: number, minutes: number, seconds: number}} parsedDate
+ * @returns string
+ */
+function formatParsedDateAsIsoDate(parsedDate) {
+    const year = parsedDate.year;
+    let month = parsedDate.month + 1;
+    let date = parsedDate.date;
+    let hours = parsedDate.hours;
+    let minutes = parsedDate.minutes;
+    let seconds = parsedDate.seconds;
+
+    if (date < 10) {
+        date = '0' + date;
+    }
+    if (month < 10) {
+        month = '0' + month;
+    }
+    if (hours < 10) {
+        hours = '0' + hours;
+    }
+    if (minutes < 10) {
+        minutes = '0' + minutes;
+    }
+    if (seconds < 10) {
+        seconds = '0' + seconds;
+    }
+
+    return year + '-' + month + '-' + date + 'T' + hours + ':' + minutes + ':' + seconds + '.000Z';
+}
+
+/**
+ * same dates ignore time and timezone
+ * @param {string} dateStr
+ * @param {Date} dateObj
+ * @returns boolean
+ */
+function isSameDates(dateStr, dateObj) {
+    const obj = parseDate(dateStr);
+
+    return obj.year === dateObj.getFullYear() &&
+        obj.month === dateObj.getMonth() &&
+        obj.date === dateObj.getDate();
+}
+
+/**
+ * parse st date, month: 0- 11
+ *
+ * @param {string} date
+ * @returns {{year: number, month: number, date: number, hours: number, minutes: number, seconds: number}}
+ */
+function parseDate(date) {
+    const datetimePattern = /(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2}):(\d{2})/;
+
+    const matches = date.match(datetimePattern);
+    return {
+        year: Number(matches[1]).valueOf(),
+        month: Number(matches[2] - 1).valueOf(),
+        date: Number(matches[3]).valueOf(),
+        hours: Number(matches[4]).valueOf(),
+        minutes: Number(matches[5]).valueOf(),
+        seconds: Number(matches[6]).valueOf(),
+    };
 }
 
 /**
@@ -215,41 +285,19 @@ function cloneFull(obj) {
 }
 
 /**
- * @param {Date} date
+ * @param {string} date
  * @return {string}
  */
-function normalizeDatepickerDateToZeroUTC(date) {
-    let day = date.getDate();
-    let month = date.getMonth() + 1;
-    const year = date.getFullYear();
-
-    if (day < 10) {
-        day = '0' + day;
-    }
-
-    if (month < 10) {
-        month = '0' + month;
-    }
-
-    return year + '-' + month + '-' + day + 'T00:00:00.000Z';
-}
-
-/**
- * @param {string} dateTime
- * @return {string}
- */
-function formatToWordpressTime(dateTime) {
-    const localDate = new Date(dateTime);
-    const localTime = localDate.getTime();
-    const localOffset = localDate.getTimezoneOffset() * 60000;
-    const utc = localTime + localOffset;
-    const wpTime = utc + (1000 * +CALCURATES_GLOBAL.wpTimeZoneOffsetSeconds);
-    const newDate = new Date(wpTime);
+function formatToWordpressTime(date) {
+    const parsedDate = parseDate(date);
+    const newDate = new Date();
+    newDate.setFullYear(parsedDate.year, parsedDate.month, parsedDate.date);
+    newDate.setHours(parsedDate.hours, parsedDate.minutes, parsedDate.seconds, 0);
 
     const fmt = new DateFormatter();
 
     if (!CALCURATES_GLOBAL.timeFormat) {
-        return fmt.formatDate(newDate, 'H:i:s');
+        return fmt.formatDate(newDaate, 'H:i:s');
     }
 
     return fmt.formatDate(newDate, CALCURATES_GLOBAL.timeFormat);
