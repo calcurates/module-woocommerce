@@ -107,27 +107,27 @@ if (!\class_exists(WCBootstrap::class)) {
             return $display_key;
         }
 
-        public function filter_wc_order_item_display_meta_value($display_key, $meta, $item)
+        public function filter_wc_order_item_display_meta_value($display_value, $meta, $item)
         {
             if ('delivery_date_from' === $meta->key && \is_admin()) {
-                $display_key = (new \DateTime($meta->value))->setTimezone(\wp_timezone())->format($this->wp_date_format());
+                $display_value = (new \DateTime($meta->value))->setTimezone(\wp_timezone())->format($this->wp_date_format());
             }
 
             if ('delivery_date_to' === $meta->key && \is_admin()) {
-                $display_key = (new \DateTime($meta->value))->setTimezone(\wp_timezone())->format($this->wp_date_format());
+                $display_value = (new \DateTime($meta->value))->setTimezone(\wp_timezone())->format($this->wp_date_format());
             }
 
             if ('selected_delivery_date' === $meta->key && \is_admin()) {
-                $display_key = (new \DateTime($meta->value))->setTimezone(\wp_timezone())->format($this->wp_date_format());
+                $display_value = (new \DateTime($meta->value))->setTimezone(\wp_timezone())->format($this->wp_date_format());
             }
 
             if ('selected_delivery_time_from' === $meta->key && \is_admin()) {
                 $time_from = (new \DateTime($meta->value))->setTimezone(\wp_timezone())->format($this->wp_time_format());
                 $time_to = (new \DateTime($item->get_meta('selected_delivery_time_to')))->setTimezone(\wp_timezone())->format($this->wp_time_format());
-                $display_key = $time_from.' - '.$time_to;
+                $display_value = $time_from.' - '.$time_to;
             }
 
-            return $display_key;
+            return $display_value;
         }
 
         public function filter_wc_order_item_get_formatted_meta_data($formatted_meta, $item)
@@ -297,9 +297,10 @@ if (!\class_exists(WCBootstrap::class)) {
          */
         private function get_time_slots_text(string $delivery_date, ?string $delivery_time_from, ?string $delivery_time_to): string
         {
-            $wp_timezone_string = \wp_timezone_string();
+            /** @var \DateTimeZone $wp_timezone */
+            $wp_timezone = \wp_timezone();
             try {
-                $delivery_date_obj = (new \DateTime($delivery_date))->setTimezone(new \DateTimeZone($wp_timezone_string));
+                $delivery_date_obj = (new \DateTime($delivery_date))->setTimezone($wp_timezone);
                 $text = $delivery_date_obj->format($this->wp_date_format());
             } catch (\Exception $e) {
                 $text = '';
@@ -311,7 +312,7 @@ if (!\class_exists(WCBootstrap::class)) {
 
                 if ($delivery_time_from) {
                     try {
-                        $delivery_time_from_obj = (new \DateTime($delivery_time_from))->setTimezone(new \DateTimeZone($wp_timezone_string));
+                        $delivery_time_from_obj = (new \DateTime($delivery_time_from))->setTimezone($wp_timezone);
                         $formatted_delivery_time_from = $delivery_time_from_obj->format($this->wp_time_format());
                     } catch (\Exception $e) {
                     }
@@ -319,7 +320,7 @@ if (!\class_exists(WCBootstrap::class)) {
 
                 if ($delivery_time_to) {
                     try {
-                        $delivery_time_to_obj = (new \DateTime($delivery_time_to))->setTimezone(new \DateTimeZone($wp_timezone_string));
+                        $delivery_time_to_obj = (new \DateTime($delivery_time_to))->setTimezone($wp_timezone);
                         $formatted_delivery_time_to = $delivery_time_to_obj->format($this->wp_time_format());
                     } catch (\Exception $e) {
                     }
@@ -340,7 +341,7 @@ if (!\class_exists(WCBootstrap::class)) {
             }
             $text = \trim($text);
 
-            return $text ? $text.' ('.$wp_timezone_string.')' : '';
+            return $text ? $text.' ('.$wp_timezone->getName().')' : '';
         }
 
         /**
@@ -348,18 +349,19 @@ if (!\class_exists(WCBootstrap::class)) {
          */
         private function get_estimated_delivery_dates_text(?string $from_date, ?string $to_date): string
         {
-            $wp_timezone_string = \wp_timezone_string();
+            /** @var \DateTimeZone $wp_timezone */
+            $wp_timezone = \wp_timezone();
             $from = null;
             $to = null;
 
             // get \DateTime objects
             try {
-                $from = $from_date ? (new \DateTime($from_date))->setTimezone(new \DateTimeZone($wp_timezone_string)) : null;
+                $from = $from_date ? (new \DateTime($from_date))->setTimezone($wp_timezone) : null;
             } catch (\Exception $e) {
             }
 
             try {
-                $to = $to_date ? (new \DateTime($to_date))->setTimezone(new \DateTimeZone($wp_timezone_string)) : null;
+                $to = $to_date ? (new \DateTime($to_date))->setTimezone($wp_timezone) : null;
             } catch (\Exception $e) {
             }
 
@@ -372,17 +374,17 @@ if (!\class_exists(WCBootstrap::class)) {
                     return $formatted_from;
                 }
 
-                return $formatted_from.' - '.$formatted_to.' ('.$wp_timezone_string.')';
+                return $formatted_from.' - '.$formatted_to.' ('.$wp_timezone->getName().')';
             }
 
             // if has only 'from' date
             if ($from) {
-                return 'From '.$from->format($this->wp_date_format()).' ('.$wp_timezone_string.')';
+                return 'From '.$from->format($this->wp_date_format()).' ('.$wp_timezone->getName().')';
             }
 
             // if has only 'to' date
             if ($to) {
-                return 'To '.$to->format($this->wp_date_format()).' ('.$wp_timezone_string.')';
+                return 'To '.$to->format($this->wp_date_format()).' ('.$wp_timezone->getName().')';
             }
 
             return '';
@@ -393,18 +395,19 @@ if (!\class_exists(WCBootstrap::class)) {
          */
         private function get_estimated_delivery_days_text(?string $from_date, ?string $to_date): string
         {
-            $wp_timezone_string = \wp_timezone_string();
+            /** @var \DateTimeZone $wp_timezone */
+            $wp_timezone = \wp_timezone();
             $from = null;
             $to = null;
 
             // get \DateTime objects
             try {
-                $from = $from_date ? (new \DateTime($from_date))->setTimezone(new \DateTimeZone($wp_timezone_string)) : null;
+                $from = $from_date ? (new \DateTime($from_date))->setTimezone($wp_timezone) : null;
             } catch (\Exception $e) {
             }
 
             try {
-                $to = $to_date ? (new \DateTime($to_date))->setTimezone(new \DateTimeZone($wp_timezone_string)) : null;
+                $to = $to_date ? (new \DateTime($to_date))->setTimezone($wp_timezone) : null;
             } catch (\Exception $e) {
             }
 

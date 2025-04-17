@@ -9,7 +9,7 @@ Calcurates helps you to reduce the gap between true shipping costs you bear and 
 - PHP >= 7.4
 - MySQL >= 5.7
 - Web-Server (Nginx/Apache/etc...)
-- Wordpress >= 5.2
+- Wordpress >= 5.3
 - WooCommerce >= 4.3
 
 #### Docker setup
