@@ -76,13 +76,13 @@ class Rates
             }
         }
 
-        $this->rates_sort();
+        $this->sort_rates();
     }
 
     /**
      * Sort rates by priority or cost.
      */
-    private function rates_sort(): void
+    private function sort_rates(): void
     {
         \usort($this->rates, static function (array $a, array $b): int {
             if ($a['priority'] === $b['priority']) {
@@ -130,8 +130,8 @@ class Rates
                 'package' => $this->package,
                 'meta_data' => [
                     'message' => $this->prepare_message($rates_request_body, $rate),
-                    'delivery_date_from' => $rate['delivery_date_from'],
-                    'delivery_date_to' => $rate['delivery_date_to'],
+                    'delivery_date_from' => $this->prepare_date($rate['delivery_date_from']),
+                    'delivery_date_to' => $this->prepare_date($rate['delivery_date_to']),
                     'tax' => $rate['tax'],
                     'currency' => $rate['currency'],
                     'has_error' => $rate['has_error'],
@@ -145,6 +145,26 @@ class Rates
         }
 
         return $rates;
+    }
+
+    /**
+     * convert date to wp timezone.
+     */
+    private function prepare_date(?string $date): ?string
+    {
+        if (!$date) {
+            return null;
+        }
+
+        /** @var \DateTimeZone $wp_timezone */
+        $wp_timezone = \wp_timezone();
+        try {
+            $dateObj = (new \DateTime($date))->setTimezone($wp_timezone);
+        } catch (\Exception $e) {
+            return null;
+        }
+
+        return $dateObj->format(\DateTimeInterface::RFC3339);
     }
 
     /**

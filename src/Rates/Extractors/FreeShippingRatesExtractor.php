@@ -20,7 +20,7 @@ class FreeShippingRatesExtractor extends RatesExtractorAbstract
                 $ready_rates[] = [
                     'has_error' => !$rate['success'],
                     'id' => $rate['id'],
-                    'label' => $this->resolveLabel($rate),
+                    'label' => $this->resolve_label($rate),
                     'cost' => $rate['rate']['cost'] ?? 0,
                     'tax' => $rate['rate']['tax'] ?? null,
                     'currency' => $rate['rate']['currency'] ?? '',

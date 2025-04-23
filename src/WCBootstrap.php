@@ -110,20 +110,20 @@ if (!\class_exists(WCBootstrap::class)) {
         public function filter_wc_order_item_display_meta_value($display_value, $meta, $item)
         {
             if ('delivery_date_from' === $meta->key && \is_admin()) {
-                $display_value = (new \DateTime($meta->value))->setTimezone(\wp_timezone())->format($this->wp_date_format());
+                $display_value = (new \DateTime($meta->value))->format($this->wp_date_format());
             }
 
             if ('delivery_date_to' === $meta->key && \is_admin()) {
-                $display_value = (new \DateTime($meta->value))->setTimezone(\wp_timezone())->format($this->wp_date_format());
+                $display_value = (new \DateTime($meta->value))->format($this->wp_date_format());
             }
 
             if ('selected_delivery_date' === $meta->key && \is_admin()) {
-                $display_value = (new \DateTime($meta->value))->setTimezone(\wp_timezone())->format($this->wp_date_format());
+                $display_value = (new \DateTime($meta->value))->format($this->wp_date_format());
             }
 
             if ('selected_delivery_time_from' === $meta->key && \is_admin()) {
-                $time_from = (new \DateTime($meta->value))->setTimezone(\wp_timezone())->format($this->wp_time_format());
-                $time_to = (new \DateTime($item->get_meta('selected_delivery_time_to')))->setTimezone(\wp_timezone())->format($this->wp_time_format());
+                $time_from = (new \DateTime($meta->value))->format($this->wp_time_format());
+                $time_to = (new \DateTime($item->get_meta('selected_delivery_time_to')))->format($this->wp_time_format());
                 $display_value = $time_from.' - '.$time_to;
             }
 
@@ -297,10 +297,8 @@ if (!\class_exists(WCBootstrap::class)) {
          */
         private function get_time_slots_text(string $delivery_date, ?string $delivery_time_from, ?string $delivery_time_to): string
         {
-            /** @var \DateTimeZone $wp_timezone */
-            $wp_timezone = \wp_timezone();
             try {
-                $delivery_date_obj = (new \DateTime($delivery_date))->setTimezone($wp_timezone);
+                $delivery_date_obj = new \DateTime($delivery_date);
                 $text = $delivery_date_obj->format($this->wp_date_format());
             } catch (\Exception $e) {
                 $text = '';
@@ -312,7 +310,7 @@ if (!\class_exists(WCBootstrap::class)) {
 
                 if ($delivery_time_from) {
                     try {
-                        $delivery_time_from_obj = (new \DateTime($delivery_time_from))->setTimezone($wp_timezone);
+                        $delivery_time_from_obj = new \DateTime($delivery_time_from);
                         $formatted_delivery_time_from = $delivery_time_from_obj->format($this->wp_time_format());
                     } catch (\Exception $e) {
                     }
@@ -320,7 +318,7 @@ if (!\class_exists(WCBootstrap::class)) {
 
                 if ($delivery_time_to) {
                     try {
-                        $delivery_time_to_obj = (new \DateTime($delivery_time_to))->setTimezone($wp_timezone);
+                        $delivery_time_to_obj = new \DateTime($delivery_time_to);
                         $formatted_delivery_time_to = $delivery_time_to_obj->format($this->wp_time_format());
                     } catch (\Exception $e) {
                     }
@@ -341,7 +339,9 @@ if (!\class_exists(WCBootstrap::class)) {
             }
             $text = \trim($text);
 
-            return $text ? $text.' ('.$wp_timezone->getName().')' : '';
+            $wp_timezone = \wp_timezone_string();
+
+            return $text ? $text.' ('.$wp_timezone.')' : '';
         }
 
         /**
@@ -349,20 +349,16 @@ if (!\class_exists(WCBootstrap::class)) {
          */
         private function get_estimated_delivery_dates_text(?string $from_date, ?string $to_date): string
         {
-            /** @var \DateTimeZone $wp_timezone */
-            $wp_timezone = \wp_timezone();
-            $from = null;
-            $to = null;
-
-            // get \DateTime objects
             try {
-                $from = $from_date ? (new \DateTime($from_date))->setTimezone($wp_timezone) : null;
+                $from = $from_date ? new \DateTime($from_date) : null;
             } catch (\Exception $e) {
+                $from = null;
             }
 
             try {
-                $to = $to_date ? (new \DateTime($to_date))->setTimezone($wp_timezone) : null;
+                $to = $to_date ? new \DateTime($to_date) : null;
             } catch (\Exception $e) {
+                $to = null;
             }
 
             if ($from && $to) {
@@ -374,17 +370,21 @@ if (!\class_exists(WCBootstrap::class)) {
                     return $formatted_from;
                 }
 
-                return $formatted_from.' - '.$formatted_to.' ('.$wp_timezone->getName().')';
+                $wp_timezone = \wp_timezone_string();
+
+                return $formatted_from.' - '.$formatted_to.' ('.$wp_timezone.')';
             }
 
-            // if has only 'from' date
             if ($from) {
-                return 'From '.$from->format($this->wp_date_format()).' ('.$wp_timezone->getName().')';
+                $wp_timezone = \wp_timezone_string();
+
+                return 'From '.$from->format($this->wp_date_format()).' ('.$wp_timezone.')';
             }
 
-            // if has only 'to' date
             if ($to) {
-                return 'To '.$to->format($this->wp_date_format()).' ('.$wp_timezone->getName().')';
+                $wp_timezone = \wp_timezone_string();
+
+                return 'To '.$to->format($this->wp_date_format()).' ('.$wp_timezone.')';
             }
 
             return '';
@@ -395,36 +395,30 @@ if (!\class_exists(WCBootstrap::class)) {
          */
         private function get_estimated_delivery_days_text(?string $from_date, ?string $to_date): string
         {
-            /** @var \DateTimeZone $wp_timezone */
-            $wp_timezone = \wp_timezone();
-            $from = null;
-            $to = null;
-
-            // get \DateTime objects
             try {
-                $from = $from_date ? (new \DateTime($from_date))->setTimezone($wp_timezone) : null;
+                $from = $from_date ? new \DateTime($from_date) : null;
             } catch (\Exception $e) {
+                $from = null;
             }
 
             try {
-                $to = $to_date ? (new \DateTime($to_date))->setTimezone($wp_timezone) : null;
+                $to = $to_date ? new \DateTime($to_date) : null;
             } catch (\Exception $e) {
+                $to = null;
             }
 
             if ($from && $to) {
-                return 'Estimated Delivery: '.$this->difference_in_days_from_now($from).'-'.$this->difference_in_days_from_now($to).' days';
+                return 'Estimated Delivery: '.$this->difference_in_days_from_today($from).'-'.$this->difference_in_days_from_today($to).' days';
             }
 
-            // if only 'from' date
             if ($from) {
-                $days = $this->difference_in_days_from_now($from);
+                $days = $this->difference_in_days_from_today($from);
 
                 return 'Estimated Delivery from: '.$days.' '.($days > 1 ? 'days' : 'day');
             }
 
-            // if only 'to' date
             if ($to) {
-                $days = $this->difference_in_days_from_now($to);
+                $days = $this->difference_in_days_from_today($to);
 
                 return 'Estimated Delivery to: '.$days.' '.($days > 1 ? 'days' : 'day');
             }
@@ -560,7 +554,7 @@ if (!\class_exists(WCBootstrap::class)) {
                 if ($meta['time_slots']) {
                     $date_text = '<div class="calcurates-checkout__shipping-rate-date-select-label">Delivery date
                     <input id="'.\htmlspecialchars($this->rate_id_to_css_id($rate->get_id())).'" class="calcurates-checkout__shipping-rate-date-select" placeholder="Select delivery date" data-delivery-date-from="'.\htmlspecialchars($meta['delivery_date_from'] ?? '').'" data-delivery-date-to="'.\htmlspecialchars($meta['delivery_date_to'] ?? '').'" data-time-slot-date-required="'.\htmlspecialchars($meta['time_slot_date_required'] ?? '0').'" data-time-slot-time-required="'.\htmlspecialchars($meta['time_slot_time_required'] ?? '0').'" data-time-slots="'.\htmlspecialchars(\json_encode($meta['time_slots'], \JSON_UNESCAPED_SLASHES)).'" type="text" readonly="readonly"/>
-                    <input class="calcurates-checkout__shipping-rate-date-original-utc" name="'.\htmlspecialchars(self::$delivery_date_meta_name).'" type="text" hidden="hidden"/>
+                    <input class="calcurates-checkout__shipping-rate-date-original" name="'.\htmlspecialchars(self::$delivery_date_meta_name).'" type="text" hidden="hidden"/>
                     </div>';
                 } else {
                     if ('quantity' === $shipping_method_options['delivery_dates_display_format']) {
@@ -576,9 +570,9 @@ if (!\class_exists(WCBootstrap::class)) {
             return $image.'<span class="calcurates-checkout__shipping-rate-text'.($meta['has_error'] ? ' calcurates-checkout__shipping-rate-text_has-error' : '').'">'.$label.' '.$info_message.' '.$delivery_dates.'</span>';
         }
 
-        private function difference_in_days_from_now(\DateTime $date): string
+        private function difference_in_days_from_today(\DateTime $date): string
         {
-            $now = new \DateTime('now', $date->getTimezone());
+            $now = new \DateTime('today', $date->getTimezone());
             $interval = $now->diff($date);
 
             return $interval->format('%a');

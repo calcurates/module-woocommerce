@@ -37,7 +37,7 @@ abstract class RatesExtractorAbstract
     /**
      * @param array{name: string, displayName?: string|null, additionalText?: string[]|null} $rate
      */
-    public function resolveLabel(array $rate): string
+    public function resolve_label(array $rate): string
     {
         $label = isset($rate['displayName']) && $rate['displayName'] ? $rate['displayName'] : $rate['name'];
         if (isset($rate['additionalText']) && $rate['additionalText']) {

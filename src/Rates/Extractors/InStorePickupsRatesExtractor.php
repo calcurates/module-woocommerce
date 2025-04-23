@@ -21,7 +21,7 @@ class InStorePickupsRatesExtractor extends RatesExtractorAbstract
                     $ready_rates[] = [
                         'has_error' => true,
                         'id' => $in_store_rate['id'],
-                        'label' => $this->resolveLabel($in_store_rate),
+                        'label' => $this->resolve_label($in_store_rate),
                         'cost' => 0,
                         'tax' => null,
                         'currency' => '',
@@ -43,7 +43,7 @@ class InStorePickupsRatesExtractor extends RatesExtractorAbstract
                     $ready_rates[] = [
                         'has_error' => !$store['success'],
                         'id' => $in_store_rate['id'].'_'.$store['id'],
-                        'label' => $this->resolveLabel($store),
+                        'label' => $this->resolve_label($store),
                         'cost' => $store['rate']['cost'] ?? 0,
                         'tax' => $store['rate']['tax'] ?? null,
                         'currency' => $store['rate']['currency'] ?? '',

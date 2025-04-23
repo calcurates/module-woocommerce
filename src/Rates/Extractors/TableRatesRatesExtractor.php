@@ -21,7 +21,7 @@ class TableRatesRatesExtractor extends RatesExtractorAbstract
                     $ready_rates[] = [
                         'has_error' => true,
                         'id' => $table_rate['id'],
-                        'label' => $this->resolveLabel($table_rate),
+                        'label' => $this->resolve_label($table_rate),
                         'cost' => 0,
                         'tax' => null,
                         'currency' => '',
@@ -43,7 +43,7 @@ class TableRatesRatesExtractor extends RatesExtractorAbstract
                     $ready_rates[] = [
                         'has_error' => !$method['success'],
                         'id' => $table_rate['id'].'_'.$method['id'],
-                        'label' => $this->resolveLabel($method),
+                        'label' => $this->resolve_label($method),
                         'cost' => $method['rate']['cost'] ?? 0,
                         'tax' => $method['rate']['tax'] ?? null,
                         'currency' => $method['rate']['currency'] ?? '',

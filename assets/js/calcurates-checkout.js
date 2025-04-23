@@ -21,7 +21,7 @@ function setupShipping() {
         const $liElem = $that.closest('li').addClass('calcurates-checkout__shipping-rate');
         const $input = $liElem.find('input[name^="shipping_method"]');
         const $datepicker = $liElem.find('.calcurates-checkout__shipping-rate-date-select');
-        const $originalUtcDate = $liElem.find('.calcurates-checkout__shipping-rate-date-original-utc');
+        const $originalDate = $liElem.find('.calcurates-checkout__shipping-rate-date-original');
 
         if ($that.hasClass('calcurates-checkout__shipping-rate-text_has-error')) {
             $liElem.addClass('calcurates-checkout__shipping-rate_disabled');
@@ -37,7 +37,7 @@ function setupShipping() {
 
         if ($shippingRateTexts.length > 1) {
             $datepicker.prop('disabled', !$input.prop('checked'));
-            $originalUtcDate.prop('disabled', !$input.prop('checked'));
+            $originalDate.prop('disabled', !$input.prop('checked'));
         }
 
         if ($shippingRateTexts.length === 1 || $input.prop('checked')) {
@@ -79,7 +79,7 @@ function setupDatePicker() {
     jQuery.getScript(CALCURATES_GLOBAL.pluginDir + '/assets/lib/air-datepicker/locale/' + CALCURATES_GLOBAL.lang + '.js', function () {
         jQuery('input[id^="calcurates-datepicker"]').each(function () {
             const $datepicker = jQuery(this);
-            const $originalUtcDate = $datepicker.parent().find('.calcurates-checkout__shipping-rate-date-original-utc');
+            const $originalDate = $datepicker.parent().find('.calcurates-checkout__shipping-rate-date-original');
 
             const timeSlots = cloneFull($datepicker.data('time-slots'));
             if (!timeSlots || timeSlots.length === 0) {
@@ -136,7 +136,7 @@ function setupDatePicker() {
 
                     //find time
                     const result = timeSlots.find(function (item) {
-                        $originalUtcDate.val(item['date']);
+                        $originalDate.val(item['date']);
 
                         return isSameDates(item['date'], data.date);
                     });

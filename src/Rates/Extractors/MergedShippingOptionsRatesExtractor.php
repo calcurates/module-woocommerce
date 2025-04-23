@@ -20,7 +20,7 @@ class MergedShippingOptionsRatesExtractor extends RatesExtractorAbstract
                 $ready_rates[] = [
                     'has_error' => false,
                     'id' => $rate['id'],
-                    'label' => $this->resolveLabel($rate),
+                    'label' => $this->resolve_label($rate),
                     'cost' => $rate['rate']['cost'] ?? 0,
                     'tax' => $rate['rate']['tax'] ?? null,
                     'currency' => $rate['rate']['currency'] ?? '',
