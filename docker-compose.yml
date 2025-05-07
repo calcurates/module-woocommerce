@@ -48,7 +48,8 @@ services:
     build:
       context: .docker/mysql
       dockerfile: Dockerfile
-    command: [--innodb-use-native-aio=0, --skip-mysqlx]
+    command: bash -c "chmod 644 /etc/mysql/conf.d/*.cnf && mysqld --innodb-use-native-aio=0 --skip-mysqlx"
+    # command: [--innodb-use-native-aio=0, --skip-mysqlx]
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
       - MYSQL_DATABASE=${MYSQL_DATABASE}

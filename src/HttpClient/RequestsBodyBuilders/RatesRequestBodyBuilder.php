@@ -90,43 +90,72 @@ class RatesRequestBodyBuilder
      */
     public function prepare_ship_to_data(): array
     {
-        $customer_session_data = \WC()->session->get('customer', []);
-        $post_data = [];
         if (isset($_POST['post_data']) && $_POST['post_data']) {
+            $post_data = [];
             \parse_str(\rawurldecode($_POST['post_data']), $post_data);
+
+            if (isset($post_data['ship_to_different_address']) && $post_data['ship_to_different_address']) {
+                $postcode = $post_data['shipping_postcode'] ?: $post_data['billing_postcode'];
+                $first_name = $post_data['shipping_first_name'] ?: $post_data['billing_first_name'];
+                $last_name = $post_data['shipping_last_name'] ?: $post_data['billing_last_name'];
+                $company = $post_data['shipping_company'] ?: $post_data['billing_company'];
+                $phone = $post_data['billing_phone']; // not exists in shipping_*
+                $state = $post_data['shipping_state'] ?: $post_data['billing_state'];
+                $city = $post_data['shipping_city'] ?: $post_data['billing_city'];
+                $addr_1 = $post_data['shipping_address_1'] ?: $post_data['billing_address_1'];
+                $addr_2 = $post_data['shipping_address_2'] ?: $post_data['billing_address_2'];
+                $country_code = $post_data['shipping_country'] ?: $post_data['billing_country'];
+            } else {
+                $postcode = $post_data['billing_postcode'];
+                $first_name = $post_data['billing_first_name'];
+                $last_name = $post_data['billing_last_name'];
+                $company = $post_data['billing_company'];
+                $phone = $post_data['billing_phone'];
+                $state = $post_data['billing_state'];
+                $city = $post_data['billing_city'];
+                $addr_1 = $post_data['billing_address_1'];
+                $addr_2 = $post_data['billing_address_2'];
+                $country_code = $post_data['billing_country'];
+            }
+        } else {
+            $customer_session_data = \WC()->session->get('customer', []);
+
+            $postcode = $customer_session_data['shipping_postcode'] ?: $customer_session_data['postcode'];
+            $first_name = $customer_session_data['shipping_first_name'] ?: $customer_session_data['first_name'];
+            $last_name = $customer_session_data['shipping_last_name'] ?: $customer_session_data['last_name'];
+            $company = $customer_session_data['shipping_company'] ?: $customer_session_data['company'];
+            $phone = $customer_session_data['shipping_phone'] ?: $customer_session_data['phone'];
+            $state = $customer_session_data['shipping_state'] ?: $customer_session_data['state'];
+            $city = $customer_session_data['shipping_city'] ?: $customer_session_data['city'];
+            $addr_1 = $customer_session_data['shipping_address_1'] ?: $customer_session_data['address_1'];
+            $addr_2 = $customer_session_data['shipping_address_2'] ?: $customer_session_data['address_2'];
+            $country_code = $customer_session_data['shipping_country'] ?: $customer_session_data['country'];
         }
 
-        $postcode = $customer_session_data['shipping_postcode'] ?? $customer_session_data['postcode'] ?? '';
-        $first_name = $post_data['shipping_first_name'] ?? $post_data['billing_first_name'] ?? null;
-        $last_name = $post_data['shipping_last_name'] ?? $post_data['billing_last_name'] ?? null;
-        $company = $post_data['shipping_company'] ?? $post_data['billing_company'] ?? null;
-        $phone = $post_data['shipping_phone'] ?? $post_data['billing_phone'] ?? null;
-        $state = $customer_session_data['shipping_state'] ?? $customer_session_data['state'] ?? null;
-        $city = $customer_session_data['shipping_city'] ?? $customer_session_data['city'] ?? null;
-        $addr_1 = $post_data['shipping_address_1'] ?? $post_data['billing_address_1'] ?? null;
-        $addr_2 = $post_data['shipping_address_2'] ?? $post_data['billing_address_2'] ?? null;
-        $country_code = $customer_session_data['shipping_country'] ?? \wc_get_customer_default_location()['country'] ?? null;
-
-        $contact_name = null;
-        if ($first_name) {
-            $contact_name .= $first_name;
-        }
-        if ($last_name) {
-            if ($contact_name) {
+        if ($first_name || $last_name) {
+            $contact_name = '';
+            if ($first_name) {
+                $contact_name .= $first_name;
+            }
+            if ($first_name && $last_name) {
                 $contact_name .= ' ';
             }
-            $contact_name .= $last_name;
+            if ($last_name) {
+                $contact_name .= $last_name;
+            }
+        } else {
+            $contact_name = null;
         }
 
         return [
             'country' => $country_code,
-            'city' => $city, // FIXME: it could be empty in WC but in api it requires even as empty param,
+            'city' => $city,
             'contactName' => $contact_name,
             'companyName' => $company,
             'contactPhone' => $phone,
             'regionCode' => $state,
             'regionName' => $this->get_state_name_by_code($country_code, $state),
-            'postalCode' => $postcode, // FIXME: it could be empty in WC but in api it requires
+            'postalCode' => $postcode,
             'addressLine1' => $addr_1,
             'addressLine2' => $addr_2,
         ];
