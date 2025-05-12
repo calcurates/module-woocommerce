@@ -22,6 +22,7 @@
 
 .calcurates-checkout__shipping-rate-date-select-label, .calcurates-checkout__shipping-rate-time-select-label {
     display: block;
+    text-align: left;
 }
 
 .calcurates-checkout__shipping-rate-date-select, .calcurates-checkout__shipping-rate-time-select {
@@ -29,6 +30,12 @@
     cursor: pointer;
     font-size: 1em;
     margin-top: 4px;
+    width: 100%;
+}
+
+.woocommerce-js ul#shipping_method li input.calcurates-checkout__shipping-rate-date-select {
+    margin-left: 0;
+    margin-right: 0;
 }
 
 .cart_totals .calcurates-checkout__shipping-rate-dates {
