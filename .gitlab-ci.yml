@@ -1,4 +1,4 @@
-image: php:8.3-cli-alpine
+image: php:8.4-cli-alpine
 
 before_script:
     - apk add openssh-client
