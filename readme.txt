@@ -65,6 +65,9 @@ Calcurates is developed and supported by Amasty. After 10 years of success in de
 
 == Changelog ==
 
+= 1.6.13 =
+- Fix: Fix for shipping rates requests
+
 = 1.6.12 =
 - Fix: Remove "Requires Plugins" tag
 
