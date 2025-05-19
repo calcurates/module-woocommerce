@@ -3,14 +3,14 @@
 
 set -e
 
-until mysql --user="$MYSQL_USER" --password="$MYSQL_PASSWORD" --host="mysql" --port="$DB_PORT" -e "SELECT VERSION()"; do
+until mariadb --skip-ssl --user="$MYSQL_USER" --password="$MYSQL_PASSWORD" --host="mysql" --port="$DB_PORT" -e "SELECT VERSION()"; do
   >&2 echo "MySQL is unavailable - waiting"
   sleep 1
 done
 
 >&2 echo "MySQL is up"
 
-isSourced=`mysql --silent --skip-column-names --user="$MYSQL_USER" --password="$MYSQL_PASSWORD" --host="mysql" --port="3306" -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '$MYSQL_DATABASE';"`
+isSourced=`mariadb --skip-ssl --silent --skip-column-names --user="$MYSQL_USER" --password="$MYSQL_PASSWORD" --host="mysql" --port="3306" -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '$MYSQL_DATABASE';"`
 #isSourced=0
 if [ "${isSourced}" -eq "0" ]; then
     echo "Installing the WordPress..."

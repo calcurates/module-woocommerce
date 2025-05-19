@@ -1,10 +1,10 @@
 === Calcurates for WooCommerce ===
 Contributors: calcurates
 Tags: shipping rules,shipping rates,delivery dates, table rates, dimensional shipping
-Requires at least: 5.2
+Requires at least: 5.3
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.6.12
+Stable tag: 1.6.13
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -64,6 +64,9 @@ Calcurates is developed and supported by Amasty. After 10 years of success in de
 5. Accurate shipping and delivery dates for WooCommerce checkout
 
 == Changelog ==
+
+= 1.6.13 =
+- Fix: Fix for shipping rates requests
 
 = 1.6.12 =
 - Fix: Remove "Requires Plugins" tag

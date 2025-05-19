@@ -17,7 +17,7 @@ abstract class RatesExtractorAbstract
      *     id: string,
      *     label: string,
      *     cost: float|int,
-     *     tax: float|int,
+     *     tax: float|int|null,
      *     message: string|null,
      *     delivery_date_from: string|null,
      *     delivery_date_to: string|null,
@@ -29,6 +29,7 @@ abstract class RatesExtractorAbstract
      *     days_in_transit_from: int|null,
      *     days_in_transit_to: int|null,
      *     packages: string[],
+     *     custom_number: float|null,
      * }[]
      */
     abstract public function extract(array $data): array;
@@ -36,7 +37,7 @@ abstract class RatesExtractorAbstract
     /**
      * @param array{name: string, displayName?: string|null, additionalText?: string[]|null} $rate
      */
-    public function resolveLabel(array $rate): string
+    public function resolve_label(array $rate): string
     {
         $label = isset($rate['displayName']) && $rate['displayName'] ? $rate['displayName'] : $rate['name'];
         if (isset($rate['additionalText']) && $rate['additionalText']) {

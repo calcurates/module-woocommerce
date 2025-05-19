@@ -1,10 +1,10 @@
-FROM php:8.3-fpm-alpine
+FROM php:8.4-fpm-alpine
 
 # Update repo and install some utilites
 RUN set -xe \
     && apk update \
     && apk upgrade \
-    && apk --no-cache add htop unzip gzip git curl mc dcron linux-headers
+    && apk --no-cache add htop unzip gzip git curl mc dcron linux-headers mariadb-connector-c
 
 # Composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer

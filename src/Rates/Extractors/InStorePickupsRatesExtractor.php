@@ -21,9 +21,9 @@ class InStorePickupsRatesExtractor extends RatesExtractorAbstract
                     $ready_rates[] = [
                         'has_error' => true,
                         'id' => $in_store_rate['id'],
-                        'label' => $this->resolveLabel($in_store_rate),
+                        'label' => $this->resolve_label($in_store_rate),
                         'cost' => 0,
-                        'tax' => 0,
+                        'tax' => null,
                         'currency' => '',
                         'message' => $in_store_rate['message'],
                         'delivery_date_from' => null,
@@ -32,6 +32,7 @@ class InStorePickupsRatesExtractor extends RatesExtractorAbstract
                         'priority_item' => null,
                         'rate_image' => $in_store_rate['imageUri'],
                         'packages' => [],
+                        'custom_number' => null,
                     ];
                 }
                 continue;
@@ -42,9 +43,9 @@ class InStorePickupsRatesExtractor extends RatesExtractorAbstract
                     $ready_rates[] = [
                         'has_error' => !$store['success'],
                         'id' => $in_store_rate['id'].'_'.$store['id'],
-                        'label' => $this->resolveLabel($store),
+                        'label' => $this->resolve_label($store),
                         'cost' => $store['rate']['cost'] ?? 0,
-                        'tax' => $store['rate']['tax'] ?? 0,
+                        'tax' => $store['rate']['tax'] ?? null,
                         'currency' => $store['rate']['currency'] ?? '',
                         'message' => $store['message'],
                         'delivery_date_from' => $store['rate']['estimatedDeliveryDate']['from'] ?? null,
@@ -56,6 +57,7 @@ class InStorePickupsRatesExtractor extends RatesExtractorAbstract
                         'days_in_transit_from' => $store['rate']['estimatedDeliveryDate']['daysInTransitFrom'] ?? null,
                         'days_in_transit_to' => $store['rate']['estimatedDeliveryDate']['daysInTransitTo'] ?? null,
                         'packages' => $this->make_packages($store['rates']),
+                        'custom_number' => $store['customNumber'],
                     ];
                 }
             }

@@ -37,7 +37,7 @@ class CarriersRatesExtractor extends RatesExtractorAbstract
                         }
 
                         $services_ids[] = $service['id'];
-                        $services_names[] = $this->resolveLabel($service);
+                        $services_names[] = $this->resolve_label($service);
                         if (null !== $service['priority']) {
                             $services_priority += $service['priority'];
                         }
@@ -55,9 +55,9 @@ class CarriersRatesExtractor extends RatesExtractorAbstract
                 $ready_rates[] = [
                     'has_error' => !$rate['success'],
                     'id' => $carrier['id'].'_'.$services_ids,
-                    'label' => $this->resolveLabel($carrier).'. '.$services_names,
+                    'label' => $this->resolve_label($carrier).'. '.$services_names,
                     'cost' => $rate['rate']['cost'] ?? 0,
-                    'tax' => $rate['rate']['tax'] ?? 0,
+                    'tax' => $rate['rate']['tax'] ?? null,
                     'currency' => $rate['rate']['currency'] ?? '',
                     'message' => $rate['success'] ? $carrier['message'].' '.$services_messages : $rate['message'],
                     'delivery_date_from' => $rate['rate']['estimatedDeliveryDate']['from'] ?? null,
@@ -69,6 +69,7 @@ class CarriersRatesExtractor extends RatesExtractorAbstract
                     'days_in_transit_from' => $rate['rate']['estimatedDeliveryDate']['daysInTransitFrom'] ?? null,
                     'days_in_transit_to' => $rate['rate']['estimatedDeliveryDate']['daysInTransitTo'] ?? null,
                     'packages' => $packages_names,
+                    'custom_number' => null,
                 ];
             }
         }

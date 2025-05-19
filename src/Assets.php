@@ -73,14 +73,10 @@ if (!\class_exists(Assets::class)) {
 
             if ($this->register_js(WCCalcurates::get_plugin_text_domain(), '/assets/js/calcurates-checkout.js', $deps) && (\is_cart() || \is_checkout())) {
                 // provide global vars
-                $date = \current_datetime();
-                $utcOffset = $date->format('Z');
-
                 \wp_add_inline_script(WCCalcurates::get_plugin_text_domain(), 'var CALCURATES_GLOBAL = '.\json_encode(
                     [
                         'pluginDir' => \plugin_dir_url(__DIR__),
                         'lang' => \substr(\get_locale(), 0, 2),
-                        'wpTimeZoneOffsetSeconds' => $utcOffset,
                         'dateFormat' => \get_option('date_format'),
                         'timeFormat' => \get_option('time_format'),
                     ]

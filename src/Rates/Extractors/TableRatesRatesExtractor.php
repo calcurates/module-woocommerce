@@ -21,9 +21,9 @@ class TableRatesRatesExtractor extends RatesExtractorAbstract
                     $ready_rates[] = [
                         'has_error' => true,
                         'id' => $table_rate['id'],
-                        'label' => $this->resolveLabel($table_rate),
+                        'label' => $this->resolve_label($table_rate),
                         'cost' => 0,
-                        'tax' => 0,
+                        'tax' => null,
                         'currency' => '',
                         'message' => $table_rate['message'],
                         'delivery_date_from' => null,
@@ -32,6 +32,7 @@ class TableRatesRatesExtractor extends RatesExtractorAbstract
                         'priority_item' => null,
                         'rate_image' => $table_rate['imageUri'],
                         'packages' => [],
+                        'custom_number' => null,
                     ];
                 }
                 continue;
@@ -42,9 +43,9 @@ class TableRatesRatesExtractor extends RatesExtractorAbstract
                     $ready_rates[] = [
                         'has_error' => !$method['success'],
                         'id' => $table_rate['id'].'_'.$method['id'],
-                        'label' => $this->resolveLabel($method),
+                        'label' => $this->resolve_label($method),
                         'cost' => $method['rate']['cost'] ?? 0,
-                        'tax' => $method['rate']['tax'] ?? 0,
+                        'tax' => $method['rate']['tax'] ?? null,
                         'currency' => $method['rate']['currency'] ?? '',
                         'message' => $method['message'],
                         'delivery_date_from' => $method['rate']['estimatedDeliveryDate']['from'] ?? null,
@@ -56,6 +57,7 @@ class TableRatesRatesExtractor extends RatesExtractorAbstract
                         'days_in_transit_from' => $method['rate']['estimatedDeliveryDate']['daysInTransitFrom'] ?? null,
                         'days_in_transit_to' => $method['rate']['estimatedDeliveryDate']['daysInTransitTo'] ?? null,
                         'packages' => $this->make_packages($method['rates']),
+                        'custom_number' => $method['customNumber'],
                     ];
                 }
             }

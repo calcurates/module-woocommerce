@@ -20,7 +20,7 @@ class Rates
      *     id: string,
      *     label: string,
      *     cost: float|int,
-     *     tax: float|int,
+     *     tax: float|int|null,
      *     message: string|null,
      *     delivery_date_from: string|null,
      *     delivery_date_to: string|null,
@@ -32,6 +32,7 @@ class Rates
      *     days_in_transit_from: int|null,
      *     days_in_transit_to: int|null,
      *     packages: string[],
+     *     custom_number: float|null,
      * }[]
      */
     private array $rates = [];
@@ -75,13 +76,13 @@ class Rates
             }
         }
 
-        $this->rates_sort();
+        $this->sort_rates();
     }
 
     /**
      * Sort rates by priority or cost.
      */
-    private function rates_sort(): void
+    private function sort_rates(): void
     {
         \usort($this->rates, static function (array $a, array $b): int {
             if ($a['priority'] === $b['priority']) {
@@ -117,7 +118,7 @@ class Rates
     /**
      * Convert rates to WooCommerce compatible data structure.
      */
-    public function convert_rates_to_wc_rates(): array
+    public function convert_rates_to_wc_rates(array $rates_request_body): array
     {
         $rates = [];
 
@@ -128,9 +129,9 @@ class Rates
                 'cost' => $rate['cost'],
                 'package' => $this->package,
                 'meta_data' => [
-                    'message' => $this->prepare_message($rate),
-                    'delivery_date_from' => $rate['delivery_date_from'],
-                    'delivery_date_to' => $rate['delivery_date_to'],
+                    'message' => $this->prepare_message($rates_request_body, $rate),
+                    'delivery_date_from' => $this->prepare_date($rate['delivery_date_from']),
+                    'delivery_date_to' => $this->prepare_date($rate['delivery_date_to']),
                     'tax' => $rate['tax'],
                     'currency' => $rate['currency'],
                     'has_error' => $rate['has_error'],
@@ -147,6 +148,26 @@ class Rates
     }
 
     /**
+     * convert date to wp timezone.
+     */
+    private function prepare_date(?string $date): ?string
+    {
+        if (!$date) {
+            return null;
+        }
+
+        /** @var \DateTimeZone $wp_timezone */
+        $wp_timezone = \wp_timezone();
+        try {
+            $dateObj = (new \DateTime($date))->setTimezone($wp_timezone);
+        } catch (\Exception $e) {
+            return null;
+        }
+
+        return $dateObj->format(\DateTimeInterface::RFC3339);
+    }
+
+    /**
      * Apply tax mode.
      */
     public function apply_tax_mode(): void
@@ -154,7 +175,7 @@ class Rates
         $rates = [];
 
         foreach ($this->rates as $rate) {
-            if ($rate['tax']) {
+            if (null !== $rate['tax']) {
                 if ('tax_included' === $this->tax_mode) {
                     $rate['label'] .= ' - duties & tax included';
                     $rate['cost'] += $rate['tax'];
@@ -184,14 +205,22 @@ class Rates
         $this->rates = $rates;
     }
 
-    private function prepare_message(array $rate): string
+    private function prepare_message(array $rates_request_body, array $rate): string
     {
         $message = $rate['message'] ?: '';
 
         if ($message) {
+            $cartWeight = 0.0;
+            foreach ($rates_request_body['products'] as $product) {
+                $cartWeight += $product['weight'] * $product['quantity'];
+            }
+            $cartWeight .= ' '.\get_option('woocommerce_weight_unit');
+
+            $taxStr = null !== $rate['tax'] ? ($rate['tax'].' '.$rate['currency']) : '';
+
             $message = \str_replace(
-                ['{tax_amount}', '{min_transit_days}', '{max_transit_days}', '{packages}'],
-                [$rate['tax'].' '.$rate['currency'], $rate['days_in_transit_from'], $rate['days_in_transit_to'], $this->get_packages_string($rate)],
+                ['{tax_amount}', '{min_transit_days}', '{max_transit_days}', '{packages}', '{custom_number}', '{cart_weight}'],
+                [$taxStr, $rate['days_in_transit_from'], $rate['days_in_transit_to'], $this->get_packages_string($rate), $rate['custom_number'], $cartWeight],
                 $message
             );
         }

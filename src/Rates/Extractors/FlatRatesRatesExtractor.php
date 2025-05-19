@@ -20,9 +20,9 @@ class FlatRatesRatesExtractor extends RatesExtractorAbstract
                 $ready_rates[] = [
                     'has_error' => !$rate['success'],
                     'id' => $rate['id'],
-                    'label' => $this->resolveLabel($rate),
+                    'label' => $this->resolve_label($rate),
                     'cost' => $rate['rate']['cost'] ?? 0,
-                    'tax' => $rate['rate']['tax'] ?? 0,
+                    'tax' => $rate['rate']['tax'] ?? null,
                     'currency' => $rate['rate']['currency'] ?? '',
                     'message' => $rate['message'],
                     'delivery_date_from' => $rate['rate']['estimatedDeliveryDate']['from'] ?? null,
@@ -34,6 +34,7 @@ class FlatRatesRatesExtractor extends RatesExtractorAbstract
                     'days_in_transit_from' => $rate['rate']['estimatedDeliveryDate']['daysInTransitFrom'] ?? null,
                     'days_in_transit_to' => $rate['rate']['estimatedDeliveryDate']['daysInTransitTo'] ?? null,
                     'packages' => $this->make_packages($rate['rates']),
+                    'custom_number' => null,
                 ];
             }
         }
