@@ -1,7 +1,7 @@
 {
     "name": "calcurates/module-woocomerce",
     "description": "Calcurates Integration for WooCommerce",
-    "keywords": ["shipping", "ecommerce", "e-commerce", "sales"],
+    "keywords": ["shipping", "rates", "ecommerce", "e-commerce", "sales"],
     "license": [
         "GPL-3.0-or-later"
     ],
