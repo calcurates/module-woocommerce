@@ -248,8 +248,15 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
 
     private function get_request_hash(array $request_body): string
     {
+        $products = \array_map(static function (array $product): array {
+            return [
+                'sku' =>  $product['sku'],
+                'quantity' => $product['quantity'],
+            ];
+        }, $request_body['products'] ?? []);
+
         $hash_based_object = [
-            'products' => $request_body['products'],
+            'products' => $products,
             'shipTo' => [
                 'country' => $request_body['shipTo']['country'],
                 'city' => $request_body['shipTo']['city'],
