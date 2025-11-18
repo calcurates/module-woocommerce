@@ -70,12 +70,14 @@ class RatesRequestBodyBuilder
         $coupons = \WC()->cart->get_coupons();
         $coupon = \reset($coupons);
 
+        $shipToData = $this->prepare_ship_to_data();
+
         $data = [
             'promoCode' => $coupon ? $coupon->get_code() : null, // FIXME: could be few coupons
-            'shipTo' => $this->prepare_ship_to_data(),
+            'shipTo' => $shipToData,
             'products' => $this->prepare_products_data(),
             'customerGroup' => \is_user_logged_in() ? 'customer' : 'guest',
-            'estimate' => \is_checkout() ? false : true,
+            'estimate' => \is_checkout() ? false : !$this->is_calculate_tax_available($shipToData),
         ];
 
         if ($is_wpml_available) {
@@ -301,5 +303,23 @@ class RatesRequestBodyBuilder
     private function is_wpml_available(): bool
     {
         return \has_action('wpml_switch_language');
+    }
+
+    private function is_calculate_tax_available($shipToData): bool
+    {
+        if (!$shipToData['country']) {
+            return false;
+        }
+        if (!$shipToData['city']) {
+            return false;
+        }
+        if (!$shipToData['postalCode']) {
+            return false;
+        }
+        if (!$shipToData['addressLine1']) {
+            return false;
+        }
+
+        return true;
     }
 }
