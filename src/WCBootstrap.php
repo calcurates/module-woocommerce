@@ -59,7 +59,6 @@ if (!\class_exists(WCBootstrap::class)) {
             \add_filter('plugin_action_links_'.\plugin_basename(CALCURATES_PLUGIN_FILE), [$this, 'calcurates_settings_page']);
         }
 
-
         public function calcurates_settings_page(array $links): array
         {
             $settings = [

@@ -242,7 +242,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
     {
         $products = \array_map(static function (array $product): array {
             return [
-                'sku' =>  $product['sku'],
+                'sku' => $product['sku'],
                 'quantity' => $product['quantity'],
             ];
         }, $request_body['products'] ?? []);

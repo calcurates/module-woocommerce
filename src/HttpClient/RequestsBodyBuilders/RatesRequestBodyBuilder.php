@@ -71,13 +71,18 @@ class RatesRequestBodyBuilder
         $coupon = \reset($coupons);
 
         $shipToData = $this->prepare_ship_to_data();
+        if (\is_checkout()) {
+            $estimate = false;
+        } else {
+            $estimate = !$this->is_calculate_tax_available($shipToData);
+        }
 
         $data = [
             'promoCode' => $coupon ? $coupon->get_code() : null, // FIXME: could be few coupons
             'shipTo' => $shipToData,
             'products' => $this->prepare_products_data(),
             'customerGroup' => \is_user_logged_in() ? 'customer' : 'guest',
-            'estimate' => \is_checkout() ? false : !$this->is_calculate_tax_available($shipToData),
+            'estimate' => $estimate,
         ];
 
         if ($is_wpml_available) {
@@ -305,7 +310,7 @@ class RatesRequestBodyBuilder
         return \has_action('wpml_switch_language');
     }
 
-    private function is_calculate_tax_available($shipToData): bool
+    private function is_calculate_tax_available(array $shipToData): bool
     {
         if (!$shipToData['country']) {
             return false;
