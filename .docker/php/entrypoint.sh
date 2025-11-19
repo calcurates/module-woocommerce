@@ -23,11 +23,11 @@ define( 'WP_DEBUG_LOG', true );
 PHP
 
     # https://developer.wordpress.org/cli/commands/core/install/
-    php /wp-cli.phar core install --allow-root --url=http://localhost:${NGINX_PORT} --title=Calcurates --admin_user=admin --admin_password=admin --admin_email=info@example.com --skip-email
+    php /wp-cli.phar core install --allow-root --url=http://localhost:${WEBSERVER_PORT} --title=Calcurates --admin_user=admin --admin_password=admin --admin_email=info@example.com --skip-email
 
     # https://github.com/wp-cli/wp-cli/issues/5335
-    php /wp-cli.phar option update siteurl "http://localhost:${NGINX_PORT}/" --allow-root
-    php /wp-cli.phar option update home "http://localhost:${NGINX_PORT}/" --allow-root
+    php /wp-cli.phar option update siteurl "http://localhost:${WEBSERVER_PORT}/" --allow-root
+    php /wp-cli.phar option update home "http://localhost:${WEBSERVER_PORT}/" --allow-root
 
     # https://developer.wordpress.org/cli/commands/plugin/install/
     php /wp-cli.phar plugin install wp-mail-logging woocommerce --force --allow-root --activate

@@ -37,8 +37,8 @@
 !.docker/mysql/Dockerfile
 !.docker/mysql/server.cnf
 !.docker/mysql/data/.gitkeep
-!.docker/nginx/default.conf
-!.docker/nginx/Dockerfile
+!.docker/angie/default.conf
+!.docker/angie/Dockerfile
 !.docker/php/Dockerfile
 !.docker/php/php.ini
 !.docker/php/php-fpm.conf

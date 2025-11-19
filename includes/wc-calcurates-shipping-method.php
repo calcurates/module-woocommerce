@@ -121,14 +121,6 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
                 'description' => \__('Check and save changes to generate new Plugin Api Key', 'woocommerce'),
                 'desc_tip' => false,
             ],
-            'prevent_redundant_shipping_calculation' => [
-                'title' => \__('Prevent redundant shipping calculations', 'woocommerce'),
-                'type' => 'checkbox',
-                'description' => \__('Requests to Calcurates will be sent only from the Cart and Checkout pages', 'woocommerce'),
-                'desc_tip' => false,
-                'default' => 'yes',
-                'label' => \__('Prevent shipping calculations prior to Cart or Checkout', 'woocommerce'),
-            ],
             'rates_request_cache_timeout' => [
                 'title' => \__('Rates request cache timeout (seconds)', 'woocommerce'),
                 'type' => 'number',
@@ -248,8 +240,15 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
 
     private function get_request_hash(array $request_body): string
     {
+        $products = \array_map(static function (array $product): array {
+            return [
+                'sku' => $product['sku'],
+                'quantity' => $product['quantity'],
+            ];
+        }, $request_body['products'] ?? []);
+
         $hash_based_object = [
-            'products' => $request_body['products'],
+            'products' => $products,
             'shipTo' => [
                 'country' => $request_body['shipTo']['country'],
                 'city' => $request_body['shipTo']['city'],
