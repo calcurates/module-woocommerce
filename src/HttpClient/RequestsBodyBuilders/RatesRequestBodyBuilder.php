@@ -155,11 +155,11 @@ class RatesRequestBodyBuilder
             $contact_name = null;
         }
 
-        $shipping_method_options = \get_option('woocommerce_'.\WC_Calcurates_Shipping_Method::CODE.'_settings', true);
-        $unknown_address = '';
-
-        if(isset($shipping_method_options['duties_taxes_estimates_with_empty_address_line'])){
-            $unknown_address = 'yes' == $shipping_method_options['duties_taxes_estimates_with_empty_address_line'] ? 'unknown': '';
+        if (!$addr_1) {
+            $shipping_method_options = \get_option('woocommerce_'.\WC_Calcurates_Shipping_Method::CODE.'_settings', true);
+            if (isset($shipping_method_options['duties_taxes_estimates_with_empty_address_line']) && 'yes' === $shipping_method_options['duties_taxes_estimates_with_empty_address_line']) {
+                $addr_1 = 'unknown';
+            }
         }
 
         return [
@@ -171,7 +171,7 @@ class RatesRequestBodyBuilder
             'regionCode' => $state,
             'regionName' => $this->get_state_name_by_code($country_code, $state),
             'postalCode' => $postcode,
-            'addressLine1' => $addr_1 ?: $unknown_address,
+            'addressLine1' => $addr_1,
             'addressLine2' => $addr_2,
         ];
     }
