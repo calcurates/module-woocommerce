@@ -148,6 +148,14 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
                     'both' => 'Both',
                 ],
             ],
+            'duties_taxes_estimates_with_empty_address_line' => [
+                'title' => \__('Estimates with empty address line', 'woocommerce'),
+                'type' => 'checkbox',
+                'description' => \__('Enable if you use quick payment plugins', 'woocommerce'),
+                'desc_tip' => false,
+                'default' => 'no',
+                'label' => \__('Allow duties & taxes estimates with empty address line', 'woocommerce'),
+            ],
             'delivery_dates_display_mode' => [
                 'title' => \__('Delivery dates display mode', 'woocommerce'),
                 'type' => 'select',
