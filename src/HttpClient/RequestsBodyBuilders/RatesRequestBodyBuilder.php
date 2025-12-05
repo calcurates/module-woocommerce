@@ -71,6 +71,7 @@ class RatesRequestBodyBuilder
         $coupon = \reset($coupons);
 
         $shipToData = $this->prepare_ship_to_data();
+
         if (\is_checkout()) {
             $estimate = false;
         } else {
@@ -152,6 +153,13 @@ class RatesRequestBodyBuilder
             }
         } else {
             $contact_name = null;
+        }
+
+        if (!$addr_1) {
+            $shipping_method_options = \get_option('woocommerce_'.\WC_Calcurates_Shipping_Method::CODE.'_settings', true);
+            if (isset($shipping_method_options['duties_taxes_estimates_with_empty_address_line']) && 'yes' === $shipping_method_options['duties_taxes_estimates_with_empty_address_line']) {
+                $addr_1 = 'unknown';
+            }
         }
 
         return [
