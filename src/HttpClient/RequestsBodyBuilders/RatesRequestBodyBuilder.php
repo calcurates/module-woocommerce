@@ -103,16 +103,16 @@ class RatesRequestBodyBuilder
             \parse_str(\rawurldecode($_POST['post_data']), $post_data);
 
             if (isset($post_data['ship_to_different_address']) && $post_data['ship_to_different_address']) {
-                $postcode = $post_data['shipping_postcode'] ?: $post_data['billing_postcode'];
-                $first_name = $post_data['shipping_first_name'] ?: $post_data['billing_first_name'];
-                $last_name = $post_data['shipping_last_name'] ?: $post_data['billing_last_name'];
-                $company = $post_data['shipping_company'] ?: $post_data['billing_company'];
+                $postcode = $post_data['shipping_postcode'] ?? $post_data['billing_postcode'];
+                $first_name = $post_data['shipping_first_name'] ?? $post_data['billing_first_name'];
+                $last_name = $post_data['shipping_last_name'] ?? $post_data['billing_last_name'];
+                $company = $post_data['shipping_company'] ?? $post_data['billing_company'];
                 $phone = $post_data['billing_phone']; // not exists in shipping_*
-                $state = $post_data['shipping_state'] ?: $post_data['billing_state'];
-                $city = $post_data['shipping_city'] ?: $post_data['billing_city'];
-                $addr_1 = $post_data['shipping_address_1'] ?: $post_data['billing_address_1'];
-                $addr_2 = $post_data['shipping_address_2'] ?: $post_data['billing_address_2'];
-                $country_code = $post_data['shipping_country'] ?: $post_data['billing_country'];
+                $state = $post_data['shipping_state'] ?? $post_data['billing_state'];
+                $city = $post_data['shipping_city'] ?? $post_data['billing_city'];
+                $addr_1 = $post_data['shipping_address_1'] ?? $post_data['billing_address_1'];
+                $addr_2 = $post_data['shipping_address_2'] ?? $post_data['billing_address_2'];
+                $country_code = $post_data['shipping_country'] ?? $post_data['billing_country'];
             } else {
                 $postcode = $post_data['billing_postcode'];
                 $first_name = $post_data['billing_first_name'];
@@ -128,16 +128,16 @@ class RatesRequestBodyBuilder
         } else {
             $customer_session_data = \WC()->session->get('customer', []);
 
-            $postcode = $customer_session_data['shipping_postcode'] ?: $customer_session_data['postcode'];
-            $first_name = $customer_session_data['shipping_first_name'] ?: $customer_session_data['first_name'];
-            $last_name = $customer_session_data['shipping_last_name'] ?: $customer_session_data['last_name'];
-            $company = $customer_session_data['shipping_company'] ?: $customer_session_data['company'];
-            $phone = $customer_session_data['shipping_phone'] ?: $customer_session_data['phone'];
-            $state = $customer_session_data['shipping_state'] ?: $customer_session_data['state'];
-            $city = $customer_session_data['shipping_city'] ?: $customer_session_data['city'];
-            $addr_1 = $customer_session_data['shipping_address_1'] ?: $customer_session_data['address_1'];
-            $addr_2 = $customer_session_data['shipping_address_2'] ?: $customer_session_data['address_2'];
-            $country_code = $customer_session_data['shipping_country'] ?: $customer_session_data['country'];
+            $postcode = $customer_session_data['shipping_postcode'] ?? $customer_session_data['postcode'];
+            $first_name = $customer_session_data['shipping_first_name'] ?? $customer_session_data['first_name'];
+            $last_name = $customer_session_data['shipping_last_name'] ?? $customer_session_data['last_name'];
+            $company = $customer_session_data['shipping_company'] ?? $customer_session_data['company'];
+            $phone = $customer_session_data['shipping_phone'] ?? $customer_session_data['phone'];
+            $state = $customer_session_data['shipping_state'] ?? $customer_session_data['state'];
+            $city = $customer_session_data['shipping_city'] ?? $customer_session_data['city'];
+            $addr_1 = $customer_session_data['shipping_address_1'] ?? $customer_session_data['address_1'];
+            $addr_2 = $customer_session_data['shipping_address_2'] ?? $customer_session_data['address_2'];
+            $country_code = $customer_session_data['shipping_country'] ?? $customer_session_data['country'];
         }
 
         if ($first_name || $last_name) {
