@@ -33,7 +33,6 @@ if (!\class_exists(OriginUtils::class)) {
         public function get_origin_codes_from_product(int $product_id): array
         {
             $origin_term_ids = $this->get_origin_term_ids_from_product($product_id);
-
             if (!$origin_term_ids) {
                 return [];
             }
@@ -48,9 +47,12 @@ if (!\class_exists(OriginUtils::class)) {
          */
         public function get_origin_term_ids_from_product(int $product_id): array
         {
-            $origin_terms = \wp_get_post_terms($product_id, OriginsTaxonomy::TAXONOMY_SLUG, ['fields' => 'ids']);
+            $terms = \wp_get_post_terms($product_id, OriginsTaxonomy::TAXONOMY_SLUG, ['fields' => 'ids']);
+            if (!$terms || \is_wp_error($terms)) {
+                return [];
+            }
 
-            return $origin_terms;
+            return $terms;
         }
 
         /**

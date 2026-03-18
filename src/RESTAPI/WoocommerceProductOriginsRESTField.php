@@ -36,8 +36,7 @@ if (!\class_exists(WoocommerceProductOriginsRESTField::class)) {
         public function get_origins(array $product): array
         {
             $terms = \wp_get_post_terms($product['id'], OriginsTaxonomy::TAXONOMY_SLUG, ['fields' => 'all']);
-
-            if (\is_wp_error($terms) || empty($terms)) {
+            if (!$terms || \is_wp_error($terms)) {
                 return [];
             }
 
