@@ -4,7 +4,7 @@ Tags: shipping rules,shipping rates,delivery dates, table rates, dimensional shi
 Requires at least: 5.3
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.6.15
+Stable tag: 1.6.16
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -64,6 +64,9 @@ Calcurates is developed and supported by Amasty. After 10 years of success in de
 5. Accurate shipping and delivery dates for WooCommerce checkout
 
 == Changelog ==
+
+= 1.6.16 =
+- Add: Product origins can be retrieved via WooCommerce REST API.
 
 = 1.6.15 =
 - Add: "Allow duties & taxes estimates with empty address line" plugin config setting has been implemented. It makes International Duties & Taxes feature compatible with quick payment plugins.
