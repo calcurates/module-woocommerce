@@ -59,7 +59,7 @@ if (!\class_exists(WoocommerceProductOriginsRESTField::class)) {
                 \wp_remove_object_terms($product_id, $old_term_ids, OriginsTaxonomy::TAXONOMY_SLUG);
             }
 
-            if (!empty($origins)) {
+            if ($origins) {
                 $new_term_ids = \array_map(static function (array $origin): int {
                     return (int) $origin['id'];
                 }, $origins);
