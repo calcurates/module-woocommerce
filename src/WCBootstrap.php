@@ -468,7 +468,7 @@ if (!\class_exists(WCBootstrap::class)) {
         public function save_origins_select($id, $post): void
         {
             $old_origin_ids = OriginUtils::getInstance()->get_origin_term_ids_from_product($id);
-            $new_origins_ids = $_POST['origins'];
+            $new_origins_ids = $_POST['origins'] ?? [];
 
             // remove product from last origin
             if ($old_origin_ids) {
