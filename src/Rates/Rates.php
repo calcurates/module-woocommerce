@@ -122,6 +122,7 @@ class Rates
     {
         $rates = [];
 
+        $wp_timezone = \wp_timezone();
         foreach ($this->rates as $rate) {
             $rates[] = [
                 'id' => 'calcurates:'.$rate['id'],
@@ -130,8 +131,8 @@ class Rates
                 'package' => $this->package,
                 'meta_data' => [
                     'message' => $this->prepare_message($rates_request_body, $rate),
-                    'delivery_date_from' => $this->prepare_date($rate['delivery_date_from']),
-                    'delivery_date_to' => $this->prepare_date($rate['delivery_date_to']),
+                    'delivery_date_from' => $this->prepare_date($rate['delivery_date_from'], \DateTimeInterface::RFC3339, $wp_timezone),
+                    'delivery_date_to' => $this->prepare_date($rate['delivery_date_to'], \DateTimeInterface::RFC3339, $wp_timezone),
                     'tax' => $rate['tax'],
                     'currency' => $rate['currency'],
                     'has_error' => $rate['has_error'],
@@ -150,16 +151,17 @@ class Rates
     /**
      * convert date to wp timezone.
      */
-    private function prepare_date(?string $date, string $format = \DateTimeInterface::RFC3339): ?string
+    private function prepare_date(?string $date, string $format = \DateTimeInterface::RFC3339, ?\DateTimeZone $timezone = null): ?string
     {
         if (!$date) {
             return null;
         }
 
-        /** @var \DateTimeZone $wp_timezone */
-        $wp_timezone = \wp_timezone();
         try {
-            $obj = (new \DateTime($date))->setTimezone($wp_timezone);
+            $obj = new \DateTime($date);
+            if ($timezone) {
+                $obj->setTimezone($timezone);
+            }
         } catch (\Exception $e) {
             return null;
         }
