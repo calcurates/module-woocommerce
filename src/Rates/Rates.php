@@ -147,9 +147,6 @@ class Rates
         return $rates;
     }
 
-    /**
-     * convert date to wp timezone.
-     */
     private function prepare_date(?string $date, string $format = \DateTimeInterface::RFC3339): ?string
     {
         if (!$date) {
