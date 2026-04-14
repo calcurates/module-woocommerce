@@ -53,11 +53,15 @@ if (!\class_exists(CalcuratesRestAuthenticationCompatibility::class)) {
 
         private static function is_request_to_calcurates_v1($request): bool
         {
-            if (!$request instanceof \WP_REST_Request) {
-                return false;
+            if ($request instanceof \WP_REST_Request) {
+                $route = $request->get_route();
+            } else {
+                $route = $GLOBALS['wp']->query_vars['rest_route'] ?? '';
             }
 
-            $route = $request->get_route();
+            if (!$route) {
+                return false;
+            }
 
             return self::NAMESPACE_PREFIX === $route || \str_starts_with($route, self::NAMESPACE_PREFIX.'/');
         }
