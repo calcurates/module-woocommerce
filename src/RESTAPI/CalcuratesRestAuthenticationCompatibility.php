@@ -51,9 +51,6 @@ if (!\class_exists(CalcuratesRestAuthenticationCompatibility::class)) {
             return true;
         }
 
-        /**
-         * @param mixed $request
-         */
         private static function is_request_to_calcurates_v1($request): bool
         {
             if (!$request instanceof \WP_REST_Request) {
@@ -62,13 +59,7 @@ if (!\class_exists(CalcuratesRestAuthenticationCompatibility::class)) {
 
             $route = $request->get_route();
 
-            return $route !== '' && self::route_is_calcurates_v1($route);
-        }
-
-        private static function route_is_calcurates_v1(string $route): bool
-        {
-            return $route === self::NAMESPACE_PREFIX
-                || \strpos($route, self::NAMESPACE_PREFIX.'/') === 0;
+            return self::NAMESPACE_PREFIX === $route || \str_starts_with($route, self::NAMESPACE_PREFIX.'/');
         }
     }
 }
