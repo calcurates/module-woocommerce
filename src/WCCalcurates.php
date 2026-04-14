@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Calcurates;
 
 use Calcurates\Origins\OriginsTaxonomy;
+use Calcurates\RESTAPI\CalcuratesRestAuthenticationCompatibility;
 use Calcurates\RESTAPI\WoocommerceOriginsRESTController;
 use Calcurates\RESTAPI\WoocommerceProductOriginsRESTField;
 use Calcurates\RESTAPI\WoocommerceSettingsRESTController;
@@ -44,6 +45,7 @@ if (!\class_exists(WCCalcurates::class)) {
          */
         public function restapi_register_routes(): void
         {
+            CalcuratesRestAuthenticationCompatibility::register();
             \add_action('rest_api_init', [new WoocommerceSettingsRESTController(), 'register_routes']);
             \add_action('rest_api_init', [new WoocommerceOriginsRESTController(), 'register_routes']);
             \add_action('rest_api_init', [new WoocommerceProductOriginsRESTField(), 'register']);
