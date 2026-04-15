@@ -323,11 +323,8 @@ if (!\class_exists(WCBootstrap::class)) {
                     }
                 }
             }
-            $text = \trim($text);
 
-            $wp_timezone = \wp_timezone_string();
-
-            return $text ? $text.' ('.$wp_timezone.')' : '';
+            return \trim($text);
         }
 
         /**
@@ -356,21 +353,15 @@ if (!\class_exists(WCBootstrap::class)) {
                     return $formatted_from;
                 }
 
-                $wp_timezone = \wp_timezone_string();
-
-                return $formatted_from.' - '.$formatted_to.' ('.$wp_timezone.')';
+                return $formatted_from.' - '.$formatted_to;
             }
 
             if ($from) {
-                $wp_timezone = \wp_timezone_string();
-
-                return 'From '.$from->format($this->wp_date_format()).' ('.$wp_timezone.')';
+                return 'From '.$from->format($this->wp_date_format());
             }
 
             if ($to) {
-                $wp_timezone = \wp_timezone_string();
-
-                return 'To '.$to->format($this->wp_date_format()).' ('.$wp_timezone.')';
+                return 'To '.$to->format($this->wp_date_format());
             }
 
             return '';

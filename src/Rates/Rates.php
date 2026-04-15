@@ -147,24 +147,19 @@ class Rates
         return $rates;
     }
 
-    /**
-     * convert date to wp timezone.
-     */
-    private function prepare_date(?string $date): ?string
+    private function prepare_date(?string $date, string $format = \DateTimeInterface::RFC3339): ?string
     {
         if (!$date) {
             return null;
         }
 
-        /** @var \DateTimeZone $wp_timezone */
-        $wp_timezone = \wp_timezone();
         try {
-            $dateObj = (new \DateTime($date))->setTimezone($wp_timezone);
+            $obj = new \DateTime($date);
         } catch (\Exception $e) {
             return null;
         }
 
-        return $dateObj->format(\DateTimeInterface::RFC3339);
+        return $obj->format($format);
     }
 
     /**
@@ -210,17 +205,21 @@ class Rates
         $message = $rate['message'] ?: '';
 
         if ($message) {
-            $cartWeight = 0.0;
+            $cart_weight = 0.0;
             foreach ($rates_request_body['products'] as $product) {
-                $cartWeight += $product['weight'] * $product['quantity'];
+                $cart_weight += $product['weight'] * $product['quantity'];
             }
-            $cartWeight .= ' '.\get_option('woocommerce_weight_unit');
+            $cart_weight .= ' '.\get_option('woocommerce_weight_unit');
 
-            $taxStr = null !== $rate['tax'] ? ($rate['tax'].' '.$rate['currency']) : '';
+            $tax_amount = null !== $rate['tax'] ? ($rate['tax'].' '.$rate['currency']) : '';
+
+            $date_format = \get_option('date_format');
+            $delivery_from = $this->prepare_date($rate['delivery_date_from'], $date_format);
+            $delivery_to = $this->prepare_date($rate['delivery_date_to'], $date_format);
 
             $message = \str_replace(
-                ['{tax_amount}', '{min_transit_days}', '{max_transit_days}', '{packages}', '{custom_number}', '{cart_weight}'],
-                [$taxStr, $rate['days_in_transit_from'], $rate['days_in_transit_to'], $this->get_packages_string($rate), $rate['custom_number'], $cartWeight],
+                ['{tax_amount}', '{min_transit_days}', '{max_transit_days}', '{packages}', '{custom_number}', '{cart_weight}', '{delivery_from}', '{delivery_to}'],
+                [$tax_amount, $rate['days_in_transit_from'], $rate['days_in_transit_to'], $this->get_packages_string($rate), $rate['custom_number'], $cart_weight, $delivery_from, $delivery_to],
                 $message
             );
         }
@@ -231,9 +230,9 @@ class Rates
     private function get_packages_string(array $rate): string
     {
         $packages = [];
-        foreach ($rate['packages'] as $packageName) {
-            $packages[$packageName] ??= 0;
-            ++$packages[$packageName];
+        foreach ($rate['packages'] as $name) {
+            $packages[$name] ??= 0;
+            ++$packages[$name];
         }
 
         $out = '';
