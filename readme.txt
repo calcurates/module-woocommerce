@@ -67,6 +67,7 @@ Calcurates is developed and supported by Amasty. After 10 years of success in de
 
 = 1.6.18 =
 - Add: REST authorization compatibility for some third-party plugins.
+- Add: {delivery_from}/{delivery_to} variables support.
 
 = 1.6.17 =
 - Add: Product origins can be updated via WooCommerce REST API.
