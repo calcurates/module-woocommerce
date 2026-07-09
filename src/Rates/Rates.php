@@ -62,7 +62,7 @@ class Rates
                 Logger::getInstance()->error(
                     "Can't create rate from Shipping Option $shipping_option_name",
                     [
-                        'exception' => $e,
+                        'trace' => $e->getTraceAsString(),
                         'shipping_option_name' => $shipping_option_name,
                         'shipping_option_data' => $shipping_option_data,
                     ]
