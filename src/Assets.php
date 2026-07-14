@@ -16,6 +16,7 @@ if (!\class_exists(Assets::class)) {
     class Assets
     {
         private static $date_picker_script_name = 'air-datepicker';
+        private static $date_picker_locale_script_name = 'air-datepicker-locale';
         private static $php_date_formatter_script_name = 'php-date-formatter';
 
         /**
@@ -70,6 +71,21 @@ if (!\class_exists(Assets::class)) {
             }
 
             $deps[] = self::$date_picker_script_name;
+
+            // Preload the datepicker locale so DATEPICKER_LANG is available synchronously
+            // (avoids a runtime getScript race with WooCommerce's updated_checkout re-renders).
+            $locale = \substr(\get_locale(), 0, 2);
+            $locale_src = '/assets/lib/air-datepicker/locale/'.$locale.'.js';
+
+            if (!\file_exists(\plugin_dir_path(__DIR__).'assets/lib/air-datepicker/locale/'.$locale.'.js')) {
+                $locale_src = '/assets/lib/air-datepicker/locale/en.js';
+            }
+
+            if ($this->register_js(self::$date_picker_locale_script_name, $locale_src, [self::$date_picker_script_name]) && (\is_cart() || \is_checkout())) {
+                \wp_enqueue_script(self::$date_picker_locale_script_name);
+            }
+
+            $deps[] = self::$date_picker_locale_script_name;
 
             if ($this->register_js(WCCalcurates::get_plugin_text_domain(), '/assets/js/calcurates-checkout.js', $deps) && (\is_cart() || \is_checkout())) {
                 // provide global vars
