@@ -1,3 +1,6 @@
+const DATEPICKER_INPUT_SELECTOR = 'input[id^="calcurates-datepicker"]';
+const TIME_PATTERN = /\d\d:\d\d:\d\d/;
+
 jQuery(document).ready(function () {
     // setup
     setupShipping();
@@ -39,14 +42,7 @@ function observeShippingRates() {
         setTimeout(function () {
             scheduled = false;
 
-            const hasUnbound = Array.prototype.some.call(
-                document.querySelectorAll('input[id^="calcurates-datepicker"]'),
-                function (el) {
-                    return !el._calcAirDatepicker;
-                }
-            );
-
-            if (hasUnbound) {
+            if (hasUnboundDatepicker()) {
                 setupShipping();
                 setupDatePicker();
             }
@@ -54,6 +50,15 @@ function observeShippingRates() {
     });
 
     observer.observe(container, {childList: true, subtree: true});
+}
+
+function hasUnboundDatepicker() {
+    return Array.prototype.some.call(
+        document.querySelectorAll(DATEPICKER_INPUT_SELECTOR),
+        function (el) {
+            return !el._calcAirDatepicker;
+        }
+    );
 }
 
 function setupShipping() {
@@ -123,117 +128,160 @@ function setupDatePicker() {
         return;
     }
 
-    const timePattern = /\d\d:\d\d:\d\d/;
+    jQuery(DATEPICKER_INPUT_SELECTOR).each(function () {
+        initDatepicker(this);
+    });
+}
 
-    jQuery('input[id^="calcurates-datepicker"]').each(function () {
-        const el = this;
-        const $datepicker = jQuery(el);
+/**
+ * Initialize (or re-initialize) the AirDatepicker instance for a single input.
+ *
+ * @param {HTMLElement} el
+ */
+function initDatepicker(el) {
+    const $datepicker = jQuery(el);
 
-        // WooCommerce replaces the order-review DOM (and re-fires updated_checkout)
-        // repeatedly. Destroy any existing instance so the input is never
-        // double-initialized, which breaks click handling.
-        if (el._calcAirDatepicker) {
-            el._calcAirDatepicker.destroy();
-            el._calcAirDatepicker = null;
-        }
+    // WooCommerce replaces the order-review DOM (and re-fires updated_checkout)
+    // repeatedly. Destroy any existing instance so the input is never
+    // double-initialized, which breaks click handling.
+    destroyDatepicker(el);
 
-        const $originalDate = $datepicker.parent().find('.calcurates-checkout__shipping-rate-date-original');
+    const timeSlots = cloneFull($datepicker.data('time-slots'));
+    if (!timeSlots || timeSlots.length === 0) {
+        return;
+    }
 
-        const timeSlots = cloneFull($datepicker.data('time-slots'));
-        if (!timeSlots || timeSlots.length === 0) {
-            return;
-        }
+    const range = normalizeTimeSlots(timeSlots);
+    const options = buildDatepickerOptions($datepicker, timeSlots, range);
 
-        const timeSlotDateRequired = $datepicker.data('time-slot-date-required') ? ('1' === $datepicker.data('time-slot-date-required') || 1 === $datepicker.data('time-slot-date-required')) : false;
-        const timeSlotTimeRequired = $datepicker.data('time-slot-time-required') ? ('1' === $datepicker.data('time-slot-time-required') || 1 === $datepicker.data('time-slot-time-required')) : false;
-        const id = "#" + $datepicker.attr('id');
+    const picker = new AirDatepicker("#" + $datepicker.attr('id'), options);
+    el._calcAirDatepicker = picker;
 
-        let deliveryDateFrom = null;
-        let deliveryDateTo = null;
+    if (parseBoolData($datepicker.data('time-slot-date-required'))) {
+        picker.selectDate(new Date(range.from));
+    }
+}
 
-        // normalize
-        timeSlots.forEach(function (item, index) {
-            const parsedDate = parseDate(item['date']);
-            const baseDate = new Date(); // skip timezone
-            baseDate.setFullYear(parsedDate.year, parsedDate.month, parsedDate.date);
-            baseDate.setHours(parsedDate.hours, parsedDate.minutes, parsedDate.seconds, 0);
+/**
+ * @param {HTMLElement} el
+ */
+function destroyDatepicker(el) {
+    if (el._calcAirDatepicker) {
+        el._calcAirDatepicker.destroy();
+        el._calcAirDatepicker = null;
+    }
+}
 
-            timeSlots[index]['date'] = formatParsedDateAsIsoDate(parsedDate);
+/**
+ * Normalize time slot dates/times in place to ISO strings and return the
+ * available delivery range.
+ *
+ * @param {Array} timeSlots
+ * @returns {{from: (Date|null), to: (Date|null)}}
+ */
+function normalizeTimeSlots(timeSlots) {
+    let from = null;
+    let to = null;
 
-            timeSlots[index]['time'].forEach(function (time, timeIndex) {
-                if (time.from) {
-                    time.from = timeSlots[index]['date'].replace(timePattern, time.from);
-                }
+    timeSlots.forEach(function (item, index) {
+        const parsedDate = parseDate(item['date']);
+        const baseDate = new Date(); // skip timezone
+        baseDate.setFullYear(parsedDate.year, parsedDate.month, parsedDate.date);
+        baseDate.setHours(parsedDate.hours, parsedDate.minutes, parsedDate.seconds, 0);
 
-                if (time.to) {
-                    time.to = timeSlots[index]['date'].replace(timePattern, time.to);
-                }
+        item['date'] = formatParsedDateAsIsoDate(parsedDate);
 
-                timeSlots[index]['time'][timeIndex] = time;
-            });
-
-            if (0 === index) {
-                deliveryDateFrom = baseDate;
+        item['time'].forEach(function (time) {
+            if (time.from) {
+                time.from = item['date'].replace(TIME_PATTERN, time.from);
             }
-            if ((timeSlots.length - 1) === index) {
-                deliveryDateTo = baseDate;
+            if (time.to) {
+                time.to = item['date'].replace(TIME_PATTERN, time.to);
             }
         });
 
-        const options = {
-            minDate: deliveryDateFrom,
-            maxDate: deliveryDateTo,
-            toggleSelected: !timeSlotDateRequired,
-            locale: typeof DATEPICKER_LANG !== 'undefined' ? DATEPICKER_LANG : void 0,
-            autoClose: true,
-            onSelect(data) {
-                if (!data.date) {
-                    removeTimeSelect($datepicker);
-                    return;
-                }
-
-                //find time
-                const result = timeSlots.find(function (item) {
-                    $originalDate.val(item['date']);
-
-                    return isSameDates(item['date'], data.date);
-                });
-
-                if (result) {
-                    createTimeSlotSelect($datepicker, result['time'], timeSlotTimeRequired);
-                } else {
-                    removeTimeSelect($datepicker);
-                }
-            },
-            onRenderCell: function (data) {
-                if (data.cellType === 'day') {
-                    const isDisabled = timeSlots.find(function (item) {
-                        return isSameDates(item['date'], data.date);
-                    }) === undefined;
-
-                    return {
-                        disabled: isDisabled
-                    }
-                }
-            },
-            dateFormat(date) {
-                const fmt = new DateFormatter();
-
-                if (!CALCURATES_GLOBAL.dateFormat) {
-                    return fmt.formatDate(date, 'F j, Y');
-                }
-
-                return fmt.formatDate(date, CALCURATES_GLOBAL.dateFormat);
-            }
-        };
-
-        const picker = new AirDatepicker(id, options);
-        el._calcAirDatepicker = picker;
-
-        if (timeSlotDateRequired) {
-            picker.selectDate(new Date(deliveryDateFrom));
+        if (index === 0) {
+            from = baseDate;
+        }
+        if (index === timeSlots.length - 1) {
+            to = baseDate;
         }
     });
+
+    return {from: from, to: to};
+}
+
+/**
+ * @param {jQuery} $datepicker
+ * @param {Array} timeSlots
+ * @param {{from: (Date|null), to: (Date|null)}} range
+ * @returns {Object}
+ */
+function buildDatepickerOptions($datepicker, timeSlots, range) {
+    const $originalDate = $datepicker.parent().find('.calcurates-checkout__shipping-rate-date-original');
+    const timeSlotDateRequired = parseBoolData($datepicker.data('time-slot-date-required'));
+    const timeSlotTimeRequired = parseBoolData($datepicker.data('time-slot-time-required'));
+
+    return {
+        minDate: range.from,
+        maxDate: range.to,
+        toggleSelected: !timeSlotDateRequired,
+        locale: typeof DATEPICKER_LANG !== 'undefined' ? DATEPICKER_LANG : void 0,
+        autoClose: true,
+        onSelect(data) {
+            if (!data.date) {
+                removeTimeSelect($datepicker);
+                return;
+            }
+
+            //find time
+            const result = timeSlots.find(function (item) {
+                $originalDate.val(item['date']);
+
+                return isSameDates(item['date'], data.date);
+            });
+
+            if (result) {
+                createTimeSlotSelect($datepicker, result['time'], timeSlotTimeRequired);
+            } else {
+                removeTimeSelect($datepicker);
+            }
+        },
+        onRenderCell: function (data) {
+            if (data.cellType === 'day') {
+                const isDisabled = timeSlots.find(function (item) {
+                    return isSameDates(item['date'], data.date);
+                }) === undefined;
+
+                return {
+                    disabled: isDisabled
+                }
+            }
+        },
+        dateFormat(date) {
+            const fmt = new DateFormatter();
+
+            return fmt.formatDate(date, CALCURATES_GLOBAL.dateFormat || 'F j, Y');
+        }
+    };
+}
+
+/**
+ * Parse a WooCommerce boolean-ish data attribute ("1"/1 => true).
+ *
+ * @param {*} value
+ * @returns boolean
+ */
+function parseBoolData(value) {
+    return value === '1' || value === 1;
+}
+
+/**
+ * @param {number} value
+ * @returns string
+ */
+function pad2(value) {
+    return value < 10 ? '0' + value : '' + value;
 }
 
 /**
@@ -242,27 +290,11 @@ function setupDatePicker() {
  */
 function formatParsedDateAsIsoDate(parsedDate) {
     const year = parsedDate.year;
-    let month = parsedDate.month + 1;
-    let date = parsedDate.date;
-    let hours = parsedDate.hours;
-    let minutes = parsedDate.minutes;
-    let seconds = parsedDate.seconds;
-
-    if (date < 10) {
-        date = '0' + date;
-    }
-    if (month < 10) {
-        month = '0' + month;
-    }
-    if (hours < 10) {
-        hours = '0' + hours;
-    }
-    if (minutes < 10) {
-        minutes = '0' + minutes;
-    }
-    if (seconds < 10) {
-        seconds = '0' + seconds;
-    }
+    const month = pad2(parsedDate.month + 1);
+    const date = pad2(parsedDate.date);
+    const hours = pad2(parsedDate.hours);
+    const minutes = pad2(parsedDate.minutes);
+    const seconds = pad2(parsedDate.seconds);
 
     return year + '-' + month + '-' + date + 'T' + hours + ':' + minutes + ':' + seconds + '.000Z';
 }
