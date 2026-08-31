@@ -243,7 +243,36 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
 
     private function is_request_body_valid(array $request_body): bool
     {
-        return $request_body['shipTo']['country'] && $request_body['shipTo']['postalCode'];
+        $country = $request_body['shipTo']['country'] ?? null;
+        $postal_code = $request_body['shipTo']['postalCode'] ?? null;
+        $region_code = $request_body['shipTo']['regionCode'] ?? null;
+
+        if (!$this->has_value($country) || !$this->has_value($postal_code)) {
+            return false;
+        }
+
+        if ($this->is_shipping_state_required((string) $country) && !$this->has_value($region_code)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function has_value($value): bool
+    {
+        return null !== $value && '' !== \trim((string) $value);
+    }
+
+    private function is_shipping_state_required(string $country_code): bool
+    {
+        $fields = \WC()->countries->get_address_fields($country_code, 'shipping_');
+        $field = $fields['shipping_state'] ?? null;
+
+        if (!\is_array($field) || !empty($field['hidden'])) {
+            return false;
+        }
+
+        return !empty($field['required']);
     }
 
     private function get_request_hash(array $request_body): string
@@ -261,6 +290,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
                 'country' => $request_body['shipTo']['country'],
                 'city' => $request_body['shipTo']['city'],
                 'companyName' => $request_body['shipTo']['companyName'] ?? '',
+                'regionCode' => $request_body['shipTo']['regionCode'] ?? '',
                 'postalCode' => $request_body['shipTo']['postalCode'] ?? '',
                 'addressLine1' => $request_body['shipTo']['addressLine1'] ?? '',
                 'addressLine2' => $request_body['shipTo']['addressLine2'] ?? '',
