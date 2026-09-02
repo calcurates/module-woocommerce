@@ -4,14 +4,14 @@ FROM php:8.5-fpm
 RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
     htop \
     mc \
-	acl \
-	file \
-	gettext \
-	git \
+    acl \
+    file \
+    gettext \
+    git \
     mariadb-client \
     curl \
     unzip \
-	&& rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/*
 
 # Composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
@@ -26,21 +26,21 @@ COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr
 
 # PHP
 RUN set -eux; \
-	install-php-extensions \
-		intl \
-		imagick \
-		zip \
+    install-php-extensions \
+        intl \
+        imagick \
+        zip \
         pdo_mysql \
         mysqli \
         pcntl \
         exif \
         bcmath \
         xdebug \
-	;
+    ;
 
 # Cleanup
 RUN set -eux; \
-	rm -rf /tmp/*
+    rm -rf /tmp/*
 
 
 WORKDIR /var/www/wordpress
