@@ -1,10 +1,17 @@
-FROM php:8.5-fpm-alpine
+FROM php:8.5-fpm
 
 # Update repo and install some utilites
-RUN set -xe \
-    && apk update \
-    && apk upgrade \
-    && apk --no-cache add htop unzip gzip git curl mc dcron linux-headers mariadb-connector-c
+RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
+    htop \
+    mc \
+	acl \
+	file \
+	gettext \
+	git \
+    mariadb-client \
+    curl \
+    unzip \
+	&& rm -rf /var/lib/apt/lists/*
 
 # Composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
@@ -14,51 +21,26 @@ RUN set -xe \
     && curl -L -o /wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && chmod 755 /wp-cli.phar
 
+# https://github.com/mlocati/docker-php-extension-installer
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
+
 # PHP
-RUN set -xe \
-    && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
-\
-    # Opcache
-    && docker-php-ext-install opcache \
-    && docker-php-ext-enable opcache \
-\
-    # Xdebug
-    && pecl install xdebug \
-    && docker-php-ext-enable xdebug \
-\
-    # ZIP
-    && apk add --no-cache libzip libzip-dev \
-    && docker-php-ext-install zip \
-    && docker-php-ext-enable zip \
-\
-    # Mysql
-    && apk add --no-cache mysql-client \
-    && docker-php-ext-install mysqli \
-    && docker-php-ext-enable mysqli \
-\
-    # Imagick
-    && apk add --no-cache imagemagick libgomp imagemagick-dev \
-    && pecl install imagick \
-    && docker-php-ext-enable imagick \
-\
-    # Exif
-    && docker-php-ext-install exif \
-    && docker-php-ext-enable exif \
-\
-    # Bcmath
-    && docker-php-ext-install bcmath \
-    && docker-php-ext-enable bcmath \
-\
-    # PCNTL
-    && docker-php-ext-install pcntl \
-    && docker-php-ext-enable pcntl
+RUN set -eux; \
+	install-php-extensions \
+		intl \
+		imagick \
+		zip \
+        pdo_mysql \
+        mysqli \
+        pcntl \
+        exif \
+        bcmath \
+        xdebug \
+	;
 
 # Cleanup
-RUN set -xe \
-    && apk del --no-cache .build-deps \
-    && apk del --no-cache libzip-dev \
-    && apk del --no-cache imagemagick-dev \
-    && rm -rf /tmp/* /var/cache/apk/*
+RUN set -eux; \
+	rm -rf /tmp/*
 
 
 WORKDIR /var/www/wordpress
