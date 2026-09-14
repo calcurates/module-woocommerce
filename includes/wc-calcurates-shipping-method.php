@@ -156,6 +156,13 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
                 'default' => 'no',
                 'label' => \__('Allow duties & taxes estimates with empty address line', 'woocommerce'),
             ],
+            'vat_number_checkout_field' => [
+                'title' => \__('VAT Number checkout field', 'woocommerce'),
+                'type' => 'text',
+                'description' => \__('Checkout field name (input name attribute) to send as ship-to VAT Number, e.g. vat_number, billing_vat_number, billing_vat_id, billing_eu_vat_number. Leave empty to send no VAT Number.', 'woocommerce'),
+                'default' => '',
+                'desc_tip' => false,
+            ],
             'delivery_dates_display_mode' => [
                 'title' => \__('Delivery dates display mode', 'woocommerce'),
                 'type' => 'select',
@@ -294,6 +301,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
                 'postalCode' => $request_body['shipTo']['postalCode'] ?? '',
                 'addressLine1' => $request_body['shipTo']['addressLine1'] ?? '',
                 'addressLine2' => $request_body['shipTo']['addressLine2'] ?? '',
+                'vatNumber' => $request_body['shipTo']['vatNumber'] ?? '',
             ],
         ];
 

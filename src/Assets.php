@@ -88,14 +88,25 @@ if (!\class_exists(Assets::class)) {
             $deps[] = self::$date_picker_locale_script_name;
 
             if ($this->register_js(WCCalcurates::get_plugin_text_domain(), '/assets/js/calcurates-checkout.js', $deps) && (\is_cart() || \is_checkout())) {
+                $calcurates_global = [
+                    'pluginDir' => \plugin_dir_url(__DIR__),
+                    'lang' => \substr(\get_locale(), 0, 2),
+                    'dateFormat' => \get_option('date_format'),
+                    'timeFormat' => \get_option('time_format'),
+                ];
+
+                $shipping_method_options = \get_option('woocommerce_'.\WC_Calcurates_Shipping_Method::CODE.'_settings', true);
+                $vat_number_checkout_field = \is_array($shipping_method_options)
+                    ? \trim((string) ($shipping_method_options['vat_number_checkout_field'] ?? ''))
+                    : '';
+
+                if ('' !== $vat_number_checkout_field) {
+                    $calcurates_global['vatNumberCheckoutField'] = $vat_number_checkout_field;
+                }
+
                 // provide global vars
-                \wp_add_inline_script(WCCalcurates::get_plugin_text_domain(), 'var CALCURATES_GLOBAL = '.\json_encode(
-                    [
-                        'pluginDir' => \plugin_dir_url(__DIR__),
-                        'lang' => \substr(\get_locale(), 0, 2),
-                        'dateFormat' => \get_option('date_format'),
-                        'timeFormat' => \get_option('time_format'),
-                    ]
+                \wp_add_inline_script(WCCalcurates::get_plugin_text_domain(), 'var CALCURATES_GLOBAL = '.\wp_json_encode(
+                    $calcurates_global
                 ).';');
 
                 \wp_enqueue_script(WCCalcurates::get_plugin_text_domain());
