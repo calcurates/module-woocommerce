@@ -7,6 +7,7 @@ jQuery(document).ready(function () {
     setupDatePicker();
 
     watchForCompanyInputChange();
+    watchForVatNumberInputChange();
 
     jQuery(document.body).on('updated_checkout updated_cart_totals', function () {
         // setup
@@ -114,6 +115,29 @@ function watchForCompanyInputChange() {
     let debounce = null;
 
     jQuery("#billing_company, #shipping_company").on('input', function () {
+        clearTimeout(debounce);
+
+        debounce = setTimeout(function () {
+            jQuery(document.body).trigger("update_checkout");
+        }, 300);
+    });
+}
+
+function watchForVatNumberInputChange() {
+    if (typeof CALCURATES_GLOBAL === 'undefined' || !CALCURATES_GLOBAL.vatNumberCheckoutField) {
+        return;
+    }
+
+    const field = CALCURATES_GLOBAL.vatNumberCheckoutField;
+    let debounce = null;
+
+    // Match checkout field name (POST key) or id. Some VAT plugins use a different HTML id
+    // than the field name, e.g. name=billing_vat_number id=woocommerce_eu_vat_number.
+    jQuery(document.body).on('input change', 'input, textarea, select', function () {
+        if (this.id !== field && this.name !== field) {
+            return;
+        }
+
         clearTimeout(debounce);
 
         debounce = setTimeout(function () {
