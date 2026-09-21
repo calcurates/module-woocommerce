@@ -4,7 +4,7 @@ Tags: shipping rules,shipping rates,delivery dates, table rates, dimensional shi
 Requires at least: 5.3
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.6.20
+Stable tag: 1.6.21
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -64,6 +64,9 @@ Calcurates is developed and supported by Amasty. After 10 years of success in de
 5. Accurate shipping and delivery dates for WooCommerce checkout
 
 == Changelog ==
+
+= 1.6.21 =
+- Add: send checkout VAT Number on rates requests → a new "VAT Number checkout field" plugin config setting has been implemented
 
 = 1.6.20 =
 - Fix: Skip rates when required State is empty

@@ -234,9 +234,6 @@ class RatesRequestBodyBuilder
         return null;
     }
 
-    /**
-     * @param mixed $value
-     */
     private function normalize_vat_number($value): ?string
     {
         if (!\is_scalar($value)) {
