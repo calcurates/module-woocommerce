@@ -46,7 +46,8 @@ class RatesRequestBodyBuilder
      *          postalCode: string,
      *          addressLine1: string|null,
      *          addressLine2: string|null,
-     *     }[],
+     *          vatNumber: string|null,
+     *     },
      *     products: array{
      *         quoteItemId: int,
      *         sku: string,
@@ -98,6 +99,8 @@ class RatesRequestBodyBuilder
      */
     public function prepare_ship_to_data(): array
     {
+        $post_data = null;
+
         if (isset($_POST['post_data']) && $_POST['post_data']) {
             $post_data = [];
             \parse_str(\rawurldecode($_POST['post_data']), $post_data);
@@ -155,8 +158,12 @@ class RatesRequestBodyBuilder
             $contact_name = null;
         }
 
+        $shipping_method_options = \get_option('woocommerce_'.\WC_Calcurates_Shipping_Method::CODE.'_settings', true);
+        if (!\is_array($shipping_method_options)) {
+            $shipping_method_options = [];
+        }
+
         if (!$addr_1) {
-            $shipping_method_options = \get_option('woocommerce_'.\WC_Calcurates_Shipping_Method::CODE.'_settings', true);
             if (isset($shipping_method_options['duties_taxes_estimates_with_empty_address_line']) && 'yes' === $shipping_method_options['duties_taxes_estimates_with_empty_address_line']) {
                 $addr_1 = 'unknown';
             }
@@ -173,7 +180,69 @@ class RatesRequestBodyBuilder
             'postalCode' => $postcode,
             'addressLine1' => $addr_1,
             'addressLine2' => $addr_2,
+            'vatNumber' => $this->resolve_vat_number($shipping_method_options, $post_data),
         ];
+    }
+
+    /**
+     * Read the merchant-bound checkout field as a nullable VAT Number.
+     *
+     * @param array<string, mixed>      $shipping_method_options
+     * @param array<string, mixed>|null $post_data
+     */
+    private function resolve_vat_number(array $shipping_method_options, ?array $post_data): ?string
+    {
+        $field_name = isset($shipping_method_options['vat_number_checkout_field'])
+            ? \trim((string) $shipping_method_options['vat_number_checkout_field'])
+            : '';
+
+        if ('' === $field_name) {
+            return null;
+        }
+
+        if (null !== $post_data) {
+            return $this->normalize_vat_number($post_data[$field_name] ?? null);
+        }
+
+        return $this->resolve_vat_number_from_customer($field_name);
+    }
+
+    /**
+     * Look up the bound field on the current customer or user meta.
+     */
+    private function resolve_vat_number_from_customer(string $field_name): ?string
+    {
+        $customer = \WC()->customer;
+        if ($customer instanceof \WC_Customer) {
+            $from_meta = $this->normalize_vat_number($customer->get_meta($field_name));
+            if (null !== $from_meta) {
+                return $from_meta;
+            }
+        }
+
+        if (\is_user_logged_in()) {
+            $from_user = $this->normalize_vat_number(\get_user_meta(\get_current_user_id(), $field_name, true));
+            if (null !== $from_user) {
+                return $from_user;
+            }
+        }
+
+        if (\WC()->checkout()) {
+            return $this->normalize_vat_number(\WC()->checkout()->get_value($field_name));
+        }
+
+        return null;
+    }
+
+    private function normalize_vat_number($value): ?string
+    {
+        if (!\is_scalar($value)) {
+            return null;
+        }
+
+        $value = \trim((string) $value);
+
+        return '' === $value ? null : $value;
     }
 
     /**
