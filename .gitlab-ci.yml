@@ -19,7 +19,7 @@ lint:
         - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     script:
         - echo "Run php-cs-fixer (dry-run)"
-        - curl -fsSL https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/releases/download/v3.95.26/php-cs-fixer.phar -o php-cs-fixer.phar
+        - curl -fsSL https://cs.symfony.com/download/php-cs-fixer-v3.phar -o php-cs-fixer.phar
         - php php-cs-fixer.phar fix --dry-run --diff --no-interaction
 
 deploy_staging:
