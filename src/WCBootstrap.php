@@ -82,6 +82,30 @@ if (!\class_exists(WCBootstrap::class)) {
                 $display_key = \__('Tax', 'woocommerce');
             }
 
+            if ('final_rate' === $meta->key && \is_admin()) {
+                $display_key = \__('Final rate', 'woocommerce');
+            }
+
+            if ('base_rate' === $meta->key && \is_admin()) {
+                $display_key = \__('Base rate', 'woocommerce');
+            }
+
+            if ('surcharge' === $meta->key && \is_admin()) {
+                $display_key = \__('Surcharge', 'woocommerce');
+            }
+
+            if ('discount' === $meta->key && \is_admin()) {
+                $display_key = \__('Discount', 'woocommerce');
+            }
+
+            if (\is_admin() && \str_starts_with($meta->key, 'surcharge_rule')) {
+                $display_key = \__('Surcharge rule', 'woocommerce').' '.\substr($meta->key, \strlen('surcharge_rule'));
+            }
+
+            if (\is_admin() && \str_starts_with($meta->key, 'discount_rule')) {
+                $display_key = \__('Discount rule', 'woocommerce').' '.\substr($meta->key, \strlen('discount_rule'));
+            }
+
             if ('selected_delivery_date' === $meta->key && \is_admin()) {
                 $display_key = \__('Selected delivery date', 'woocommerce');
             }

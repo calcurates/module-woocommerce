@@ -18,47 +18,34 @@ class InStorePickupsRatesExtractor extends RatesExtractorAbstract
         foreach ($data as $in_store_rate) {
             if (!$in_store_rate['success']) {
                 if ($in_store_rate['message']) {
-                    $ready_rates[] = [
+                    $ready_rates[] = \array_merge([
                         'has_error' => true,
                         'id' => $in_store_rate['id'],
                         'label' => $this->resolve_label($in_store_rate),
-                        'cost' => 0,
-                        'tax' => null,
-                        'currency' => '',
                         'message' => $in_store_rate['message'],
-                        'delivery_date_from' => null,
-                        'delivery_date_to' => null,
                         'priority' => $in_store_rate['priority'],
                         'priority_item' => null,
                         'rate_image' => $in_store_rate['imageUri'],
                         'packages' => [],
                         'custom_number' => null,
-                    ];
+                    ], $this->extract_rate_fields(null));
                 }
                 continue;
             }
 
             foreach ($in_store_rate['stores'] as $store) {
                 if ($store['success'] || $store['message']) {
-                    $ready_rates[] = [
+                    $ready_rates[] = \array_merge([
                         'has_error' => !$store['success'],
                         'id' => $in_store_rate['id'].'_'.$store['id'],
                         'label' => $this->resolve_label($store),
-                        'cost' => $store['rate']['cost'] ?? 0,
-                        'tax' => $store['rate']['tax'] ?? null,
-                        'currency' => $store['rate']['currency'] ?? '',
                         'message' => $store['message'],
-                        'delivery_date_from' => $store['rate']['estimatedDeliveryDate']['from'] ?? null,
-                        'delivery_date_to' => $store['rate']['estimatedDeliveryDate']['to'] ?? null,
                         'priority' => $in_store_rate['priority'],
                         'priority_item' => $store['priority'],
                         'rate_image' => $store['imageUri'],
-                        'time_slots' => $store['rate']['estimatedDeliveryDate']['timeSlots'] ?? null,
-                        'days_in_transit_from' => $store['rate']['estimatedDeliveryDate']['daysInTransitFrom'] ?? null,
-                        'days_in_transit_to' => $store['rate']['estimatedDeliveryDate']['daysInTransitTo'] ?? null,
                         'packages' => $this->make_packages($store['rates']),
                         'custom_number' => $store['customNumber'],
-                    ];
+                    ], $this->extract_rate_fields($store['rate'] ?? null));
                 }
             }
         }
