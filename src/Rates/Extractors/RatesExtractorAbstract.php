@@ -62,7 +62,7 @@ abstract class RatesExtractorAbstract
      *     discount_rules: array<int|string, float|int>,
      * }
      */
-    protected function extract_rate_fields($rate): array
+    protected function extract_rate_fields(?array $rate): array
     {
         if (!\is_array($rate)) {
             $rate = null;

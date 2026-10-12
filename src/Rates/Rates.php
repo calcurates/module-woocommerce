@@ -235,16 +235,42 @@ class Rates
             $delivery_from = $this->prepare_date($rate['delivery_date_from'], $date_format);
             $delivery_to = $this->prepare_date($rate['delivery_date_to'], $date_format);
 
-            $search = ['{tax_amount}', '{min_transit_days}', '{max_transit_days}', '{packages}', '{custom_number}', '{cart_weight}', '{delivery_from}', '{delivery_to}', '{final_rate}', '{base_rate}', '{surcharge}', '{discount}'];
-            $replace = [$tax_amount, $rate['days_in_transit_from'], $rate['days_in_transit_to'], $this->get_packages_string($rate), $rate['custom_number'], $cart_weight, $delivery_from, $delivery_to, $this->format_amount($rate['final_rate'] ?? null), $this->format_amount($rate['base_rate'] ?? null), $this->format_amount($rate['surcharge'] ?? null), $this->format_amount($rate['discount'] ?? null)];
+            $search = [
+                '{tax_amount}',
+                '{min_transit_days}',
+                '{max_transit_days}',
+                '{packages}',
+                '{custom_number}',
+                '{cart_weight}',
+                '{delivery_from}',
+                '{delivery_to}',
+                '{final_rate}',
+                '{base_rate}',
+                '{surcharge}',
+                '{discount}',
+            ];
+            $replace = [
+                $tax_amount,
+                $rate['days_in_transit_from'],
+                $rate['days_in_transit_to'],
+                $this->get_packages_string($rate),
+                $rate['custom_number'],
+                $cart_weight,
+                $delivery_from,
+                $delivery_to,
+                $this->format_amount($rate['final_rate'] ?? null, $rate['currency']),
+                $this->format_amount($rate['base_rate'] ?? null, $rate['currency']),
+                $this->format_amount($rate['surcharge'] ?? null, $rate['currency']),
+                $this->format_amount($rate['discount'] ?? null, $rate['currency']),
+            ];
 
             foreach ($rate['surcharge_rules'] ?? [] as $rule_id => $amount) {
                 $search[] = '{surcharge_rule'.$rule_id.'}';
-                $replace[] = $this->format_amount($amount);
+                $replace[] = $this->format_amount($amount, $rate['currency']);
             }
             foreach ($rate['discount_rules'] ?? [] as $rule_id => $amount) {
                 $search[] = '{discount_rule'.$rule_id.'}';
-                $replace[] = $this->format_amount($amount);
+                $replace[] = $this->format_amount($amount, $rate['currency']);
             }
 
             $message = \str_replace($search, $replace, $message);
@@ -255,14 +281,16 @@ class Rates
 
     /**
      * @param float|int|string|null $amount
+     * @param string $currency
+     * @return string
      */
-    private function format_amount($amount): string
+    private function format_amount($amount, string $currency): string
     {
         if (null === $amount || '' === $amount) {
             return '';
         }
 
-        return (string) $amount;
+        return (string) $amount.' '.$currency;
     }
 
     private function get_packages_string(array $rate): string
