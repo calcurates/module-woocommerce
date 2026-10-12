@@ -258,17 +258,17 @@ class Rates
                 $cart_weight,
                 $delivery_from,
                 $delivery_to,
-                $this->format_amount($rate['final_rate'] ?? null, $rate['currency']),
-                $this->format_amount($rate['base_rate'] ?? null, $rate['currency']),
-                $this->format_amount($rate['surcharge'] ?? null, $rate['currency']),
-                $this->format_amount($rate['discount'] ?? null, $rate['currency']),
+                $this->format_amount($rate['final_rate'], $rate['currency']),
+                $this->format_amount($rate['base_rate'], $rate['currency']),
+                $this->format_amount($rate['surcharge'], $rate['currency']),
+                $this->format_amount($rate['discount'], $rate['currency']),
             ];
 
-            foreach ($rate['surcharge_rules'] ?? [] as $rule_id => $amount) {
+            foreach ($rate['surcharge_rules'] as $rule_id => $amount) {
                 $search[] = '{surcharge_rule'.$rule_id.'}';
                 $replace[] = $this->format_amount($amount, $rate['currency']);
             }
-            foreach ($rate['discount_rules'] ?? [] as $rule_id => $amount) {
+            foreach ($rate['discount_rules'] as $rule_id => $amount) {
                 $search[] = '{discount_rule'.$rule_id.'}';
                 $replace[] = $this->format_amount($amount, $rate['currency']);
             }
@@ -280,13 +280,11 @@ class Rates
     }
 
     /**
-     * @param float|int|string|null $amount
-     * @param string $currency
-     * @return string
+     * @param float|int|null $amount
      */
     private function format_amount($amount, string $currency): string
     {
-        if (null === $amount || '' === $amount) {
+        if (null === $amount) {
             return '';
         }
 
