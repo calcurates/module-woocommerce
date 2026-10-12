@@ -33,6 +33,12 @@ class Rates
      *     days_in_transit_to: int|null,
      *     packages: string[],
      *     custom_number: float|null,
+     *     final_rate: float|int|null,
+     *     base_rate: float|int|null,
+     *     surcharge: float|int|null,
+     *     discount: float|int|null,
+     *     surcharge_rules: array<int|string, float|int>,
+     *     discount_rules: array<int|string, float|int>,
      * }[]
      */
     private array $rates = [];
@@ -123,23 +129,35 @@ class Rates
         $rates = [];
 
         foreach ($this->rates as $rate) {
+            $meta_data = [
+                'message' => $this->prepare_message($rates_request_body, $rate),
+                'delivery_date_from' => $this->prepare_date($rate['delivery_date_from']),
+                'delivery_date_to' => $this->prepare_date($rate['delivery_date_to']),
+                'tax' => $rate['tax'],
+                'currency' => $rate['currency'],
+                'has_error' => $rate['has_error'],
+                'rate_image' => $rate['rate_image'],
+                'time_slot_date_required' => isset($this->response['metadata']['deliveryDates']['timeSlotDateRequired']) && $this->response['metadata']['deliveryDates']['timeSlotDateRequired'] ? '1' : '0',
+                'time_slot_time_required' => isset($this->response['metadata']['deliveryDates']['timeSlotTimeRequired']) && $this->response['metadata']['deliveryDates']['timeSlotTimeRequired'] ? '1' : '0',
+                'time_slots' => $rate['time_slots'],
+                'final_rate' => $rate['final_rate'],
+                'base_rate' => $rate['base_rate'],
+                'surcharge' => $rate['surcharge'],
+                'discount' => $rate['discount'],
+            ];
+            foreach ($rate['surcharge_rules'] as $rule_id => $amount) {
+                $meta_data['surcharge_rule'.$rule_id] = $amount;
+            }
+            foreach ($rate['discount_rules'] as $rule_id => $amount) {
+                $meta_data['discount_rule'.$rule_id] = $amount;
+            }
+
             $rates[] = [
                 'id' => 'calcurates:'.$rate['id'],
                 'label' => $rate['label'],
                 'cost' => $rate['cost'],
                 'package' => $this->package,
-                'meta_data' => [
-                    'message' => $this->prepare_message($rates_request_body, $rate),
-                    'delivery_date_from' => $this->prepare_date($rate['delivery_date_from']),
-                    'delivery_date_to' => $this->prepare_date($rate['delivery_date_to']),
-                    'tax' => $rate['tax'],
-                    'currency' => $rate['currency'],
-                    'has_error' => $rate['has_error'],
-                    'rate_image' => $rate['rate_image'],
-                    'time_slot_date_required' => isset($this->response['metadata']['deliveryDates']['timeSlotDateRequired']) && $this->response['metadata']['deliveryDates']['timeSlotDateRequired'] ? '1' : '0',
-                    'time_slot_time_required' => isset($this->response['metadata']['deliveryDates']['timeSlotTimeRequired']) && $this->response['metadata']['deliveryDates']['timeSlotTimeRequired'] ? '1' : '0',
-                    'time_slots' => $rate['time_slots'],
-                ],
+                'meta_data' => $meta_data,
                 'priority' => $rate['priority'],
             ];
         }
@@ -217,14 +235,60 @@ class Rates
             $delivery_from = $this->prepare_date($rate['delivery_date_from'], $date_format);
             $delivery_to = $this->prepare_date($rate['delivery_date_to'], $date_format);
 
-            $message = \str_replace(
-                ['{tax_amount}', '{min_transit_days}', '{max_transit_days}', '{packages}', '{custom_number}', '{cart_weight}', '{delivery_from}', '{delivery_to}'],
-                [$tax_amount, $rate['days_in_transit_from'], $rate['days_in_transit_to'], $this->get_packages_string($rate), $rate['custom_number'], $cart_weight, $delivery_from, $delivery_to],
-                $message
-            );
+            $search = [
+                '{tax_amount}',
+                '{min_transit_days}',
+                '{max_transit_days}',
+                '{packages}',
+                '{custom_number}',
+                '{cart_weight}',
+                '{delivery_from}',
+                '{delivery_to}',
+                '{final_rate}',
+                '{base_rate}',
+                '{surcharge}',
+                '{discount}',
+            ];
+            $replace = [
+                $tax_amount,
+                $rate['days_in_transit_from'],
+                $rate['days_in_transit_to'],
+                $this->get_packages_string($rate),
+                $rate['custom_number'],
+                $cart_weight,
+                $delivery_from,
+                $delivery_to,
+                $this->format_amount($rate['final_rate'], $rate['currency']),
+                $this->format_amount($rate['base_rate'], $rate['currency']),
+                $this->format_amount($rate['surcharge'], $rate['currency']),
+                $this->format_amount($rate['discount'], $rate['currency']),
+            ];
+
+            foreach ($rate['surcharge_rules'] as $rule_id => $amount) {
+                $search[] = '{surcharge_rule'.$rule_id.'}';
+                $replace[] = $this->format_amount($amount, $rate['currency']);
+            }
+            foreach ($rate['discount_rules'] as $rule_id => $amount) {
+                $search[] = '{discount_rule'.$rule_id.'}';
+                $replace[] = $this->format_amount($amount, $rate['currency']);
+            }
+
+            $message = \str_replace($search, $replace, $message);
         }
 
         return $message;
+    }
+
+    /**
+     * @param float|int|null $amount
+     */
+    private function format_amount($amount, string $currency): string
+    {
+        if (null === $amount) {
+            return '';
+        }
+
+        return (string) $amount.' '.$currency;
     }
 
     private function get_packages_string(array $rate): string
