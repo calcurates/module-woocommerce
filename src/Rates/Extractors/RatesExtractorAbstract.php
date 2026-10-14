@@ -18,6 +18,7 @@ abstract class RatesExtractorAbstract
      *     label: string,
      *     cost: float|int,
      *     tax: float|int|null,
+     *     insurance_amount: float|int|null,
      *     message: string|null,
      *     delivery_date_from: string|null,
      *     delivery_date_to: string|null,
@@ -48,6 +49,7 @@ abstract class RatesExtractorAbstract
      * @return array{
      *     cost: float|int,
      *     tax: float|int|null,
+     *     insurance_amount: float|int|null,
      *     currency: string,
      *     delivery_date_from: string|null,
      *     delivery_date_to: string|null,
@@ -73,6 +75,7 @@ abstract class RatesExtractorAbstract
         return [
             'cost' => $rate['cost'] ?? 0,
             'tax' => $rate['tax'] ?? null,
+            'insurance_amount' => $rate['insurance'] ?? null,
             'currency' => $rate['currency'] ?? '',
             'delivery_date_from' => $delivery_date['from'] ?? null,
             'delivery_date_to' => $delivery_date['to'] ?? null,
