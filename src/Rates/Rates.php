@@ -21,6 +21,7 @@ class Rates
      *     label: string,
      *     cost: float|int,
      *     tax: float|int|null,
+     *     insurance_amount: float|int|null,
      *     message: string|null,
      *     delivery_date_from: string|null,
      *     delivery_date_to: string|null,
@@ -134,6 +135,7 @@ class Rates
                 'delivery_date_from' => $this->prepare_date($rate['delivery_date_from']),
                 'delivery_date_to' => $this->prepare_date($rate['delivery_date_to']),
                 'tax' => $rate['tax'],
+                'insurance_amount' => $rate['insurance_amount'],
                 'currency' => $rate['currency'],
                 'has_error' => $rate['has_error'],
                 'rate_image' => $rate['rate_image'],
@@ -237,6 +239,7 @@ class Rates
 
             $search = [
                 '{tax_amount}',
+                '{insurance_amount}',
                 '{min_transit_days}',
                 '{max_transit_days}',
                 '{packages}',
@@ -251,6 +254,7 @@ class Rates
             ];
             $replace = [
                 $tax_amount,
+                $this->format_amount($rate['insurance_amount'], $rate['currency']),
                 $rate['days_in_transit_from'],
                 $rate['days_in_transit_to'],
                 $this->get_packages_string($rate),

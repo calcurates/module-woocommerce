@@ -82,6 +82,10 @@ if (!\class_exists(WCBootstrap::class)) {
                 $display_key = \__('Tax', 'woocommerce');
             }
 
+            if ('insurance_amount' === $meta->key && \is_admin()) {
+                $display_key = \__('Insurance amount', 'woocommerce');
+            }
+
             if ('final_rate' === $meta->key && \is_admin()) {
                 $display_key = \__('Final rate', 'woocommerce');
             }
