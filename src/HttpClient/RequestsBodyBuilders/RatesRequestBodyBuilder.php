@@ -68,30 +68,30 @@ class RatesRequestBodyBuilder
             $this->wpml_store_language();
         }
 
-        $coupons = \WC()->cart->get_coupons();
-        $coupon = \reset($coupons);
+        try {
+            $coupons = \WC()->cart->get_coupons();
+            $coupon = \reset($coupons);
 
-        $shipToData = $this->prepare_ship_to_data();
+            $shipToData = $this->prepare_ship_to_data();
 
-        if (\is_checkout()) {
-            $estimate = false;
-        } else {
-            $estimate = !$this->is_calculate_tax_available($shipToData);
+            if (\is_checkout()) {
+                $estimate = false;
+            } else {
+                $estimate = !$this->is_calculate_tax_available($shipToData);
+            }
+
+            return [
+                'promoCode' => $coupon ? $coupon->get_code() : null, // FIXME: could be few coupons
+                'shipTo' => $shipToData,
+                'products' => $this->prepare_products_data(),
+                'customerGroup' => \is_user_logged_in() ? 'customer' : 'guest',
+                'estimate' => $estimate,
+            ];
+        } finally {
+            if ($is_wpml_available) {
+                $this->wpml_restore_language();
+            }
         }
-
-        $data = [
-            'promoCode' => $coupon ? $coupon->get_code() : null, // FIXME: could be few coupons
-            'shipTo' => $shipToData,
-            'products' => $this->prepare_products_data(),
-            'customerGroup' => \is_user_logged_in() ? 'customer' : 'guest',
-            'estimate' => $estimate,
-        ];
-
-        if ($is_wpml_available) {
-            $this->wpml_restore_language();
-        }
-
-        return $data;
     }
 
     /**
@@ -368,10 +368,19 @@ class RatesRequestBodyBuilder
      */
     private function wpml_store_language(): void
     {
-        $this->wpml_language = \apply_filters('wpml_current_language', null);
+        $this->wpml_language = $this->normalize_wpml_language(\apply_filters('wpml_current_language', null));
 
-        $default_lang = \apply_filters('wpml_default_language', null);
+        $default_lang = $this->normalize_wpml_language(\apply_filters('wpml_default_language', null));
         \do_action('wpml_switch_language', $default_lang);
+    }
+
+    /**
+     * WPML API emulators (e.g. Polylang) may return false when the language is not detected,
+     * null makes `wpml_switch_language` restore the original language.
+     */
+    private function normalize_wpml_language($language): ?string
+    {
+        return \is_string($language) && '' !== $language ? $language : null;
     }
 
     /**
