@@ -223,15 +223,23 @@ if (!\class_exists(WCBootstrap::class)) {
         // For new orders via checkout
         public function action_checkout_create_order_shipping_item($item, $package_key, $package, $order): void
         {
-            if (isset($_POST[self::$delivery_date_meta_name]) && $_POST[self::$delivery_date_meta_name]) {
-                $item->update_meta_data(self::$delivery_date_meta_name, $_POST[self::$delivery_date_meta_name]);
+            $delivery_date = \wp_unslash($_POST[self::$delivery_date_meta_name] ?? '');
+
+            if (\is_string($delivery_date) && false !== \strtotime($delivery_date)) {
+                $item->update_meta_data(self::$delivery_date_meta_name, \sanitize_text_field($delivery_date));
             }
 
-            if (isset($_POST[self::$delivery_time_meta_name]) && $_POST[self::$delivery_time_meta_name]) {
-                $data = \json_decode(\stripslashes($_POST[self::$delivery_time_meta_name]), true);
+            $delivery_time = \wp_unslash($_POST[self::$delivery_time_meta_name] ?? '');
+            $data = \is_string($delivery_time) ? \json_decode($delivery_time, true) : null;
 
-                $item->update_meta_data(self::$delivery_time_meta_name.'_from', $data['from']);
-                $item->update_meta_data(self::$delivery_time_meta_name.'_to', $data['to']);
+            if (
+                \is_array($data)
+                && isset($data['from'], $data['to'])
+                && \is_string($data['from']) && false !== \strtotime($data['from'])
+                && \is_string($data['to']) && false !== \strtotime($data['to'])
+            ) {
+                $item->update_meta_data(self::$delivery_time_meta_name.'_from', \sanitize_text_field($data['from']));
+                $item->update_meta_data(self::$delivery_time_meta_name.'_to', \sanitize_text_field($data['to']));
             }
         }
 
