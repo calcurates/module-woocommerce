@@ -115,15 +115,13 @@ if (!\class_exists(OriginsTaxonomy::class)) {
         /**
          * Print data in terms column.
          */
-        public function manage_columns(string $out, string $column_name, int $term_id): void
+        public function manage_columns(string $out, string $column_name, int $term_id): string
         {
-            switch ($column_name) {
-                case 'code':
-                    echo \get_term_meta($term_id, 'origin_code', true);
-                    break;
-                default:
-                    break;
+            if ('code' === $column_name) {
+                return \esc_html((string) \get_term_meta($term_id, 'origin_code', true));
             }
+
+            return $out;
         }
 
         /**
@@ -138,7 +136,7 @@ if (!\class_exists(OriginsTaxonomy::class)) {
 				<label>Origin Code</label>
 			</th>
 			<td>
-				<p><?php echo \get_term_meta($term->term_id, 'origin_code', true); ?></p>
+				<p><?php echo \esc_html((string) \get_term_meta($term->term_id, 'origin_code', true)); ?></p>
 			</td>
 		</tr>
 
