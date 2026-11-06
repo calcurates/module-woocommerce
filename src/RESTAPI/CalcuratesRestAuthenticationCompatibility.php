@@ -63,7 +63,7 @@ if (!\class_exists(CalcuratesRestAuthenticationCompatibility::class)) {
                 return false;
             }
 
-            return self::NAMESPACE_PREFIX === $route || \str_starts_with($route, self::NAMESPACE_PREFIX.'/');
+            return self::NAMESPACE_PREFIX === $route || 0 === \strpos($route, self::NAMESPACE_PREFIX.'/');
         }
     }
 }

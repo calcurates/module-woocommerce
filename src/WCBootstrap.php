@@ -102,11 +102,11 @@ if (!\class_exists(WCBootstrap::class)) {
                 $display_key = \__('Discount', 'woocommerce');
             }
 
-            if (\is_admin() && \str_starts_with($meta->key, 'surcharge_rule')) {
+            if (\is_admin() && 0 === \strpos($meta->key, 'surcharge_rule')) {
                 $display_key = \__('Surcharge rule', 'woocommerce').' '.\substr($meta->key, \strlen('surcharge_rule'));
             }
 
-            if (\is_admin() && \str_starts_with($meta->key, 'discount_rule')) {
+            if (\is_admin() && 0 === \strpos($meta->key, 'discount_rule')) {
                 $display_key = \__('Discount rule', 'woocommerce').' '.\substr($meta->key, \strlen('discount_rule'));
             }
 
@@ -534,7 +534,7 @@ if (!\class_exists(WCBootstrap::class)) {
          */
         public function filter_woocommerce_cart_shipping_method_full_label(string $label, \WC_Shipping_Rate $rate): string
         {
-            if (!\str_contains($rate->get_id(), \WC_Calcurates_Shipping_Method::CODE.':')) {
+            if (false === \strpos($rate->get_id(), \WC_Calcurates_Shipping_Method::CODE.':')) {
                 return $label;
             }
 
