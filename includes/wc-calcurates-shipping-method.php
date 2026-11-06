@@ -251,10 +251,13 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
     private function is_request_body_valid(array $request_body): bool
     {
         $country = $request_body['shipTo']['country'] ?? null;
-        $postal_code = $request_body['shipTo']['postalCode'] ?? null;
         $region_code = $request_body['shipTo']['regionCode'] ?? null;
 
-        if (!$this->has_value($country) || !$this->has_value($postal_code)) {
+        if (!$this->has_value($country)) {
+            return false;
+        }
+
+        if ($this->is_shipping_postcode_required((string) $country) && !$this->has_value($request_body['shipTo']['postalCode'] ?? null)) {
             return false;
         }
 
@@ -263,6 +266,18 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         }
 
         return true;
+    }
+
+    private function is_shipping_postcode_required(string $country_code): bool
+    {
+        $fields = \WC()->countries->get_address_fields($country_code, 'shipping_');
+        $field = $fields['shipping_postcode'] ?? null;
+
+        if (!\is_array($field) || !empty($field['hidden'])) {
+            return false;
+        }
+
+        return !empty($field['required']);
     }
 
     private function has_value($value): bool
