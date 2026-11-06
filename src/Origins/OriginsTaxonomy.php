@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Calcurates\Origins;
 
+use Calcurates\WCCalcurates;
+
 // Stop direct HTTP access.
 if (!\defined('ABSPATH')) {
     exit;
@@ -49,20 +51,20 @@ if (!\class_exists(OriginsTaxonomy::class)) {
         public function register_taxonomy(): void
         {
             $labels = [
-                'name' => \__('Origin'),
-                'singular_name' => \__('Origin'),
-                'menu_name' => \__('Origins'),
-                'all_items' => \__('All Origins'),
+                'name' => \__('Origin', WCCalcurates::get_plugin_text_domain()),
+                'singular_name' => \__('Origin', WCCalcurates::get_plugin_text_domain()),
+                'menu_name' => \__('Origins', WCCalcurates::get_plugin_text_domain()),
+                'all_items' => \__('All Origins', WCCalcurates::get_plugin_text_domain()),
                 'parent_item' => null,
                 'parent_item_colon' => null,
-                'new_item_name' => \__('New Origin Name'),
-                'add_new_item' => \__('Add New Origin'),
-                'edit_item' => \__('Edit Origin'),
-                'update_item' => \__('Update Origin'),
-                'separate_items_with_commas' => \__('Separate Origin with commas'),
-                'search_items' => \__('Search Origins'),
-                'add_or_remove_items' => \__('Add or remove Origins'),
-                'choose_from_most_used' => \__('Choose from the most used Origins'),
+                'new_item_name' => \__('New Origin Name', WCCalcurates::get_plugin_text_domain()),
+                'add_new_item' => \__('Add New Origin', WCCalcurates::get_plugin_text_domain()),
+                'edit_item' => \__('Edit Origin', WCCalcurates::get_plugin_text_domain()),
+                'update_item' => \__('Update Origin', WCCalcurates::get_plugin_text_domain()),
+                'separate_items_with_commas' => \__('Separate Origin with commas', WCCalcurates::get_plugin_text_domain()),
+                'search_items' => \__('Search Origins', WCCalcurates::get_plugin_text_domain()),
+                'add_or_remove_items' => \__('Add or remove Origins', WCCalcurates::get_plugin_text_domain()),
+                'choose_from_most_used' => \__('Choose from the most used Origins', WCCalcurates::get_plugin_text_domain()),
             ];
             $capabilities = [
                 'manage_terms' => 'manage_woocommerce',
@@ -173,7 +175,7 @@ if (!\class_exists(OriginsTaxonomy::class)) {
         public function validate_code(string $term, string $taxonomy)
         {
             if (self::TAXONOMY_SLUG === $taxonomy && (!\sanitize_text_field($_POST['origin_code']) || OriginUtils::getInstance()->is_code_exists($_POST['origin_code']))) {
-                return new \WP_Error('code-validation-error', \__('The Code already exists. Please enter a unique one.'));
+                return new \WP_Error('code-validation-error', \__('The Code already exists. Please enter a unique one.', WCCalcurates::get_plugin_text_domain()));
             }
 
             return $term;

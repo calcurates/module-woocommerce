@@ -11,6 +11,7 @@ declare(strict_types=1);
  * Requires PHP:      7.4
  * Author:            Calcurates s.r.o.
  * Author URI:        https://calcurates.com
+ * Text Domain:       wc-calcurates
  */
 
 namespace Calcurates;

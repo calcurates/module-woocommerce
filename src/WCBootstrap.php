@@ -62,7 +62,7 @@ if (!\class_exists(WCBootstrap::class)) {
         public function calcurates_settings_page(array $links): array
         {
             $settings = [
-                'settings' => '<a href="'.\admin_url('admin.php?page=wc-settings&tab=shipping&section=calcurates').'">'.\__('Settings').'</a>',
+                'settings' => '<a href="'.\admin_url('admin.php?page=wc-settings&tab=shipping&section=calcurates').'">'.\__('Settings', WCCalcurates::get_plugin_text_domain()).'</a>',
             ];
 
             return \array_merge($links, $settings);
@@ -71,51 +71,51 @@ if (!\class_exists(WCBootstrap::class)) {
         public function filter_wc_order_item_display_meta_key($display_key, $meta, $item)
         {
             if ('delivery_date_from' === $meta->key && \is_admin()) {
-                $display_key = \__('Delivery date from', 'woocommerce');
+                $display_key = \__('Delivery date from', WCCalcurates::get_plugin_text_domain());
             }
 
             if ('delivery_date_to' === $meta->key && \is_admin()) {
-                $display_key = \__('Delivery date to', 'woocommerce');
+                $display_key = \__('Delivery date to', WCCalcurates::get_plugin_text_domain());
             }
 
             if ('tax' === $meta->key && \is_admin()) {
-                $display_key = \__('Tax', 'woocommerce');
+                $display_key = \__('Tax', WCCalcurates::get_plugin_text_domain());
             }
 
             if ('insurance_amount' === $meta->key && \is_admin()) {
-                $display_key = \__('Insurance amount', 'woocommerce');
+                $display_key = \__('Insurance amount', WCCalcurates::get_plugin_text_domain());
             }
 
             if ('final_rate' === $meta->key && \is_admin()) {
-                $display_key = \__('Final rate', 'woocommerce');
+                $display_key = \__('Final rate', WCCalcurates::get_plugin_text_domain());
             }
 
             if ('base_rate' === $meta->key && \is_admin()) {
-                $display_key = \__('Base rate', 'woocommerce');
+                $display_key = \__('Base rate', WCCalcurates::get_plugin_text_domain());
             }
 
             if ('surcharge' === $meta->key && \is_admin()) {
-                $display_key = \__('Surcharge', 'woocommerce');
+                $display_key = \__('Surcharge', WCCalcurates::get_plugin_text_domain());
             }
 
             if ('discount' === $meta->key && \is_admin()) {
-                $display_key = \__('Discount', 'woocommerce');
+                $display_key = \__('Discount', WCCalcurates::get_plugin_text_domain());
             }
 
             if (\is_admin() && 0 === \strpos($meta->key, 'surcharge_rule')) {
-                $display_key = \__('Surcharge rule', 'woocommerce').' '.\substr($meta->key, \strlen('surcharge_rule'));
+                $display_key = \__('Surcharge rule', WCCalcurates::get_plugin_text_domain()).' '.\substr($meta->key, \strlen('surcharge_rule'));
             }
 
             if (\is_admin() && 0 === \strpos($meta->key, 'discount_rule')) {
-                $display_key = \__('Discount rule', 'woocommerce').' '.\substr($meta->key, \strlen('discount_rule'));
+                $display_key = \__('Discount rule', WCCalcurates::get_plugin_text_domain()).' '.\substr($meta->key, \strlen('discount_rule'));
             }
 
             if ('selected_delivery_date' === $meta->key && \is_admin()) {
-                $display_key = \__('Selected delivery date', 'woocommerce');
+                $display_key = \__('Selected delivery date', WCCalcurates::get_plugin_text_domain());
             }
 
             if ('selected_delivery_time_from' === $meta->key && \is_admin()) {
-                $display_key = \__('Selected delivery time', 'woocommerce');
+                $display_key = \__('Selected delivery time', WCCalcurates::get_plugin_text_domain());
             }
 
             return $display_key;
@@ -195,7 +195,7 @@ if (!\class_exists(WCBootstrap::class)) {
                 $time_slots = $this->get_time_slots_text($delivery_date, $delivery_time_from, $delivery_time_to);
                 if ($time_slots) {
                     $total_rows['time_slots'] = [
-                        'label' => \__('Delivery date:', 'woocommerce'),
+                        'label' => \__('Delivery date:', WCCalcurates::get_plugin_text_domain()),
                         'value' => \htmlspecialchars($time_slots, \ENT_NOQUOTES),
                     ];
                 }
@@ -208,7 +208,7 @@ if (!\class_exists(WCBootstrap::class)) {
 
                 if ($estimated_delivery_date) {
                     $total_rows['estimated_delivery_date'] = [
-                        'label' => \__('Estimated delivery date:', 'woocommerce'),
+                        'label' => \__('Estimated delivery date:', WCCalcurates::get_plugin_text_domain()),
                         'value' => \htmlspecialchars($estimated_delivery_date, \ENT_NOQUOTES),
                     ];
                 }
@@ -523,7 +523,7 @@ if (!\class_exists(WCBootstrap::class)) {
                 $shipping_rate = $package['rates'][$chosen_method] ?? null;
 
                 if ($shipping_rate && !empty($shipping_rate->get_meta_data()['has_error'])) {
-                    $errors->add('validation', \__('Chosen Shipping method is not available.'));
+                    $errors->add('validation', \__('Chosen Shipping method is not available.', WCCalcurates::get_plugin_text_domain()));
 
                     return;
                 }

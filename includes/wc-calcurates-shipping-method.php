@@ -54,8 +54,8 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
         parent::__construct($instance_id);
 
         $this->id = self::CODE;
-        $this->method_title = \__('Calcurates Shipping Method');
-        $this->method_description = \__('Calcurates Shipping Method');
+        $this->method_title = \__('Calcurates Shipping Method', WCCalcurates::get_plugin_text_domain());
+        $this->method_description = \__('Calcurates Shipping Method', WCCalcurates::get_plugin_text_domain());
 
         $this->enabled = 'yes';
         $this->title = 'Calcurates Shipping Method';
@@ -93,22 +93,22 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
     {
         $this->form_fields = [
             'calcurates_api_url' => [
-                'title' => \__('Calcurates Api URL', 'woocommerce'),
+                'title' => \__('Calcurates Api URL', WCCalcurates::get_plugin_text_domain()),
                 'type' => 'text',
                 'default' => 'https://api.calcurates.com',
                 'desc_tip' => false,
             ],
             'calcurates_api_key' => [
-                'title' => \__('Calcurates Api Key', 'woocommerce'),
+                'title' => \__('Calcurates Api Key', WCCalcurates::get_plugin_text_domain()),
                 'type' => 'text',
-                'description' => \__('Copy your Api Key from Calcurates panel', 'woocommerce'),
+                'description' => \__('Copy your Api Key from Calcurates panel', WCCalcurates::get_plugin_text_domain()),
                 'default' => '',
                 'desc_tip' => false,
             ],
             'plugin_api_key' => [
-                'title' => \__('Plugin Api Key', 'woocommerce'),
+                'title' => \__('Plugin Api Key', WCCalcurates::get_plugin_text_domain()),
                 'type' => 'text',
-                'description' => \__('Copy this Api Key to Calcurates panel', 'woocommerce'),
+                'description' => \__('Copy this Api Key to Calcurates panel', WCCalcurates::get_plugin_text_domain()),
                 'default' => \get_option(WCCalcurates::get_prefix().'key'),
                 'desc_tip' => false,
                 'custom_attributes' => [
@@ -116,20 +116,20 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
                 ],
             ],
             'generate_new_api_key' => [
-                'title' => \__('Generate new Plugin Api Key', 'woocommerce'),
+                'title' => \__('Generate new Plugin Api Key', WCCalcurates::get_plugin_text_domain()),
                 'type' => 'checkbox',
-                'description' => \__('Check and save changes to generate new Plugin Api Key', 'woocommerce'),
+                'description' => \__('Check and save changes to generate new Plugin Api Key', WCCalcurates::get_plugin_text_domain()),
                 'desc_tip' => false,
             ],
             'rates_request_cache_timeout' => [
-                'title' => \__('Rates request cache timeout (seconds)', 'woocommerce'),
+                'title' => \__('Rates request cache timeout (seconds)', WCCalcurates::get_plugin_text_domain()),
                 'type' => 'number',
-                'description' => \__('Requests to Calcurates will be cached', 'woocommerce'),
+                'description' => \__('Requests to Calcurates will be cached', WCCalcurates::get_plugin_text_domain()),
                 'desc_tip' => false,
                 'default' => '86400',
             ],
             'debug_mode' => [
-                'title' => \__('Debug', 'woocommerce'),
+                'title' => \__('Debug', WCCalcurates::get_plugin_text_domain()),
                 'type' => 'select',
                 'default' => 'off',
                 'options' => [
@@ -139,7 +139,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
                 ],
             ],
             'tax_mode' => [
-                'title' => \__('Display rates with tax & duties', 'woocommerce'),
+                'title' => \__('Display rates with tax & duties', WCCalcurates::get_plugin_text_domain()),
                 'type' => 'select',
                 'default' => 'tax_included',
                 'options' => [
@@ -149,22 +149,22 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
                 ],
             ],
             'duties_taxes_estimates_with_empty_address_line' => [
-                'title' => \__('Estimates with empty address line', 'woocommerce'),
+                'title' => \__('Estimates with empty address line', WCCalcurates::get_plugin_text_domain()),
                 'type' => 'checkbox',
-                'description' => \__('Enable if you use quick payment plugins', 'woocommerce'),
+                'description' => \__('Enable if you use quick payment plugins', WCCalcurates::get_plugin_text_domain()),
                 'desc_tip' => false,
                 'default' => 'no',
-                'label' => \__('Allow duties & taxes estimates with empty address line', 'woocommerce'),
+                'label' => \__('Allow duties & taxes estimates with empty address line', WCCalcurates::get_plugin_text_domain()),
             ],
             'vat_number_checkout_field' => [
-                'title' => \__('VAT Number checkout field', 'woocommerce'),
+                'title' => \__('VAT Number checkout field', WCCalcurates::get_plugin_text_domain()),
                 'type' => 'text',
-                'description' => \__('Checkout field name (input name attribute) to send as ship-to VAT Number, e.g. vat_number, billing_vat_number, billing_vat_id, billing_eu_vat_number. Leave empty to send no VAT Number.', 'woocommerce'),
+                'description' => \__('Checkout field name (input name attribute) to send as ship-to VAT Number, e.g. vat_number, billing_vat_number, billing_vat_id, billing_eu_vat_number. Leave empty to send no VAT Number.', WCCalcurates::get_plugin_text_domain()),
                 'default' => '',
                 'desc_tip' => false,
             ],
             'delivery_dates_display_mode' => [
-                'title' => \__('Delivery dates display mode', 'woocommerce'),
+                'title' => \__('Delivery dates display mode', WCCalcurates::get_plugin_text_domain()),
                 'type' => 'select',
                 'default' => 'description',
                 'options' => [
@@ -173,7 +173,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
                 ],
             ],
             'delivery_dates_display_format' => [
-                'title' => \__('Delivery dates display format', 'woocommerce'),
+                'title' => \__('Delivery dates display format', WCCalcurates::get_plugin_text_domain()),
                 'type' => 'select',
                 'default' => 'dates',
                 'options' => [
@@ -182,7 +182,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
                 ],
             ],
             'info_messages_display_settings' => [
-                'title' => \__('Info messages display settings', 'woocommerce'),
+                'title' => \__('Info messages display settings', WCCalcurates::get_plugin_text_domain()),
                 'type' => 'select',
                 'default' => 'description',
                 'options' => [
