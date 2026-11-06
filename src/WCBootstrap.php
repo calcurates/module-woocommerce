@@ -464,7 +464,8 @@ if (!\class_exists(WCBootstrap::class)) {
                 '' => 'Please select',
             ];
 
-            $terms = \get_terms(OriginsTaxonomy::TAXONOMY_SLUG, [
+            $terms = \get_terms([
+                'taxonomy' => OriginsTaxonomy::TAXONOMY_SLUG,
                 'hide_empty' => false,
                 'fields' => 'id=>name',
             ]);

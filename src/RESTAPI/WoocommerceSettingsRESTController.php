@@ -232,11 +232,16 @@ if (!\class_exists(WoocommerceSettingsRESTController::class)) {
                 'values' => [],
             ];
 
-            $terms = \get_terms('product_shipping_class', [
+            $terms = \get_terms([
+                'taxonomy' => 'product_shipping_class',
                 'hide_empty' => false,
             ]);
 
-            foreach ((array) $terms as $term) {
+            if (!\is_array($terms)) {
+                $terms = [];
+            }
+
+            foreach ($terms as $term) {
                 $data['values'][] = [
                     'value' => $term->slug,
                     'title' => $term->name,
@@ -259,11 +264,16 @@ if (!\class_exists(WoocommerceSettingsRESTController::class)) {
                 'values' => [],
             ];
 
-            $terms = \get_terms('product_cat', [
+            $terms = \get_terms([
+                'taxonomy' => 'product_cat',
                 'hide_empty' => false,
             ]);
 
-            foreach ((array) $terms as $term) {
+            if (!\is_array($terms)) {
+                $terms = [];
+            }
+
+            foreach ($terms as $term) {
                 // code...
 
                 $data['values'][] = [
@@ -288,11 +298,16 @@ if (!\class_exists(WoocommerceSettingsRESTController::class)) {
                 'values' => [],
             ];
 
-            $terms = \get_terms('product_tag', [
+            $terms = \get_terms([
+                'taxonomy' => 'product_tag',
                 'hide_empty' => false,
             ]);
 
-            foreach ((array) $terms as $term) {
+            if (!\is_array($terms)) {
+                $terms = [];
+            }
+
+            foreach ($terms as $term) {
                 // code...
 
                 $data['values'][] = [
@@ -325,11 +340,16 @@ if (!\class_exists(WoocommerceSettingsRESTController::class)) {
                         'values' => [],
                     ];
 
-                    $terms = \get_terms($taxonomy, [
+                    $terms = \get_terms([
+                        'taxonomy' => $taxonomy,
                         'hide_empty' => false,
                     ]);
 
-                    foreach ((array) $terms as $term) {
+                    if (!\is_array($terms)) {
+                        $terms = [];
+                    }
+
+                    foreach ($terms as $term) {
                         $data['values'][] = [
                             'value' => $term->term_id,
                             'title' => $term->name,
