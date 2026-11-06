@@ -513,26 +513,18 @@ if (!\class_exists(WCBootstrap::class)) {
          */
         public function validate_selected_rate(array $data, \WP_Error $errors): void
         {
-            $chosen_shipping_methods = \WC()->session->get('chosen_shipping_methods', []);
+            foreach ((array) \WC()->session->get('chosen_shipping_methods', []) as $package_key => $chosen_method) {
+                if (!\is_string($chosen_method)) {
+                    continue;
+                }
 
-            if (!$chosen_shipping_methods || !\is_array($chosen_shipping_methods)) {
-                return;
-            }
+                $package = \WC()->session->get('shipping_for_package_'.$package_key, []);
+                $shipping_rate = $package['rates'][$chosen_method] ?? null;
 
-            foreach ($chosen_shipping_methods as $chosen_method) {
-                // The array of shipping methods enabled for the current shipping zone:
-                $shipping_methods = \WC()->session->get('shipping_for_package_0', [])['rates'];
+                if ($shipping_rate && !empty($shipping_rate->get_meta_data()['has_error'])) {
+                    $errors->add('validation', \__('Chosen Shipping method is not available.'));
 
-                foreach ($shipping_methods as $shipping_rate) {
-                    if ($shipping_rate->get_id() === $chosen_method) {
-                        $meta = $shipping_rate->get_meta_data();
-
-                        if ($meta['has_error'] ?? false) {
-                            $errors->add('validation', \__('Chosen Shipping method is not available.'));
-
-                            return;
-                        }
-                    }
+                    return;
                 }
             }
         }
