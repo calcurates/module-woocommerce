@@ -538,31 +538,36 @@ if (!\class_exists(WCBootstrap::class)) {
                 return $label;
             }
 
-            $shipping_method_options = \get_option('woocommerce_'.\WC_Calcurates_Shipping_Method::CODE.'_settings', true);
+            $shipping_method_options = \get_option('woocommerce_'.\WC_Calcurates_Shipping_Method::CODE.'_settings', []);
+
+            if (!\is_array($shipping_method_options)) {
+                $shipping_method_options = [];
+            }
+
             $meta = $rate->get_meta_data();
 
             // rate image
             $image = '';
-            if ($meta['rate_image']) {
+            if (!empty($meta['rate_image'])) {
                 $image = '<img src="'.\htmlspecialchars($meta['rate_image']).'" class="calcurates-checkout__shipping-rate-image" />';
             }
 
             // info message
             $info_message = '';
-            if ('description' === $shipping_method_options['info_messages_display_settings'] && $meta['message']) {
+            if ('description' === ($shipping_method_options['info_messages_display_settings'] ?? '') && !empty($meta['message'])) {
                 $info_message = '<div class="calcurates-checkout__shipping-rate-message">'.\htmlspecialchars($meta['message'], \ENT_NOQUOTES).'</div>';
             }
 
             // delivery dates
             $delivery_dates = '';
-            if ('description' === $shipping_method_options['delivery_dates_display_mode'] && ($meta['delivery_date_from'] || $meta['delivery_date_to'])) {
-                if ($meta['time_slots']) {
+            if ('description' === ($shipping_method_options['delivery_dates_display_mode'] ?? '') && (!empty($meta['delivery_date_from']) || !empty($meta['delivery_date_to']))) {
+                if (!empty($meta['time_slots'])) {
                     $date_text = '<div class="calcurates-checkout__shipping-rate-date-select-label">Delivery date
                     <input id="'.\htmlspecialchars($this->rate_id_to_css_id($rate->get_id())).'" class="calcurates-checkout__shipping-rate-date-select" placeholder="Select delivery date" data-delivery-date-from="'.\htmlspecialchars($meta['delivery_date_from'] ?? '').'" data-delivery-date-to="'.\htmlspecialchars($meta['delivery_date_to'] ?? '').'" data-time-slot-date-required="'.\htmlspecialchars($meta['time_slot_date_required'] ?? '0').'" data-time-slot-time-required="'.\htmlspecialchars($meta['time_slot_time_required'] ?? '0').'" data-time-slots="'.\htmlspecialchars(\json_encode($meta['time_slots'], \JSON_UNESCAPED_SLASHES)).'" type="text" readonly="readonly"/>
                     <input class="calcurates-checkout__shipping-rate-date-original" name="'.\htmlspecialchars(self::$delivery_date_meta_name).'" type="text" hidden="hidden"/>
                     </div>';
                 } else {
-                    if ('quantity' === $shipping_method_options['delivery_dates_display_format']) {
+                    if ('quantity' === ($shipping_method_options['delivery_dates_display_format'] ?? '')) {
                         $date_text = \htmlspecialchars($this->get_estimated_delivery_days_text($meta['delivery_date_from'], $meta['delivery_date_to']), \ENT_NOQUOTES);
                     } else {
                         $date_text = \htmlspecialchars($this->get_estimated_delivery_dates_text($meta['delivery_date_from'], $meta['delivery_date_to']), \ENT_NOQUOTES);
@@ -572,7 +577,7 @@ if (!\class_exists(WCBootstrap::class)) {
                 $delivery_dates = '<div class="calcurates-checkout__shipping-rate-dates">'.$date_text.'</div>';
             }
 
-            return $image.'<span class="calcurates-checkout__shipping-rate-text'.($meta['has_error'] ? ' calcurates-checkout__shipping-rate-text_has-error' : '').'">'.$label.' '.$info_message.' '.$delivery_dates.'</span>';
+            return $image.'<span class="calcurates-checkout__shipping-rate-text'.(!empty($meta['has_error']) ? ' calcurates-checkout__shipping-rate-text_has-error' : '').'">'.$label.' '.$info_message.' '.$delivery_dates.'</span>';
         }
 
         private function difference_in_days_from_today(\DateTime $date): string

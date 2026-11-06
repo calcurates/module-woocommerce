@@ -95,7 +95,7 @@ if (!\class_exists(Assets::class)) {
                     'timeFormat' => \get_option('time_format'),
                 ];
 
-                $shipping_method_options = \get_option('woocommerce_'.\WC_Calcurates_Shipping_Method::CODE.'_settings', true);
+                $shipping_method_options = \get_option('woocommerce_'.\WC_Calcurates_Shipping_Method::CODE.'_settings', []);
                 $vat_number_checkout_field = \is_array($shipping_method_options)
                     ? \trim((string) ($shipping_method_options['vat_number_checkout_field'] ?? ''))
                     : '';

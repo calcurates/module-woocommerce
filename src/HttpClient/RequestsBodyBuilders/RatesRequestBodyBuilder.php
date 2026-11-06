@@ -158,7 +158,7 @@ class RatesRequestBodyBuilder
             $contact_name = null;
         }
 
-        $shipping_method_options = \get_option('woocommerce_'.\WC_Calcurates_Shipping_Method::CODE.'_settings', true);
+        $shipping_method_options = \get_option('woocommerce_'.\WC_Calcurates_Shipping_Method::CODE.'_settings', []);
         if (!\is_array($shipping_method_options)) {
             $shipping_method_options = [];
         }
