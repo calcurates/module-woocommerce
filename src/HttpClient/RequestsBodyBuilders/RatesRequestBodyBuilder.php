@@ -106,27 +106,27 @@ class RatesRequestBodyBuilder
             \parse_str(\rawurldecode($_POST['post_data']), $post_data);
 
             if (isset($post_data['ship_to_different_address']) && $post_data['ship_to_different_address']) {
-                $postcode = $post_data['shipping_postcode'] ?? $post_data['billing_postcode'];
-                $first_name = $post_data['shipping_first_name'] ?? $post_data['billing_first_name'];
-                $last_name = $post_data['shipping_last_name'] ?? $post_data['billing_last_name'];
-                $company = $post_data['shipping_company'] ?? $post_data['billing_company'];
-                $phone = $post_data['billing_phone']; // not exists in shipping_*
-                $state = $post_data['shipping_state'] ?? $post_data['billing_state'];
-                $city = $post_data['shipping_city'] ?? $post_data['billing_city'];
-                $addr_1 = $post_data['shipping_address_1'] ?? $post_data['billing_address_1'];
-                $addr_2 = $post_data['shipping_address_2'] ?? $post_data['billing_address_2'];
-                $country_code = $post_data['shipping_country'] ?? $post_data['billing_country'];
+                $postcode = $post_data['shipping_postcode'] ?? $post_data['billing_postcode'] ?? null;
+                $first_name = $post_data['shipping_first_name'] ?? $post_data['billing_first_name'] ?? null;
+                $last_name = $post_data['shipping_last_name'] ?? $post_data['billing_last_name'] ?? null;
+                $company = $post_data['shipping_company'] ?? $post_data['billing_company'] ?? null;
+                $phone = $post_data['billing_phone'] ?? null; // not exists in shipping_*
+                $state = $post_data['shipping_state'] ?? $post_data['billing_state'] ?? null;
+                $city = $post_data['shipping_city'] ?? $post_data['billing_city'] ?? null;
+                $addr_1 = $post_data['shipping_address_1'] ?? $post_data['billing_address_1'] ?? null;
+                $addr_2 = $post_data['shipping_address_2'] ?? $post_data['billing_address_2'] ?? null;
+                $country_code = $post_data['shipping_country'] ?? $post_data['billing_country'] ?? null;
             } else {
-                $postcode = $post_data['billing_postcode'];
-                $first_name = $post_data['billing_first_name'];
-                $last_name = $post_data['billing_last_name'];
-                $company = $post_data['billing_company'];
-                $phone = $post_data['billing_phone'];
-                $state = $post_data['billing_state'];
-                $city = $post_data['billing_city'];
-                $addr_1 = $post_data['billing_address_1'];
-                $addr_2 = $post_data['billing_address_2'];
-                $country_code = $post_data['billing_country'];
+                $postcode = $post_data['billing_postcode'] ?? null;
+                $first_name = $post_data['billing_first_name'] ?? null;
+                $last_name = $post_data['billing_last_name'] ?? null;
+                $company = $post_data['billing_company'] ?? null;
+                $phone = $post_data['billing_phone'] ?? null;
+                $state = $post_data['billing_state'] ?? null;
+                $city = $post_data['billing_city'] ?? null;
+                $addr_1 = $post_data['billing_address_1'] ?? null;
+                $addr_2 = $post_data['billing_address_2'] ?? null;
+                $country_code = $post_data['billing_country'] ?? null;
             }
         } else {
             $customer_session_data = \WC()->session->get('customer', []);
