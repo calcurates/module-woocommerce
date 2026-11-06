@@ -62,7 +62,7 @@ class Rates
     private function extract_rates(): void
     {
         $rates_extractor_factory = new RatesExtractorFactory();
-        foreach ($this->response['shippingOptions'] as $shipping_option_name => $shipping_option_data) {
+        foreach ($this->response['shippingOptions'] ?? [] as $shipping_option_name => $shipping_option_data) {
             try {
                 $rate = $rates_extractor_factory->create($shipping_option_name);
             } catch (\Exception $e) {
