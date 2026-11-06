@@ -18,7 +18,7 @@ class MergedShippingOptionsRatesExtractor extends RatesExtractorAbstract
         foreach ($data as $rate) {
             if ($rate['success'] || $rate['message']) {
                 $ready_rates[] = \array_merge([
-                    'has_error' => false,
+                    'has_error' => !$rate['success'],
                     'id' => $rate['id'],
                     'label' => $this->resolve_label($rate),
                     'message' => $rate['message'],
