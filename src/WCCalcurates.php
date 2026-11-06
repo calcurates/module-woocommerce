@@ -74,17 +74,15 @@ if (!\class_exists(WCCalcurates::class)) {
         public static function get_version(): string
         {
             static $version = null;
-            if ($version) {
+
+            if (null !== $version) {
                 return $version;
             }
 
             $composer = \file_get_contents(self::get_plugin_dir_path().'composer.json');
-            if (false !== $composer) {
-                $json = \json_decode($composer, true);
-                $version = $json['version'];
-            } else {
-                $version = 'dev';
-            }
+            $json = false !== $composer ? \json_decode($composer, true) : null;
+
+            $version = \is_array($json) && !empty($json['version']) ? (string) $json['version'] : 'dev';
 
             return $version;
         }
