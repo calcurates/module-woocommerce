@@ -292,8 +292,13 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
             );
         }
 
+        // The contact phone does not affect rates; keep it out of the key.
+        // SAAS-7523
+        unset($request_body['shipTo']['contactPhone']);
+
+        $request_body['__instance_id__'] = $this->instance_id;
+
         $cacheable = $this->remove_empty_fields($request_body);
-        $cacheable['__instance_id__'] = $this->instance_id;
 
         return self::CODE.'_'.\wp_hash(\serialize($cacheable));
     }
