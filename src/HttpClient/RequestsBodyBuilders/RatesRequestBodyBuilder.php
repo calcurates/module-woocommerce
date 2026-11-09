@@ -404,13 +404,25 @@ class RatesRequestBodyBuilder
         if (!$shipToData['city']) {
             return false;
         }
-        if (!$shipToData['postalCode']) {
+        if (!$shipToData['addressLine1']) {
             return false;
         }
-        if (!$shipToData['addressLine1']) {
+        if (!$shipToData['postalCode'] && $this->is_shipping_postcode_required((string) $shipToData['country'])) {
             return false;
         }
 
         return true;
+    }
+
+    private function is_shipping_postcode_required(string $country_code): bool
+    {
+        $fields = \WC()->countries->get_address_fields($country_code, 'shipping_');
+        $field = $fields['shipping_postcode'] ?? null;
+
+        if (!\is_array($field) || !empty($field['hidden'])) {
+            return false;
+        }
+
+        return !empty($field['required']);
     }
 }
