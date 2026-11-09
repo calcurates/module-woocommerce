@@ -239,7 +239,7 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
                 return [];
             }
 
-            \set_transient($key, $response, $this->rates_request_cache_timeout);
+            \set_transient($key, $response, (int) $this->rates_request_cache_timeout);
         }
 
         $rates = new Rates($response, $this->tax_mode, $package);
@@ -299,28 +299,47 @@ class WC_Calcurates_Shipping_Method extends WC_Shipping_Method
 
     private function get_request_hash(array $request_body): string
     {
-        $products = \array_map(static function (array $product): array {
-            return [
-                'sku' => $product['sku'],
-                'quantity' => $product['quantity'],
-            ];
-        }, $request_body['products'] ?? []);
+        // These product attributes change after every order/edit but don't affect rates.
+        foreach (\array_keys($request_body['products'] ?? []) as $index) {
+            unset(
+                $request_body['products'][$index]['attributes']['date_modified'],
+                $request_body['products'][$index]['attributes']['total_sales']
+            );
+        }
 
-        $hash_based_object = [
-            'products' => $products,
-            'shipTo' => [
-                'country' => $request_body['shipTo']['country'],
-                'city' => $request_body['shipTo']['city'],
-                'companyName' => $request_body['shipTo']['companyName'] ?? '',
-                'regionCode' => $request_body['shipTo']['regionCode'] ?? '',
-                'postalCode' => $request_body['shipTo']['postalCode'] ?? '',
-                'addressLine1' => $request_body['shipTo']['addressLine1'] ?? '',
-                'addressLine2' => $request_body['shipTo']['addressLine2'] ?? '',
-                'vatNumber' => $request_body['shipTo']['vatNumber'] ?? '',
-            ],
-        ];
+        // The contact phone does not affect rates; keep it out of the key.
+        // SAAS-7523
+        unset($request_body['shipTo']['contactPhone']);
 
-        return self::CODE.'_'.\wp_hash(\serialize($hash_based_object));
+        $request_body['__instance_id__'] = $this->instance_id;
+
+        $cacheable = $this->remove_empty_fields($request_body);
+
+        return self::CODE.'_'.\wp_hash(\serialize($cacheable));
+    }
+
+    /**
+     * Drop empty values so that null, '' and [] produce the same cache key.
+     *
+     * @param array<string|int, mixed> $data
+     *
+     * @return array<string|int, mixed>
+     */
+    private function remove_empty_fields(array $data): array
+    {
+        $result = [];
+
+        foreach ($data as $field => $value) {
+            if (\is_array($value)) {
+                $value = $this->remove_empty_fields($value);
+            }
+
+            if ([] !== $value && '' !== $value && null !== $value) {
+                $result[$field] = $value;
+            }
+        }
+
+        return $result;
     }
 
     public function process_admin_options(): bool
